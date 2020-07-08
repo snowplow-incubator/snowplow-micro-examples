@@ -1,0 +1,24 @@
+{
+    "name": "snowplow-micro-examples",
+    "version": "1.0.0",
+    "description": "Examples of how to apply Snowplow Micro to popular test strategies",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "cypress:open": "cypress open",
+        "cypress:run": "cypress run"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/snowplow-incubator/snowplow-micro-examples.git"
+    },
+    "author": "",
+    "license": "",
+    "bugs": {
+        "url": "https://github.com/snowplow-incubator/snowplow-micro-examples/issues"
+    },
+    "homepage": "https://github.com/snowplow-incubator/snowplow-micro-examples#readme",
+    "devDependencies": {
+        "cypress": "^4.10.0"
+    }
+}

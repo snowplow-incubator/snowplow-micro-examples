@@ -5,3 +5,11 @@
 *.pot
 *.py[cod]
 __pycache__/
+
+# Node
+node_modules/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/integration/examples/
