@@ -1,1 +1,10 @@
-{}
+{
+    "baseUrl": "http://localhost:8000",
+    "env": {
+        "SNOWPLOW_MICRO_URI": "http://localhost:9090/",
+        "MICRO_ALL": "micro/all",
+        "MICRO_GOOD": "micro/good",
+        "MICRO_BAD": "micro/bad",
+        "MICRO_RESET": "micro/reset"
+    }
+}
