@@ -50,7 +50,7 @@ jobs:
       - name: Start Django server
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          python manage.py runserver
+          python manage.py runserver > /dev/null 2>&1 &
 
       - name: Wait on port 8000
         run: while ! nc -z localhost 8000; do sleep 0.1; done
