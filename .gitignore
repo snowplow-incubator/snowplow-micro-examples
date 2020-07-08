@@ -1,1 +1,7 @@
 .idea/
+
+# Django
+*.log
+*.pot
+*.py[cod]
+__pycache__/
