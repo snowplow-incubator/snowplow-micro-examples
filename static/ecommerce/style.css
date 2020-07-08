@@ -11,12 +11,12 @@ body
 }
 
 .product{
-  display:inline-block
+  display:inline-block;
 
 }
 
 div{
-vertical-align: middle
+vertical-align: middle;
 }
 
 .wrapper {
@@ -27,4 +27,8 @@ vertical-align: middle
 
   padding-right: 10px; /* 3 */
   padding-left:  10px; /* 3 */
+}
+
+.productItem {
+    padding: 35px;
 }

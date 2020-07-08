@@ -4,7 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
     <title>Shopping Spree</title>
-
     <script type="text/javascript">
       ;(function (p, l, o, w, i, n, g) {
           if (!p[i]) {
@@ -42,8 +41,17 @@
 
     </script>
     <!-- Snowplow stops plowing -->
-
     <script type="text/javascript">
+
+    function dropdownChange(selection, product_id, selected_value){
+
+        console.log(selected_value);
+        console.log(selection);
+        console.log(product_id);
+
+    }
+
+
     </script>
 </head>
 
@@ -56,12 +64,13 @@
             <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
         </div>
 
-        <div class="">
+        <div class="productItem">
             <div>{{ product.description }}</div>
             <div>
                 <p>
                  <label>Size</label>
-                 <select id = "sizeList">
+                 <select onchange="dropdownChange('Size', {{ product.id }}, this.value);">
+                     <option value="" selected disabled hidden>Choose here</option>
                       {% for size in product.sizes %}
                             <option value = "{{ size }}">{{ size }}</option>
                      {% endfor %}
@@ -70,7 +79,8 @@
                 </p>
                 <p>
                  <label>Quantity</label>
-                 <select id = "quantityList">
+                    <select onchange="dropdownChange('Quantity', {{ product.id }}, this.value);">
+                     <option value="" selected disabled hidden>Choose here</option>
                       {% for quantity in product.quantity %}
                             <option value = "{{ quantity }}">{{ quantity }}</option>
                      {% endfor %}
@@ -79,7 +89,8 @@
                 </p>
                 <p>
                  <label>Colour</label>
-                 <select id = "colourList">
+                    <select onchange="dropdownChange('Colour', {{ product.id }}, this.value);">
+                     <option value="" selected disabled hidden>Choose here</option>
                       {% for colour in product.colours %}
                             <option value = "{{ colour }}" style="color:red">{{ colour }}</option>
                      style="color:blue"
