@@ -1,0 +1,71 @@
+name: Snowplow Micro examples with Cypress
+
+on:
+
+  push:
+    branches:
+      - develop
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: snowplow-micro-examples
+
+      - name: Checkout Snowplow Micro
+        uses: actions/checkout@v2
+        with:
+          repository: snowplow-incubator/snowplow-micro
+          path: snowplow-micro
+
+      - name: Start Micro
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro
+          docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+
+      - name: Wait on port 9090
+        run: while ! nc -z localhost 9090; do sleep 0.1; done
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Start Django server
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          python manage.py runserver
+
+      - name: Wait on port 8000
+        run: while ! nc -z localhost 8000; do sleep 0.1; done
+
+      - name: Npm install
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm install
+
+      - name: cypress-run the app-specs
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm run cypress:run -- --spec "cypress/integration/app-specs/*"
+
+      - name: cypress-run the micro-specs
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm run cypress:run -- --spec "cypress/integration/micro-specs/*"
