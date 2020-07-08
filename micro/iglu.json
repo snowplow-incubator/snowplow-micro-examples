@@ -1,0 +1,28 @@
+{
+  "schema": "iglu:com.snowplowanalytics.iglu/resolver-config/jsonschema/1-0-0",
+  "data": {
+    "cacheSize": 500,
+    "repositories": [
+      {
+        "name": "Iglu Central",
+        "priority": 0,
+        "vendorPrefixes": [ "com.snowplowanalytics" ],
+        "connection": {
+          "http": {
+            "uri": "http://iglucentral.com"
+          }
+        }
+      },
+      {
+        "name": "Ecommerce Test",
+        "priority": 1,
+        "vendorPrefixes": ["com.ecommerce.test"],
+        "connection": {
+          "http": {
+            "uri": "http://localhost:8000"
+          }
+        }
+      }
+    ]
+  }
+}

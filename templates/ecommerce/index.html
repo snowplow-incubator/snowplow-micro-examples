@@ -39,6 +39,14 @@
 
       window.snowplow('trackPageView');
 
+      window.snowplow('trackSelfDescribingEvent', {
+          schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
+             data: {
+                 selection: 10,
+                 product_id: "hat",
+                 selected_value: 2}
+        });
+
     </script>
     <!-- Snowplow stops plowing -->
     <script type="text/javascript">

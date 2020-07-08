@@ -12,19 +12,19 @@ class ViewProductItem:
         self.colours = colours
 
 productDB = [
-        {"id": 1,
+        {"id": "1",
         "image_name": "hat.jpg",
          "description": "One-size summer hat",
          "quantity": 4,
          "sizes": ["oneSize"],
          "colours":["Black", "White"]},
-        {"id" : 2,
+        {"id" : "2",
         "image_name": "jeans.jpg",
          "description": "Skinny-fit denim jeans",
          "quantity": 4,
          "sizes": ["6","8","10","12","14","16"],
          "colours":["Black", "Blue"]},
-        {"id":3,
+        {"id":"3",
         "image_name": "tshirt.jpg",
          "description": "Casual Basic Tee",
          "quantity": 4,
