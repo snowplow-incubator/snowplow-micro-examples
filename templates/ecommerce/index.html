@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
-    <title>FaceApp</title>
+    <title>Shopping Spree</title>
 
     <script type="text/javascript">
         ;(function (p, l, o, w, i, n, g) {
@@ -41,12 +41,57 @@
     <!-- Snowplow stops plowing -->
 
     <script type="text/javascript">
-
-
     </script>
 </head>
 
 <body>
+   {% for product in product_list %}
+<!-- Product Detail -->
+   <div class="wrapper">
+	<div class="product">
+		<div class="">
+            <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
+        </div>
+
+        <div class="">
+            <div>{{ product.description }}</div>
+            <div>
+                <p>
+                 <label>Size</label>
+                 <select id = "sizeList">
+                      {% for size in product.sizes %}
+                            <option value = "{{ size }}">{{ size }}</option>
+                     {% endfor %}
+
+                 </select>
+                </p>
+                <p>
+                 <label>Quantity</label>
+                 <select id = "quantityList">
+                      {% for quantity in product.quantity %}
+                            <option value = "{{ quantity }}">{{ quantity }}</option>
+                     {% endfor %}
+
+                 </select>
+                </p>
+                <p>
+                 <label>Colour</label>
+                 <select id = "colourList">
+                      {% for colour in product.colours %}
+                            <option value = "{{ colour }}" style="color:red">{{ colour }}</option>
+                     style="color:blue"
+                     {% endfor %}
+
+                 </select>
+                </p>
+            </div>
+            <div> <button type="button">Add to basket</button> </div>
+
+        </div>
+    </div>
+</div>
+    {% endfor %}
+
 
 
 </body>

@@ -3,9 +3,28 @@ body
         background-color: #f7d9f7;
 }
 
-.floated_img
+.product_img
 {
     height:250px;
     width:250px;
+    display:inline-block
 }
 
+.product{
+  display:inline-block
+
+}
+
+div{
+vertical-align: middle
+}
+
+.wrapper {
+  margin-right: auto; /* 1 */
+  margin-left:  auto; /* 1 */
+
+  max-width: 960px; /* 2 */
+
+  padding-right: 10px; /* 3 */
+  padding-left:  10px; /* 3 */
+}

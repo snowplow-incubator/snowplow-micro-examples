@@ -1,11 +1,10 @@
 from django.shortcuts import render
+from ecommerce.models import retrieveProducts
+from django.views import generic
 
-# Create your views here.
+class IndexView(generic.ListView):
+    template_name = 'ecommerce/index.html'
+    context_object_name = 'product_list'
 
-
-def index(request):
-
-    context = {}
-
-    return render(request, 'ecommerce/index.html', context)
-
+    def get_queryset(self):
+        return retrieveProducts()
