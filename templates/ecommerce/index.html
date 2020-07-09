@@ -2,9 +2,11 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
+    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}
     <title>Shopping Spree</title>
+    <script src="/static/ecommerce/homepage.js" async></script>
     <script type="text/javascript">
+
       ;(function (p, l, o, w, i, n, g) {
           if (!p[i]) {
               p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
@@ -39,81 +41,81 @@
 
       window.snowplow('trackPageView');
 
-      window.snowplow('trackSelfDescribingEvent', {
-          schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
-             data: {
-                 selection: 10,
-                 product_id: "hat",
-                 selected_value: 2}
-        });
-
     </script>
     <!-- Snowplow stops plowing -->
     <script type="text/javascript">
 
-    function dropdownChange(selection, product_id, selected_value){
-
-        console.log(selected_value);
-        console.log(selection);
-        console.log(product_id);
-
+    function dropdownChange(property, product_id, selected_value, price, currency){
+      window.snowplow('trackSelfDescribingEvent', {
+          schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
+             data: {
+                 property: property,
+                 product_id: product_id,
+                 selected_value: selected_value,
+                 price: price,
+                 currency: currency
+                 }
+        });
     }
+
+    function addToBasket(){
+        var e = document.getElementById("quantity_dd");
+        var selected_quantity = e.options[e.selectedIndex].value;
+
+        var e = document.getElementById("colour_dd");
+        var selected_colour = e.options[e.selectedIndex].value;
+        window.snowplow('trackAddToCart', '000345', 'blue tie', 'clothing', 3.49, 2, 'GBP');
+    }
+
+
 
 
     </script>
 </head>
 
 <body>
+   <div class="shop-items">
    {% for product in product_list %}
 <!-- Product Detail -->
    <div class="wrapper">
-	<div class="product">
-		<div class="">
-            <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
-        </div>
+        <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
+        <div class="container content-selection">
+            <h2 class ="section-header"> Shopping Spree!</h2>
 
-        <div class="productItem">
-            <div>{{ product.description }}</div>
-            <div>
-                <p>
-                 <label>Size</label>
-                 <select onchange="dropdownChange('Size', {{ product.id }}, this.value);">
-                     <option value="" selected disabled hidden>Choose here</option>
-                      {% for size in product.sizes %}
-                            <option value = "{{ size }}">{{ size }}</option>
-                     {% endfor %}
-
-                 </select>
-                </p>
+            </div>
+            <div class="product-title">{{ product.description }}</div>
+            <div class = "shop-item">
                 <p>
                  <label>Quantity</label>
-                    <select onchange="dropdownChange('Quantity', {{ product.id }}, this.value);">
+                    <select id="quantity_dd" onchange="dropdownChange('Quantity', {{ product.id }}, this.value, {{ product.price }}, '{{ product.currency }}' );">
                      <option value="" selected disabled hidden>Choose here</option>
                       {% for quantity in product.quantity %}
                             <option value = "{{ quantity }}">{{ quantity }}</option>
                      {% endfor %}
-
                  </select>
                 </p>
-                <p>
-                 <label>Colour</label>
-                    <select onchange="dropdownChange('Colour', {{ product.id }}, this.value);">
-                     <option value="" selected disabled hidden>Choose here</option>
-                      {% for colour in product.colours %}
-                            <option value = "{{ colour }}" style="color:red">{{ colour }}</option>
-                     style="color:blue"
-                     {% endfor %}
-
-                 </select>
-                </p>
+            <span class="product-price">{{ product.price }}</span>
+            <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
             </div>
-            <div> <button type="button">Add to basket</button> </div>
-
         </div>
     </div>
 </div>
     {% endfor %}
-
+        <section class="container content-section">
+            <h2 class="section-header">CART</h2>
+            <div class="cart-row">
+                <span class="cart-item cart-header cart-column">ITEM</span>
+                <span class="cart-price cart-header cart-column">PRICE</span>
+                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            </div>
+            <div class="cart-items">
+            </div>
+            <div class="cart-total">
+                <strong class="cart-total-title">Total</strong>
+                <span class="cart-total-price">£0</span>
+            </div>
+            <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
+        </section>
 
 
 </body>

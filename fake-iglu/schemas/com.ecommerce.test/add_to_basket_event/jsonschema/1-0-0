@@ -1,23 +1,27 @@
 {
-  "$schema":"http://iglucentral.com/schemas/com.ecommerce.test/selection_event/jsonschema/1-0-0",
-  "description": "Schema for creating drop down selection event",
+  "$schema":"http://iglucentral.com/schemas/com.ecommerce.test/add_to_basket/jsonschema/1-0-0",
+  "description": "Schema for adding to basket event",
   "self": {
-    "name": "dropDownSelectionEvent",
+    "name": "addToBasketEvent",
     "format": "jsonschema",
     "version": "1-0-0"
   },
 
   "type": "object",
   "properties":{
-      "property": {
-          "type": "string",
-        },
-
         "product_id": {
           "type": "string"
         },
 
-        "selected_value": {
+        "size": {
+            "type":"string",
+        },
+
+        "quantity": {
+            "type":"string",
+        },
+
+        "colour": {
             "type":"string",
         },
 
