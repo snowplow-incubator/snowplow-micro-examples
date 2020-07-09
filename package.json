@@ -19,6 +19,7 @@
     },
     "homepage": "https://github.com/snowplow-incubator/snowplow-micro-examples#readme",
     "devDependencies": {
-        "cypress": "^4.10.0"
+        "cypress": "^4.10.0",
+        "nightwatch": "^1.3.6"
     }
 }
