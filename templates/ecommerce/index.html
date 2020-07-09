@@ -33,19 +33,19 @@
           }
 
       });
-      window.snowplow('enableActivityTracking', 10, 10); // Ping every 10 seconds after 10 seconds
+      window.snowplow('enableActivityTracking', 20, 20); // Ping every 10 seconds after 10 seconds
       window.snowplow('enableLinkClickTracking', null, true, true);
       window.snowplow('enableFormTracking');
 
       window.snowplow('trackPageView');
 
-      window.snowplow('trackSelfDescribingEvent', {
-          schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
-             data: {
-                 selection: 10,
-                 product_id: "hat",
-                 selected_value: 2}
-        });
+      // window.snowplow('trackSelfDescribingEvent', {
+      //     schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
+      //        data: {
+      //            selection: 10,
+      //            product_id: "hat",
+      //            selected_value: 2}
+      //   });
 
     </script>
     <!-- Snowplow stops plowing -->
@@ -64,57 +64,65 @@
 </head>
 
 <body>
-   {% for product in product_list %}
-<!-- Product Detail -->
-   <div class="wrapper">
-	<div class="product">
-		<div class="">
-            <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
+  {% for product in product_list %}
+  <!-- Product Detail -->
+  <div class="wrapper">
+    <div class="product">
+      <div class="">
+        <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
+      </div>
+
+      <div class="productItem">
+
+        <div>{{ product.description }}</div>
+
+        <div>
+          <p>
+
+            <form id="product_{{ product.id }}" method="post" action="javascript:void(0);">
+              <ul>
+                <li>
+                  <label for="size-select">Size</label>
+                  <select id="size-select" name="size" onchange="dropdownChange('Size', {{ product.id }}, this.value);">
+                    <option value="" selected disabled hidden>Choose here</option>
+                    {% for size in product.sizes %}
+                    <option value = "{{ size }}">{{ size }}</option>
+                    {% endfor %}
+                  </select>
+                </li>
+                <li>
+                  <label for="quant-select">Quantity</label>
+                  <select id="quant-select" name="quantity" onchange="dropdownChange('Quantity', {{ product.id }}, this.value);">
+                    <option value="" selected disabled hidden>Choose here</option>
+                    {% for quantity in product.quantity %}
+                    <option value = "{{ quantity }}">{{ quantity }}</option>
+                    {% endfor %}
+                  </select>
+                </li>
+                <li>
+                  <label for="color-select">Colour</label>
+                  <select id="color-select" name="color"onchange="dropdownChange('Colour', {{ product.id }}, this.value);">
+                    <option value="" selected disabled hidden>Choose here</option>
+                    {% for colour in product.colours %}
+                    <option value = "{{ colour }}" style="color:red">{{ colour }}</option>
+                    style="color:blue"
+                    {% endfor %}
+                  </select>
+                </li>
+                <li class="button">
+                  <button type="submit">Add to basket</button>
+                </li>
+              </ul>
+            </form>
+
+          </p>
         </div>
 
-        <div class="productItem">
-            <div>{{ product.description }}</div>
-            <div>
-                <p>
-                 <label>Size</label>
-                 <select onchange="dropdownChange('Size', {{ product.id }}, this.value);">
-                     <option value="" selected disabled hidden>Choose here</option>
-                      {% for size in product.sizes %}
-                            <option value = "{{ size }}">{{ size }}</option>
-                     {% endfor %}
+      </div>
 
-                 </select>
-                </p>
-                <p>
-                 <label>Quantity</label>
-                    <select onchange="dropdownChange('Quantity', {{ product.id }}, this.value);">
-                     <option value="" selected disabled hidden>Choose here</option>
-                      {% for quantity in product.quantity %}
-                            <option value = "{{ quantity }}">{{ quantity }}</option>
-                     {% endfor %}
-
-                 </select>
-                </p>
-                <p>
-                 <label>Colour</label>
-                    <select onchange="dropdownChange('Colour', {{ product.id }}, this.value);">
-                     <option value="" selected disabled hidden>Choose here</option>
-                      {% for colour in product.colours %}
-                            <option value = "{{ colour }}" style="color:red">{{ colour }}</option>
-                     style="color:blue"
-                     {% endfor %}
-
-                 </select>
-                </p>
-            </div>
-            <div> <button type="button">Add to basket</button> </div>
-
-        </div>
     </div>
-</div>
-    {% endfor %}
-
-
+  </div>
+  {% endfor %}
 
 </body>
 

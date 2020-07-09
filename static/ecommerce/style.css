@@ -32,3 +32,25 @@ vertical-align: middle;
 .productItem {
     padding: 35px;
 }
+
+ul {
+    list-style: none;
+}
+
+form li + li {
+    margin-top: 1em;
+}
+
+label {
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+}
+
+.button {
+    padding-left: 90px;
+}
+
+button {
+    /* margin-left: .1em; */
+}
