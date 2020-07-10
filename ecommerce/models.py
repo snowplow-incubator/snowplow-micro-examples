@@ -44,6 +44,19 @@ def retrieveProducts():
     return product_items
 
 
+shipDB = {
+    "UK": 10.0,
+    "USA": 15.0,
+    "Spain": 10.0,
+    "Argentina": 15.0,
+    "Mexico": 15.0,
+    "Australia": 20.0,
+    "China": 20.0,
+    "Japan": 20.0
+}
 
-
-
+def calcShippingCost(key):
+    if key in shipDB:
+        return shipDB[key]
+    else:
+        return 5.0

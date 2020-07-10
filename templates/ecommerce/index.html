@@ -86,7 +86,8 @@
             <div class="product-title">{{ product.description }}</div>
             <div class = "shop-item">
                 <p>
-                 <label>Quantity</label>
+                  <label>Quantity</label>
+                  <!-- ** -->
                     <select id="quantity_dd" onchange="dropdownChange('Quantity', {{ product.id }}, this.value, {{ product.price }}, '{{ product.currency }}' );">
                      <option value="" selected disabled hidden>Choose here</option>
                       {% for quantity in product.quantity %}
@@ -114,7 +115,7 @@
                 <strong class="cart-total-title">Total</strong>
                 <span class="cart-total-price">£0</span>
             </div>
-            <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
+            <button class="btn btn-primary btn-purchase" type="button" onclick=toCheckout()>PURCHASE</button>
         </section>
 
 

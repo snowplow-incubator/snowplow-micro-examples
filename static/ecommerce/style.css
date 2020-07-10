@@ -47,10 +47,12 @@ label {
     text-align: right;
 }
 
-.button {
-    padding-left: 90px;
+button:hover {
+    background: #05f;
+    color: #333;
 }
 
-button {
-    /* margin-left: .1em; */
+input[type="reset"]:hover {
+    background: #05f;
+    color: #333;
 }

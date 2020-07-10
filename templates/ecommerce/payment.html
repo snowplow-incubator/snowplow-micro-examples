@@ -1,0 +1,124 @@
+{% load static %}
+<html>
+
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}
+
+    <!-- Snowplow starts plowing -->
+    <script type="text/javascript">
+      ;(function (p, l, o, w, i, n, g) {
+          if (!p[i]) {
+              p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
+              p.GlobalSnowplowNamespace.push(i);
+              p[i] = function () {
+                  (p[i].q = p[i].q || []).push(arguments)
+              };
+              p[i].q = p[i].q || [];
+              n = l.createElement(o);
+              g = l.getElementsByTagName(o)[0];
+              n.async = 1;
+              n.src = w;
+              g.parentNode.insertBefore(n, g)
+          }
+      }(window, document, "script", "{% static 'ecommerce/sp.js' %}", "snowplow"));
+
+      window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+
+          encodeBase64: false,
+          appId: 'sh0pspr33',
+          platform: "web",
+          discoverRootDomain: true,
+          eventMethod: "beacon", // "post", "get", "beacon"
+          contexts : {
+              webPage: true
+          }
+
+      });
+      window.snowplow('enableActivityTracking', 20, 20);
+      window.snowplow('enableLinkClickTracking', null, true, true);
+      window.snowplow('enableFormTracking');
+
+      window.snowplow('trackPageView');
+
+    </script>
+    <!-- Snowplow stops plowing -->
+
+  </head>
+
+  <body>
+
+    <h1 style="margin-left: 200px; width: 50%; background: #05f; color: #555; text-align: center;">Complete your payment</h1>
+
+    <table style="margin-left: 200px; display: inline-block; width: 15%">
+      <tr>
+        <td>Name:</td>
+        <td>{{ name }}</td>
+      </tr>
+      <tr>
+        <td>Surname:</td>
+        <td>{{ surname }}</td>
+      </tr>
+      <tr>
+        <td>Email:</td>
+        <td>{{ email }}</td>
+      </tr>
+      <tr>
+        <td>Address:</td>
+        <td>{{ address }}</td>
+      </tr>
+      <tr>
+        <td>City/Country:</td>
+        <td>{{ city }}/{{ country }}</td>
+      </tr>
+    </table>
+    <table style="margin-left: 100px; display: inline-block; width: 15%">
+      <tr>
+        <td>Subtotal:</td>
+        <td style="text-align: right;">{{ subtotal }}</td>
+      </tr>
+      <tr>
+        <td>Shipping:</td>
+        <td style="text-align: right;">{{ shipping }}</td>
+      </tr>
+      <tr>
+        <td>TOTAL:</td>
+        <td style="text-align: right;">{{ total }}</td>
+      </tr>
+    </table>
+
+    <p><br></p>
+
+    <div class="left" style="width: 50%; margin-left: 200px;">
+      <form method="get" action="javascript:void(0)">
+
+        <fieldset>
+          <legend>Payment information</legend>
+
+          <label for="card">Card Type:</label>
+          <input type="text" name="user_card" id="card" autocomplete=off required><br>
+
+          <label for="cardNum">Card Num:</label>
+          <input type="text" name="user_cardNo" id="cardNum" autocomplete=off required><br>
+
+          <label for="cvv">CVV:</label>
+          <input type="text" name="user_cvv" id="cvv" autocomplete=off required><br>
+
+        </fieldset>
+
+        <fieldset>
+          <legend>Complete payment</legend>
+
+          <button type="submit">Continue</button>
+          <input type="reset">
+
+        </fieldset>
+
+      </form>
+
+    </div>
+
+  </body>
+
+</html>
