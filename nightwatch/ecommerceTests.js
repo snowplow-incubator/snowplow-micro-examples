@@ -4,6 +4,7 @@ module.exports = {
           .resetMini()
       },
 
+
     'Number of good events after ADDTOBASKET is equal to two' : function(browser) {
         browser
             .url('http://127.0.0.1:8001/');

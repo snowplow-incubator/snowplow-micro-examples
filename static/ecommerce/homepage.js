@@ -57,11 +57,12 @@ function addToCartClicked(event) {
     var title = shopItem.getElementsByClassName('product-title')[0].innerText
     var price = shopItem.getElementsByClassName('product-price')[0].innerText
     var imageSrc = shopItem.getElementsByClassName('product_img')[0].src
-    addItemToCart(title, price, imageSrc)
+    var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
+    addItemToCart(title, price, imageSrc, quantity)
     updateCartTotal()
 }
 
-function addItemToCart(title, price, imageSrc) {
+function addItemToCart(title, price, imageSrc, quantity) {
     var cartRow = document.createElement('div')
     cartRow.classList.add('cart-row')
     var cartItems = document.getElementsByClassName('cart-items')[0]
@@ -91,7 +92,11 @@ function addItemToCart(title, price, imageSrc) {
         itemTitle: title,
         itemPrice: price,
         itemQuant: 1});
+
+    window.snowplow('trackAddToCart', title, name="", category="", parseFloat(price), parseInt(quantity), currency="");
+    window.snowplow('trackRemoveFromCart', title, "", "", parseFloat(price), parseFloat(quantity), "");
 }
+
 
 function updateCartTotal() {
     var cartItemContainer = document.getElementsByClassName('cart-items')[0]
