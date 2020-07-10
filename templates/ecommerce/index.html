@@ -40,35 +40,12 @@
       window.snowplow('enableFormTracking');
 
       window.snowplow('trackPageView');
+      window.snowplow('trackAddToCart', '000345', name=Null, category=Null, 13.49, 2, 'GBP');
+      window.snowplow('trackRemoveFromCart', '000345', name=Null, category=Null, 15.49, 1, 'GBP');
 
     </script>
     <!-- Snowplow stops plowing -->
     <script type="text/javascript">
-
-    function dropdownChange(property, product_id, selected_value, price, currency){
-      window.snowplow('trackSelfDescribingEvent', {
-          schema: 'iglu:com.ecommerce.test/selection_event/jsonschema/1-0-0',
-             data: {
-                 property: property,
-                 product_id: product_id,
-                 selected_value: selected_value,
-                 price: price,
-                 currency: currency
-                 }
-        });
-    }
-
-    function addToBasket(){
-        var e = document.getElementById("quantity_dd");
-        var selected_quantity = e.options[e.selectedIndex].value;
-
-        var e = document.getElementById("colour_dd");
-        var selected_colour = e.options[e.selectedIndex].value;
-        window.snowplow('trackAddToCart', '000345', 'blue tie', 'clothing', 3.49, 2, 'GBP');
-    }
-
-
-
 
     </script>
 </head>
@@ -87,7 +64,7 @@
             <div class = "shop-item">
                 <p>
                  <label>Quantity</label>
-                    <select id="quantity_dd" onchange="dropdownChange('Quantity', {{ product.id }}, this.value, {{ product.price }}, '{{ product.currency }}' );">
+                    <select class="cart-quantity-input">
                      <option value="" selected disabled hidden>Choose here</option>
                       {% for quantity in product.quantity %}
                             <option value = "{{ quantity }}">{{ quantity }}</option>
