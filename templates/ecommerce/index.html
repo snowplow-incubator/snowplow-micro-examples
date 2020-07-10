@@ -35,11 +35,13 @@
           }
 
       });
+
+      window.snowplow('setUserId', 'tester');
       window.snowplow('enableActivityTracking', 10, 10); // Ping every 10 seconds after 10 seconds
       window.snowplow('enableLinkClickTracking', null, true, true);
       window.snowplow('enableFormTracking');
 
-      window.snowplow('trackPageView');
+      window.snowplow('trackPageView', 'ecommerce.index');
 
     </script>
     <!-- Snowplow stops plowing -->

@@ -36,11 +36,13 @@
           }
 
       });
+
+      window.snowplow('setUserId', 'tester');
       window.snowplow('enableActivityTracking', 20, 20);
       window.snowplow('enableLinkClickTracking', null, true, true);
       window.snowplow('enableFormTracking');
 
-      window.snowplow('trackPageView');
+      window.snowplow('trackPageView', 'ecommerce.payment');
 
     </script>
     <!-- Snowplow stops plowing -->

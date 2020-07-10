@@ -25,7 +25,7 @@ function ready() {
         button.addEventListener('click', addToCartClicked)
     }
 
-    //document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toCheckout());
+    document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toCheckout());
 }
 
 function purchaseClicked() {
@@ -37,7 +37,7 @@ function purchaseClicked() {
     updateCartTotal()
 }
 
-function removeCartItem(event, title, price, quantity) {
+function removeCartItem(event) {
     var buttonClicked = event.target
     buttonClicked.parentElement.parentElement.remove()
     updateCartTotal()
@@ -80,7 +80,7 @@ function addItemToCart(title, price, imageSrc, quantity) {
         </div>
         <span class="cart-price cart-column">£${price}</span>
         <div class="cart-quantity cart-column">
-            <input class="cart-quantity-input" type="number" value="1">
+            <input class="cart-quantity-input" type="number" value="${quantity ? quantity : 1}">
             <button class="btn btn-danger" type="button">REMOVE</button>
         </div>`
     cartRow.innerHTML = cartRowContents
@@ -90,11 +90,9 @@ function addItemToCart(title, price, imageSrc, quantity) {
 
     userCart.push({
         itemTitle: title,
-        itemPrice: price,
-        itemQuant: 1});
-
-    window.snowplow('trackAddToCart', title, name="", category="", parseFloat(price), parseInt(quantity), currency="");
-    window.snowplow('trackRemoveFromCart', title, "", "", parseFloat(price), parseFloat(quantity), "");
+        itemPrice: parseFloat(price),
+        itemQuant: quantity === "" ? 1 : parseInt(quantity)
+    });
 
 }
 
