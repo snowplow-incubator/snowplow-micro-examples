@@ -22,16 +22,10 @@ jobs:
         with:
           path: snowplow-micro-examples
 
-      - name: Checkout Snowplow Micro
-        uses: actions/checkout@v2
-        with:
-          repository: snowplow-incubator/snowplow-micro
-          path: snowplow-micro
-
       - name: Start Micro
         run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro
-          docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
 
       - name: Wait on port 9090
         run: while ! nc -z localhost 9090; do sleep 0.1; done
@@ -50,7 +44,7 @@ jobs:
       - name: Start Django server
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          python manage.py runserver > /dev/null 2>&1 &
+          python manage.py runserver 8000 > /dev/null 2>&1 &
 
       - name: Wait on port 8000
         run: while ! nc -z localhost 8000; do sleep 0.1; done
@@ -60,12 +54,8 @@ jobs:
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm install
 
-      - name: cypress-run the app-specs
+      - name: cypress-run the specs
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm run cypress:run -- --spec "cypress/integration/app-specs/*"
-
-      - name: cypress-run the micro-specs
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm run cypress:run -- --spec "cypress/integration/micro-specs/*"

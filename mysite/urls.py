@@ -26,7 +26,3 @@ urlpatterns = [
 urlpatterns += [
     re_path(r'^checkout/$', views.checkout)
 ]
-
-urlpatterns += [
-    re_path(r'^payment/$', views.payment)
-]

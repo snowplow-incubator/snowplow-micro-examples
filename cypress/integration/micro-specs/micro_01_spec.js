@@ -11,7 +11,7 @@ context( 'testing 01_micro_spec', () => {
     // matching by eventType
     it( 'asserts number of unstructured events by eventType', () => {
 
-        cy.eventsWithEventType( "ue", 20 );
+        cy.eventsWithEventType( "ue", 13 );
 
     });
 
@@ -25,7 +25,7 @@ context( 'testing 01_micro_spec', () => {
         // different ways to assert similar things
 
         // 1. just with schema
-        cy.eventsWithSchema( changeFormSchema, 9 );
+        cy.eventsWithSchema( changeFormSchema, 6 );
 
         // 2. with schema and values
         cy.eventsWithProperties( {
@@ -51,7 +51,7 @@ context( 'testing 01_micro_spec', () => {
 
                 "elements": [{
 
-                    "value": "1234-5678-1234-5678",
+                    "value": "New York",
 
                 }]
 
@@ -90,7 +90,7 @@ context( 'testing 01_micro_spec', () => {
 
         const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 23 );
+        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 15 );
 
     });
 

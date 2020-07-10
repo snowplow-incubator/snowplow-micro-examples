@@ -6,7 +6,7 @@ describe( 'first test', () => {
 
     });
 
-    it( 'selects quantity and adds to cart', () => {
+    it( 'adds to cart', () => {
 
         cy.get('.shop-item-button').click({multiple:true});
 
@@ -33,22 +33,6 @@ describe( 'first test', () => {
 
         cy.get('[id=country]')
             .type('USA');
-
-        cy.get('[type=submit]')
-            .click();
-
-    });
-
-     it( 'fills payment forms and submits', () => {
-
-        cy.get('[id=card]')
-             .type('VISA');
-
-        cy.get('[id=cardNum]')
-            .type('1234-5678-1234-5678');
-
-        cy.get('[id=cvv]')
-            .type('321');
 
         cy.get('[type=submit]')
             .click();
