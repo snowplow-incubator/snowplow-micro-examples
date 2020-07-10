@@ -37,7 +37,7 @@ function purchaseClicked() {
     updateCartTotal()
 }
 
-function removeCartItem(event) {
+function removeCartItem(event, title, price, quantity) {
     var buttonClicked = event.target
     buttonClicked.parentElement.parentElement.remove()
     updateCartTotal()
@@ -95,6 +95,7 @@ function addItemToCart(title, price, imageSrc, quantity) {
 
     window.snowplow('trackAddToCart', title, name="", category="", parseFloat(price), parseInt(quantity), currency="");
     window.snowplow('trackRemoveFromCart', title, "", "", parseFloat(price), parseFloat(quantity), "");
+
 }
 
 
