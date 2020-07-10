@@ -1,3 +1,5 @@
+var userCart = []; // [ {itemTitle:title, itemPrice: price, itemQuant:quantity}, {...},... ]
+
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready)
 } else {
@@ -6,24 +8,24 @@ if (document.readyState == 'loading') {
 
 function ready() {
     var removeCartItemButtons = document.getElementsByClassName('btn-danger')
-    for (var i = 0; i < removeCartItemButtons.length; i++) {
-        var button = removeCartItemButtons[i]
+    for (let i = 0; i < removeCartItemButtons.length; i++) {
+        let button = removeCartItemButtons[i]
         button.addEventListener('click', removeCartItem)
     }
 
     var quantityInputs = document.getElementsByClassName('cart-quantity-input')
-    for (var i = 0; i < quantityInputs.length; i++) {
-        var input = quantityInputs[i]
+    for (let i = 0; i < quantityInputs.length; i++) {
+        let input = quantityInputs[i]
         input.addEventListener('change', quantityChanged)
     }
 
     var addToCartButtons = document.getElementsByClassName('shop-item-button')
-    for (var i = 0; i < addToCartButtons.length; i++) {
-        var button = addToCartButtons[i]
+    for (let i = 0; i < addToCartButtons.length; i++) {
+        let button = addToCartButtons[i]
         button.addEventListener('click', addToCartClicked)
     }
 
-    document.getElementsByClassName('btn-purchase')[0].addEventListener('click', purchaseClicked)
+    //document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toCheckout());
 }
 
 function purchaseClicked() {
@@ -75,7 +77,7 @@ function addItemToCart(title, price, imageSrc) {
             <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
             <span class="cart-item-title">${title}</span>
         </div>
-        <span class="cart-price cart-column">£{price}</span>
+        <span class="cart-price cart-column">£${price}</span>
         <div class="cart-quantity cart-column">
             <input class="cart-quantity-input" type="number" value="1">
             <button class="btn btn-danger" type="button">REMOVE</button>
@@ -84,6 +86,11 @@ function addItemToCart(title, price, imageSrc) {
     cartItems.append(cartRow)
     cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
     cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
+
+    userCart.push({
+        itemTitle: title,
+        itemPrice: price,
+        itemQuant: 1});
 }
 
 function updateCartTotal() {
@@ -97,7 +104,45 @@ function updateCartTotal() {
         var price = parseFloat(priceElement.innerText.replace('£', ''))
         var quantity = quantityElement.value
         total = total + (price * quantity)
+
+        var title = cartRow.getElementsByClassName('cart-item-title')[0];
+        userCart.forEach( function (elt) {
+            if (title.innerText == elt['itemTitle']) {
+                elt['itemQuant'] = quantity;
+            }
+        });
     }
     total = Math.round(total * 100) / 100
     document.getElementsByClassName('cart-total-price')[0].innerText = '£' + total
+}
+
+function calcSubtotal (cart) {
+    let prices = cart.map(function (elt) {
+        return elt['itemPrice'] * elt['itemQuant'];
+    });
+    const summing = (acc, curr) => acc + curr;
+
+    return prices.reduce(summing, 0);
+}
+
+function toUrlParams (obj) {
+    var urlParams = new URLSearchParams(obj);
+
+    return urlParams.toString();
+}
+
+function toCheckout () {
+    if (userCart.length === 0) {
+        alert("No items in your basket");
+
+        return;
+    } else {
+        var res = {
+            "subtotal": Math.round(calcSubtotal(userCart) * 100) / 100
+        };
+        var qString = toUrlParams(res);
+        var action = 'checkout' + '?' + qString;
+
+        window.location.href= window.location.href + action;
+    }
 }

@@ -1,0 +1,101 @@
+{% load static %}
+<html>
+
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}
+
+    <!-- Snowplow starts plowing -->
+    <script type="text/javascript">
+      ;(function (p, l, o, w, i, n, g) {
+          if (!p[i]) {
+              p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
+              p.GlobalSnowplowNamespace.push(i);
+              p[i] = function () {
+                  (p[i].q = p[i].q || []).push(arguments)
+              };
+              p[i].q = p[i].q || [];
+              n = l.createElement(o);
+              g = l.getElementsByTagName(o)[0];
+              n.async = 1;
+              n.src = w;
+              g.parentNode.insertBefore(n, g)
+          }
+      }(window, document, "script", "{% static 'ecommerce/sp.js' %}", "snowplow"));
+
+      window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+
+          encodeBase64: false,
+          appId: 'sh0pspr33',
+          platform: "web",
+          discoverRootDomain: true,
+          eventMethod: "beacon", // "post", "get", "beacon"
+          contexts : {
+              webPage: true
+          }
+
+      });
+      window.snowplow('enableActivityTracking', 20, 20);
+      window.snowplow('enableLinkClickTracking', null, true, true);
+      window.snowplow('enableFormTracking');
+
+      window.snowplow('trackPageView');
+
+    </script>
+    <!-- Snowplow stops plowing -->
+
+  </head>
+
+  <body>
+
+    <h1 style="margin-left: 200px; width: 50%; background: #05f; color: #555; text-align: center;">Ready for checkout?</h1>
+
+    <div class="right" style="margin-left: 200px;">
+      <h3>Your purchase so far</h3>
+      <p>Subtotal: {{ subtotal }}</p><br>
+    </div>
+
+    <div class="left" style="width: 50%; margin-left: 200px;">
+      <form method="get" action="/payment?subtotal={{ subtotal }}">
+
+        <fieldset>
+          <legend>Contact information</legend>
+          <label for="email">Email:</label>
+          <input type="email" name="user_email" id="email" autocomplete=off required>
+        </fieldset><br>
+
+        <fieldset>
+          <legend>Shipping information</legend>
+
+          <label for="name">Name:</label>
+          <input type="text" name="user_name" id="name" autocomplete=off required>
+
+          <label for="surname">Surname:</label>
+          <input type="text" name="user_surname" id="surname" autocomplete=off required>
+
+          <label for="address">Address:</label>
+          <input type="text" name="user_address" id="address" autocomplete=off required>
+
+          <label for="city">City:</label>
+          <input type="text" name="user_city" id="city" autocomplete=off required>
+
+          <label for="country">Country:</label>
+          <input type="text" name="user_country" id="country" autocomplete=off required>
+
+          <input type="text" name="user_subtotal" id="subtotal" autocomplete=off style="display: none;" value="{{ subtotal }}">
+        </fieldset><br>
+
+        <fieldset>
+          <legend>Complete payment</legend>
+          <button type="submit">Complete payment</button>
+          <input type="reset">
+        </fieldset>
+
+      </form>
+
+    </div>
+
+  </body>
+
+</html>
