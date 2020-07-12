@@ -6,12 +6,13 @@ Examples of how to apply Snowplow Micro to popular build/test strategies
 
 To follow the steps below, you will need to have installed:
 
+ - Docker
  - Npm
  - Python 3 and pip
 
 Assuming that on a Linux machine your homedir is `/home/user` (adjust accordingly):
 
-#### 1. Clone this repository start Snowplow Micro
+#### 1. Clone this repository and start Snowplow Micro
 
 ```
 $ pwd
