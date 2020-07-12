@@ -16,24 +16,6 @@ describe( 'first test', () => {
 
     it( 'fills checkout forms and submits', () => {
 
-        cy.get('[id=email]')
-            .type('fake@email.com');
-
-        cy.get('[id=name]')
-            .type('John');
-
-        cy.get('[id=surname]')
-            .type('Doe');
-
-        cy.get('[id=address]')
-            .type('2 Second str');
-
-        cy.get('[id=city]')
-            .type('New York');
-
-        cy.get('[id=country]')
-            .type('USA');
-
         cy.get('[type=submit]')
             .click();
 

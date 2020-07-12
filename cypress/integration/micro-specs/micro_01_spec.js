@@ -11,7 +11,7 @@ context( 'testing 01_micro_spec', () => {
     // matching by eventType
     it( 'asserts number of unstructured events by eventType', () => {
 
-        cy.eventsWithEventType( "ue", 13 );
+        cy.eventsWithEventType( "ue", 1 );
 
     });
 
@@ -19,13 +19,12 @@ context( 'testing 01_micro_spec', () => {
     // matching unstructured events
     it( 'assertions on unstructured events', () => {
 
-        const changeFormSchema = "iglu:com.snowplowanalytics.snowplow/change_form/jsonschema/1-0-0";
         const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
 
         // different ways to assert similar things
 
         // 1. just with schema
-        cy.eventsWithSchema( changeFormSchema, 6 );
+        cy.eventsWithSchema( submitFormSchema, 1 );
 
         // 2. with schema and values
         cy.eventsWithProperties( {
@@ -36,7 +35,7 @@ context( 'testing 01_micro_spec', () => {
                 "elements": [{
 
                     "name": "user_email",
-                    "value": "fake@email.com",
+                    "value": "john.doe@fake.com",
 
                 }]
 
@@ -51,7 +50,7 @@ context( 'testing 01_micro_spec', () => {
 
                 "elements": [{
 
-                    "value": "New York",
+                    "value": "MyCity",
 
                 }]
 
@@ -68,11 +67,11 @@ context( 'testing 01_micro_spec', () => {
                 "elements": [
                     {
                         "name": "user_email",
-                        "value": "fake@email.com",
+                        "value": "john.doe@fake.com",
                     },
                     {
                         "name": "user_city",
-                        "value": "New York"
+                        "value": "MyCity"
                     },
                     {
                         "value":"John"
@@ -90,7 +89,7 @@ context( 'testing 01_micro_spec', () => {
 
         const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 15 );
+        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 3 );
 
     });
 
