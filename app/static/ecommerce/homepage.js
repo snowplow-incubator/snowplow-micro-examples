@@ -26,6 +26,7 @@ function ready() {
     }
 
     document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toCheckout);
+
 }
 
 function purchaseClicked() {
@@ -39,7 +40,15 @@ function purchaseClicked() {
 
 function removeCartItem(event) {
     var buttonClicked = event.target
+    cartItem = buttonClicked.parentElement.parentElement
+
+    var title = cartItem.getElementsByClassName('cart-item-title')[0].innerText
+    var price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.slice(2) // £ price
+    var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
+
+    window.snowplow('trackRemoveFromCart', title, "", "", parseFloat(price), parseInt(quantity), "");
     buttonClicked.parentElement.parentElement.remove()
+
     updateCartTotal()
 }
 
@@ -48,16 +57,18 @@ function quantityChanged(event) {
     if (isNaN(input.value) || input.value <= 0) {
         input.value = 1
     }
-    updateCartTotal()
+    updateCartTotal();
+    input.parentElement.parentElement.getElementsByClassName('shop-item-button')[0].disabled = false;
 }
 
 function addToCartClicked(event) {
     var button = event.target
     var shopItem = button.parentElement.parentElement
     var title = shopItem.getElementsByClassName('product-title')[0].innerText
-    var price = shopItem.getElementsByClassName('product-price')[0].innerText
+    var price = shopItem.getElementsByClassName('product-price')[0].innerText.slice(2) // £ price
     var imageSrc = shopItem.getElementsByClassName('product_img')[0].src
     var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
+
     addItemToCart(title, price, imageSrc, quantity)
     updateCartTotal()
 }
@@ -78,7 +89,7 @@ function addItemToCart(title, price, imageSrc, quantity) {
             <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
             <span class="cart-item-title">${title}</span>
         </div>
-        <span class="cart-price cart-column">${price}</span>
+        <span class="cart-price cart-column">£ ${price}</span>
         <div class="cart-quantity cart-column">
             <input class="cart-quantity-input" type="number" value="${quantity ? quantity : 1}">
             <button class="btn btn-danger" type="button">REMOVE</button>
@@ -94,6 +105,7 @@ function addItemToCart(title, price, imageSrc, quantity) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
+    window.snowplow('trackAddToCart', title, "", "", parseFloat(price), parseInt(quantity), "");
 }
 
 

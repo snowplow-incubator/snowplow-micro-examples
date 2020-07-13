@@ -3,6 +3,11 @@ body
         background-color: #f7d9f7;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}
+
 .product_img
 {
     height:250px;

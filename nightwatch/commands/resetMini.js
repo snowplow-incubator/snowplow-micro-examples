@@ -7,7 +7,7 @@ class ResetMini extends EventEmitter {
 
     request('http://localhost:9090/micro/reset', { }, (err, res, body) => {
       if (err) {
-        console.log(error);
+        console.log(err);
         throw "Unable to reset micro";
       }
     });

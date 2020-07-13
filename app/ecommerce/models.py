@@ -8,7 +8,7 @@ class ViewProductItem:
         self.sku = sku
         self.image_name = image_name
         self.description = description
-        self.quantity = range(quantity + 1)
+        self.quantity = range(1, quantity + 1)
         self.colours = colours
         self.price = price
         self.currency = currency
