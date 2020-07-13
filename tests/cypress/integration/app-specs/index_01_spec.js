@@ -10,7 +10,7 @@ describe( 'first test', () => {
 
         cy.get('.shop-item-button').click({multiple:true});
 
-        cy.get('.btn-purchase').click();
+        cy.get('.btn-purchase').click( { force:true } );
 
     });
 
