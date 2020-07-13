@@ -5,8 +5,8 @@
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "cypress:open": "cypress open --config-file false",
-        "cypress:run": "cypress run --config-file false"
+        "cypress:open": "cd tests; cypress open --config-file false",
+        "cypress:run": "cd tests; cypress run --config-file false"
     },
     "repository": {
         "type": "git",

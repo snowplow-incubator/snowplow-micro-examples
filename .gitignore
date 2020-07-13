@@ -9,7 +9,12 @@ __pycache__/
 # Node
 node_modules/
 
-# Cypress
-cypress/videos/
-cypress/screenshots/
-cypress/integration/examples/
+## Cypress
+# cypress/videos/
+# cypress/screenshots/
+# cypress/integration/examples/
+
+# Cypress in tests dir
+tests/cypress/videos/
+tests/cypress/screenshots/
+tests/cypress/integration/examples/
