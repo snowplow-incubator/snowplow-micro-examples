@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -53,6 +54,16 @@
 </head>
 
 <body>
+
+  <div class="sticky-top">
+    <div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0; max-height:100px;">
+      <h1>Shopping Spree!</h1>
+    </div>
+    <nav class="navbar bg-dark navbar-dark">
+      <a class="navbar-brand" href="#">SNOWPLOW</a>
+    </nav>
+  </div>
+
   <div class="container">
     <div class="row">
 
@@ -78,7 +89,7 @@
                 {% endfor %}
               </select>
             </p>
-            <span class="product-price">{{ product.price }}</span>
+            <span class="product-price">£ {{ product.price }}</span>
             <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
           </div>
         </div>
@@ -86,7 +97,7 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="position-fixed">
+        <div class="position-fixed" style="padding-top: 5em;">
           <h2 class="section-header">CART</h2>
           <div class="cart-row">
             <span class="cart-item cart-header cart-column">ITEM</span>
@@ -97,7 +108,7 @@
           </div>
           <div class="cart-total">
             <strong class="cart-total-title">Total</strong>
-            <span class="cart-total-price">£0</span>
+            <span class="cart-total-price">£ 0</span>
           </div>
           <button class="btn btn-primary btn-purchase" type="button" onclick=toCheckout()>PURCHASE
           </button>

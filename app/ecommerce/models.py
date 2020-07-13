@@ -14,21 +14,24 @@ class ViewProductItem:
 
 productDB = [
         {"id": "1",
-        "image_name": "hat.jpg",
+         "sku": "hh123",
+         "image_name": "hat.jpg",
          "description": "One-size summer hat",
          "quantity": 4,
          "colours":["Black", "White"],
          "price": 15.50,
          "currency": "GBP"},
         {"id" : "2",
-        "image_name": "green_hat.jpg",
+         "sku": "hh456",
+         "image_name": "green_hat.jpg",
          "description": "One-size bucket hat",
          "quantity": 4,
          "colours":["Green", "Blue", "Yellow"],
          "price": 24.49,
          "currency": "GBP"},
         {"id":"3",
-        "image_name": "bag.jpg",
+         "sku": "bb123",
+         "image_name": "bag.jpg",
          "description": "Plain tote bag ",
          "quantity": 4,
          "colours":["Black", "White"],
@@ -39,8 +42,7 @@ productDB = [
 def retrieveProducts():
     product_items = []
     for db_item in productDB:
-        product_items.append(ViewProductItem(db_item["id"], db_item["image_name"], db_item["description"],
-         db_item["quantity"], db_item["colours"], db_item["price"], db_item["currency"]))
+        product_items.append(ViewProductItem(db_item["id"], db_item["sku"], db_item["image_name"], db_item["description"], db_item["quantity"], db_item["colours"], db_item["price"], db_item["currency"]))
     return product_items
 
 
