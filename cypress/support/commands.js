@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 
-import * as Micro from '../../jsm/helpers.js';
+import * as Micro from '../jsm/helpers.js';
 
 const ALL = Cypress.env( 'SNOWPLOW_MICRO_URI' ) + Cypress.env( 'MICRO_ALL' );
 const GOOD = Cypress.env( 'SNOWPLOW_MICRO_URI' ) + Cypress.env( 'MICRO_GOOD' );
