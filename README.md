@@ -35,11 +35,11 @@ Now, [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) runs
 $ pwd
 /home/user/snowplow-micro-examples
 
-$ pip3 install -r requirements.txt
+$ pip3 install -r app/requirements.txt
 
 $ npm install
 
-$ python3 manage.py runserver 8000
+$ python3 app/manage.py runserver 8000
 
 ```
 You can now visit the app on http://localhost:8000 . You can then see the events being tracked from the app on [Micro's API endpoints](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api).
