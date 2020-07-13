@@ -3,8 +3,9 @@ from django.db import models
 # Create your models here.
 
 class ViewProductItem:
-    def __init__(self, id, image_name, description, quantity, colours, price, currency):
+    def __init__(self, id, sku, image_name, description, quantity, colours, price, currency):
         self.id = id
+        self.sku = sku
         self.image_name = image_name
         self.description = description
         self.quantity = range(quantity + 1)
