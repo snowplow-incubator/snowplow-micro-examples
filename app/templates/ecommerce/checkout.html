@@ -4,7 +4,9 @@
   <head>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}
+    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <!-- Snowplow starts plowing -->
     <script type="text/javascript">
@@ -51,50 +53,82 @@
 
   <body>
 
-    <h1 style="margin-left: 200px; width: 50%; background: #05f; color: #555; text-align: center;">Ready for checkout?</h1>
+    <div class="container">
 
-    <div class="right" style="margin-left: 200px;">
-      <h3>Your purchase so far</h3>
-      <p>Subtotal: {{ subtotal }}</p><br>
-    </div>
+      <div class="row" style="margin-top:2em; margin-bottom:2em;background-color:lightblue;">
 
-    <div class="left" style="width: 50%; margin-left: 200px;">
-      <form method="get" action="javascript:void(0);">
+        <div class="col-lg-2">
+        </div>
 
-        <fieldset>
-          <legend>Contact information</legend>
-          <label for="email">Email:</label>
-          <input type="email" name="user_email" id="email" value="john.doe@fake.com" required>
-        </fieldset><br>
+        <div class="col-lg-8">
+          <h1>Ready for checkout?</h1>
+        </div>
 
-        <fieldset>
-          <legend>Shipping information</legend>
+        <div class="col-lg-2">
+        </div>
 
-          <label for="name">Name:</label>
-          <input type="text" name="user_name" id="name" value="John" required>
+      </div>
 
-          <label for="surname">Surname:</label>
-          <input type="text" name="user_surname" id="surname" value="Doe" required>
+      <div class="row">
 
-          <label for="address">Address:</label>
-          <input type="text" name="user_address" id="address" value="2 Second str" required>
+        <div class="col-lg-2">
+        </div>
 
-          <label for="city">City:</label>
-          <input type="text" name="user_city" id="city" value="MyCity" required>
+        <div class="col-lg-8">
+          <h4>Your purchase so far</h4>
+          <p>Subtotal: {{ subtotal }}</p><br>
+        </div>
 
-          <label for="country">Country:</label>
-          <input type="text" name="user_country" id="country" value="MyCountry" required>
+        <div class="col-lg-2">
+        </div>
 
-          <input type="text" name="user_subtotal" id="subtotal" autocomplete=off style="display: none;" value="{{ subtotal }}">
-        </fieldset><br>
+      </div>
 
-        <fieldset>
-          <legend>Complete payment</legend>
-          <button type="submit">Complete payment</button>
-          <input type="reset">
-        </fieldset>
+      <div class="row">
 
-      </form>
+        <div class="col-lg-2">
+        </div>
+
+        <div class="col-lg-8">
+          <form method="get" action="javascript:void(0);">
+
+            <div class="form-group">
+              <legend>Contact information</legend>
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" name="user_email" id="email" value="john.doe@fake.com" required>
+            </div>
+
+            <div class="form-group">
+              <legend>Shipping information</legend>
+
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" name="user_name" id="name" value="John" required>
+
+              <label for="surname">Surname:</label>
+              <input type="text" class="form-control" name="user_surname" id="surname" value="Doe" required>
+
+              <label for="address">Address:</label>
+              <input type="text" class="form-control" name="user_address" id="address" value="2 Second str" required>
+
+              <label for="city">City:</label>
+              <input type="text" class="form-control" name="user_city" id="city" value="MyCity" required>
+
+              <label for="country">Country:</label>
+              <input type="text" class="form-control" name="user_country" id="country" value="MyCountry" required>
+
+              <input type="text" name="user_subtotal" id="subtotal" autocomplete=off style="display: none;" value="{{ subtotal }}">
+            </div>
+
+              <button type="submit" class="btn btn-primary">Complete payment</button>
+              <input type="reset" class="btn btn-dark">
+
+          </form>
+
+        </div>
+
+        <div class="col-lg-2">
+        </div>
+      </div>
 
     </div>
 

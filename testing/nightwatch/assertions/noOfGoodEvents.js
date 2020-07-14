@@ -18,7 +18,7 @@ NoOfGoodEvents = function (expected_value, msg) {
 
   this.expected = () => {
     return expected_value;
-  }
+  };
 
   this.pass = (value) => {
     return value === this.expected();

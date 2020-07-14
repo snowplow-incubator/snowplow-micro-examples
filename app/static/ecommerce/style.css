@@ -45,19 +45,3 @@ ul {
 form li + li {
     margin-top: 1em;
 }
-
-label {
-    display: inline-block;
-    width: 90px;
-    text-align: right;
-}
-
-button:hover {
-    background: #05f;
-    color: #333;
-}
-
-input[type="reset"]:hover {
-    background: #05f;
-    color: #333;
-}

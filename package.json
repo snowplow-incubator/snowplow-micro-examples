@@ -4,9 +4,9 @@
     "description": "Examples of how to apply Snowplow Micro to popular test strategies",
     "private": true,
     "scripts": {
-        "test": "nightwatch",
-        "cypress:open": "cd tests; cypress open --config-file false",
-        "cypress:run": "cd tests; cypress run --config-file false"
+        "test": "cd testing; nightwatch",
+        "cypress:open": "cd testing; cypress open --config-file false",
+        "cypress:run": "cd testing; cypress run --config-file false"
     },
     "repository": {
         "type": "git",
@@ -22,5 +22,6 @@
         "chromedriver": "^83.0.1",
         "cypress": "^4.10.0",
         "nightwatch": "^1.3.6"
-    }
+    },
+    "dependencies": {}
 }

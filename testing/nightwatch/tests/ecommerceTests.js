@@ -1,13 +1,13 @@
 module.exports = {
     beforeEach : function(browser) {
         browser
-          .resetMini()
+            .resetMini();
       },
 
 
     'Number of good events after ADDTOBASKET is equal to two' : function(browser) {
         browser
-            .url('http://127.0.0.1:8001/');
+            .url('http://127.0.0.1:8000/');
 
          const quantityClass = '.cart-quantity-input';
          const buttonClass ='.shop-item-button';
@@ -27,12 +27,12 @@ module.exports = {
 
     'Number of good events after REMOVEFROMBASKET is equal to three' : function(browser) {
         browser
-            .url('http://127.0.0.1:8001/');
+            .url('http://127.0.0.1:8000/');
 
         const quantityClass = '.cart-quantity-input';
         const buttonClass_add ='.shop-item-button';
 
-        const buttonClass_remove ='.btn-danger'
+        const buttonClass_remove ='.btn-danger';
         browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="2"]');
 
          browser.waitForElementVisible(buttonClass_add)
@@ -54,7 +54,7 @@ module.exports = {
 
      'Number of good events after SELECTION is equal to one' : function(browser) {
             browser
-                .url('http://127.0.0.1:8001/');
+                .url('http://127.0.0.1:8000/');
 
               const quantityClass = '.cart-quantity-input';
             browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="1"]');

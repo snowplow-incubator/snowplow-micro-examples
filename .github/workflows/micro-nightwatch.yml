@@ -1,4 +1,4 @@
-name: Snowplow Micro examples with Cypress
+name: Snowplow Micro examples with Nightwatch
 
 on:
 
@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  cypress-test:
+  nightwatch-test:
 
     runs-on: ubuntu-latest
     strategy:
@@ -54,8 +54,7 @@ jobs:
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm install
 
-      - name: Cypress-run the specs
+      - name: Run Nightwatch tests
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm run cypress:run -- --spec "cypress/integration/app-specs/*"
-          npm run cypress:run -- --spec "cypress/integration/micro-specs/*"
+          npm test

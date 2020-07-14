@@ -9,17 +9,10 @@ __pycache__/
 # Node
 node_modules/
 
-# Nightwatch
-nightwatch/node_modules/
-nightwatch/tests_output/
+# Nightwatch in testing dir
+testing/tests_output/
 
-
-# Cypress
-cypress/videos/
-cypress/screenshots/
-cypress/integration/examples/
-
-# Cypress in tests dir
-#tests/cypress/videos/
-#tests/cypress/screenshots/
-#tests/cypress/integration/examples/
+# Cypress in testing dir
+testing/cypress/videos/
+testing/cypress/screenshots/
+testing/cypress/integration/examples/
