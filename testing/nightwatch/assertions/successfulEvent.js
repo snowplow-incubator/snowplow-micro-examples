@@ -49,15 +49,16 @@
     }
 
     function matchEventsBySchema(event, microEvent){
-        if (event["eventType"] == "ue" & microEvent["eventType"] == "ue"){
-            return event["schema"] === microEvent["event"]["parameters"]["ue_pr"]["data"]["schema"];
-        }else if(event["eventType"] == "ue" ^ microEvent["eventType"] == "ue"){
-            // one of them is not ue so xor
-            return false;
+        if (event["eventType"] == "ue" && microEvent["eventType"] == "ue"){
+
+            ue_event = JSON.parse(microEvent["event"]["parameters"]["ue_pr"]);
+
+            return event["schema"] === ue_event["data"]["schema"];
+        }else if(event["eventType"] == "se" && microEvent["eventType"] == "se"){
 
         }else{
-            // not structured event
-            return true;
+            // one of them is not ue
+            return false;
         }
 
 
@@ -65,12 +66,32 @@
 
     function matchEventsByParams(event, microEvent){
         matched = true;
-        for (var param_key in event["parameters"]){
-            if(!(microEvent["event"]["parameters"].hasOwnProperty(param_key) && microEvent["event"]["parameters"][param_key] == event["parameters"][param_key])){
-                matched = false;
-                break;
+
+        if (event["eventType"] == "ue" && microEvent["eventType"] == "ue"){
+         ue_event = JSON.parse(microEvent["event"]["parameters"]["ue_pr"]);
+
+        // unstructured events
+            for (var param_key in event["parameters"]){
+                if(!(ue_event["data"]["data"].hasOwnProperty(param_key) &&
+                ue_event["data"]["data"][param_key] == event["parameters"][param_key])){
+                    matched = false;
+                    break;
+                }
             }
+
+        }else if(event["eventType"] == "se" && microEvent["eventType"] == "se"){
+        // structured events
+             for (var param_key in event["parameters"]){
+                if(!(microEvent["event"]["parameters"].hasOwnProperty(param_key) && microEvent["event"]["parameters"][param_key] == event["parameters"][param_key])){
+                    matched = false;
+                    break;
+                }
+            }
+        }else{
+             // one of them is not ue
+            return false;
         }
+
         return matched;
     }
 

@@ -23,6 +23,19 @@ module.exports = {
         browser.assert.noBadEvents();
         browser.assert.noOfTotalEvents(2);
 
+        browser.assert.successfulEvent({
+                "eventType":"ue",
+                "schema": "iglu:com.snowplowanalytics.snowplow/add_to_cart/jsonschema/1-0-0",
+                "parameters":{
+                            "sku":"hh123",
+                            "name":"One-size summer hat",
+                            "unitPrice":15.5,
+                            "quantity":1
+                        }
+                });
+
+        // order of Events
+        // successful event
     },
 
     'Number of good events after REMOVEFROMBASKET is equal to three' : function(browser) {
@@ -33,7 +46,7 @@ module.exports = {
         const buttonClass_add ='.shop-item-button';
 
         const buttonClass_remove ='.btn-danger';
-        browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="2"]');
+        browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="1"]');
 
          browser.waitForElementVisible(buttonClass_add)
                  .click(buttonClass_add, function (result) {
@@ -49,6 +62,17 @@ module.exports = {
         browser.assert.noOfGoodEvents(3);
         browser.assert.noBadEvents();
         browser.assert.noOfTotalEvents(3);
+
+        browser.assert.successfulEvent({
+                "eventType":"ue",
+                "schema": "iglu:com.snowplowanalytics.snowplow/remove_from_cart/jsonschema/1-0-0",
+                "parameters":{
+                            "sku":"hh123",
+                            "name":"One-size summer hat",
+                            "unitPrice":15.5,
+                            "quantity":1
+                        }
+                });
 
     },
 
