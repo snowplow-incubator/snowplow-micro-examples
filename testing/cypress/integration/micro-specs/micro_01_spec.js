@@ -11,7 +11,7 @@ context( 'testing 01_micro_spec', () => {
     // matching by eventType
     it( 'asserts number of events by eventType', () => {
 
-        cy.eventsWithEventType( "ue", 3 );
+        cy.eventsWithEventType( "ue", 4 );
         cy.eventsWithEventType( "pv", 2 );
 
     });
@@ -90,7 +90,7 @@ context( 'testing 01_micro_spec', () => {
 
         const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 5 );
+        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 6 );
 
     });
 

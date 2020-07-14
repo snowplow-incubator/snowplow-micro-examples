@@ -47,20 +47,25 @@ function removeCartItem(event) {
     var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
     var sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
 
-    window.snowplow('trackSelfDescribingEvent', {
-        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-            data: {
-                type: "remove"
-                }
-    }, [ {
-     schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                data: {
-                    name: "add",
-                    price : parseFloat(price),
-                    quantity : parseInt(quantity)
-                    }
-    }]
-    );
+    console.log(title, price, quantity, sku);
+
+    window.snowplow('trackSelfDescribingEvent',
+                    {
+                        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                        data: {
+                            type: "remove",
+                            quantity: parseInt(quantity)
+                        }
+                    },
+                    [ {
+                        schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                        data: {
+                            sku: sku,
+                            name: title,
+                            price : parseFloat(price)
+                        }
+                    } ]
+                   );
 
     buttonClicked.parentElement.parentElement.remove()
 
@@ -125,20 +130,24 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
-    window.snowplow('trackSelfDescribingEvent', {
-            schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                data: {
-                    type: "add"
-                    }
-        }, [ {
-         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                    data: {
-                        name: "add",
-                        price : parseFloat(price),
-                        quantity : parseInt(quantity)
+    window.snowplow('trackSelfDescribingEvent',
+                    {
+                        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                        data: {
+                            type: "add",
+                            quantity: parseInt(quantity)
                         }
-        }]
-        );
+                    },
+                    [ {
+                        schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                        data: {
+                            sku: "add",
+                            name: title,
+                            price: parseFloat(price)
+                        }
+                    } ]
+                   );
+
 }
 
 

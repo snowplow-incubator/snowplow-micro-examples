@@ -11,6 +11,7 @@ node_modules/
 
 # Nightwatch in testing dir
 testing/tests_output/
+nightwatch/tests_output/
 
 # Cypress in testing dir
 testing/cypress/videos/

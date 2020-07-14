@@ -3,28 +3,31 @@
 	"description": "Schema for a product entity",
 	"self": {
 		"vendor": "com.example",
-		"name": "product",
+		"name": "product_entity",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
 	"type": "object",
-	"properties": {
+        "properties": {
+                "sku": {
+                        "type": "string",
+                        "maxLength": 64
+                },
+                "category": {
+                        "type": ["string", "null"],
+                        "maxLength": 255
+                },
 		"name": {
 			"type": "string",
 			"maxLength": 255
 		},
-		"quantity": {
-        "type": "integer",
-        "minimum": 0,
-        "maximum": 100000
-         },
 		"price": {
 			"type": "number",
 			"minimum": 0,
 			"maximum": 100000,
-			"multipleOf": 0.00,
+			"multipleOf": 0.01
 		}
 	},
-	"required": ["name","price"],
+        "required": ["sku","name","price"],
 	"additionalProperties": false
 }
