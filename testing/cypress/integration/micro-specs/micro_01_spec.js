@@ -9,9 +9,10 @@ context( 'testing 01_micro_spec', () => {
 
 
     // matching by eventType
-    it( 'asserts number of unstructured events by eventType', () => {
+    it( 'asserts number of events by eventType', () => {
 
         cy.eventsWithEventType( "ue", 3 );
+        cy.eventsWithEventType( "pv", 2 );
 
     });
 

@@ -3,8 +3,8 @@ name: Snowplow Micro examples with Nightwatch
 on:
 
   push:
-    branches:
-      - develop
+    branches-ignore:
+      - '**'
 
 jobs:
 
