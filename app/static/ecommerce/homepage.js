@@ -40,13 +40,22 @@ function purchaseClicked() {
 
 function removeCartItem(event) {
     var buttonClicked = event.target
-    cartItem = buttonClicked.parentElement.parentElement
+    var cartItem = buttonClicked.parentElement.parentElement
 
     var title = cartItem.getElementsByClassName('cart-item-title')[0].innerText
     var price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.slice(2) // £ price
     var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
+    var sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
+    // console.log(sku);
 
-    window.snowplow('trackRemoveFromCart', title, "", "", parseFloat(price), parseInt(quantity), "");
+    window.snowplow('trackRemoveFromCart',
+                    sku,
+                    title,
+                    null,
+                    parseFloat(price),
+                    parseInt(quantity),
+                    null);
+
     buttonClicked.parentElement.parentElement.remove()
 
     updateCartTotal()
@@ -58,7 +67,7 @@ function quantityChanged(event) {
         input.value = 1
     }
     updateCartTotal();
-    input.parentElement.parentElement.getElementsByClassName('shop-item-button')[0].disabled = false;
+    //input.parentElement.parentElement.getElementsByClassName('shop-item-button')[0].disabled = false;
 }
 
 function addToCartClicked(event) {
@@ -67,13 +76,17 @@ function addToCartClicked(event) {
     var title = shopItem.getElementsByClassName('product-title')[0].innerText
     var price = shopItem.getElementsByClassName('product-price')[0].innerText.slice(2) // £ price
     var imageSrc = shopItem.getElementsByClassName('product_img')[0].src
-    var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
 
-    addItemToCart(title, price, imageSrc, quantity)
+    var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
+    quantity = quantity ? quantity : 1;
+
+    var sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
+
+    addItemToCart(title, price, imageSrc, quantity, sku)
     updateCartTotal()
 }
 
-function addItemToCart(title, price, imageSrc, quantity) {
+function addItemToCart(title, price, imageSrc, quantity, sku) {
     var cartRow = document.createElement('div')
     cartRow.classList.add('cart-row')
     var cartItems = document.getElementsByClassName('cart-items')[0]
@@ -88,6 +101,7 @@ function addItemToCart(title, price, imageSrc, quantity) {
         <div class="cart-item cart-column">
             <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
             <span class="cart-item-title">${title}</span>
+            <span class="cart-item-sku" style="display:none;">${sku}</span>
         </div>
         <span class="cart-price cart-column">£ ${price}</span>
         <div class="cart-quantity cart-column">
@@ -105,7 +119,13 @@ function addItemToCart(title, price, imageSrc, quantity) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
-    window.snowplow('trackAddToCart', title, "", "", parseFloat(price), parseInt(quantity), "");
+    window.snowplow('trackAddToCart',
+                    sku,
+                    title,
+                    null,
+                    parseFloat(price),
+                    parseInt(quantity),
+                    null);
 }
 
 
