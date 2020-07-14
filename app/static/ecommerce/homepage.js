@@ -46,15 +46,21 @@ function removeCartItem(event) {
     var price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.slice(2) // £ price
     var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
     var sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
-    // console.log(sku);
 
-    window.snowplow('trackRemoveFromCart',
-                    sku,
-                    title,
-                    null,
-                    parseFloat(price),
-                    parseInt(quantity),
-                    null);
+    window.snowplow('trackSelfDescribingEvent', {
+        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+            data: {
+                type: "remove"
+                }
+    }, [ {
+     schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                data: {
+                    name: "add",
+                    price : parseFloat(price),
+                    quantity : parseInt(quantity)
+                    }
+    }]
+    );
 
     buttonClicked.parentElement.parentElement.remove()
 
@@ -119,13 +125,20 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
-    window.snowplow('trackAddToCart',
-                    sku,
-                    title,
-                    null,
-                    parseFloat(price),
-                    parseInt(quantity),
-                    null);
+    window.snowplow('trackSelfDescribingEvent', {
+            schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                data: {
+                    type: "add"
+                    }
+        }, [ {
+         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                    data: {
+                        name: "add",
+                        price : parseFloat(price),
+                        quantity : parseInt(quantity)
+                        }
+        }]
+        );
 }
 
 
@@ -186,9 +199,12 @@ function toUrlParams (obj) {
 function toThanks () {
     if (userCart.length === 0) {
         alert("No items in your basket");
-
         return;
     } else {
+        window.snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
+                data : {}
+            });
         window.location.href = 'http://' + window.location.host + '/thanks/';
     }
 

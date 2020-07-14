@@ -25,17 +25,17 @@ module.exports = {
 
         browser.assert.successfulEvent({
                 "eventType":"ue",
-                "schema": "iglu:com.snowplowanalytics.snowplow/add_to_cart/jsonschema/1-0-0",
+                "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
                 "parameters":{
-                            "sku":"hh123",
-                            "name":"One-size summer hat",
-                            "unitPrice":15.5,
-                            "quantity":1
-                        }
+                            "type" : "add"
+                        },
+                 "context": [{schema : "test.example.iglu/product_entity/jsonschema/1-0-0",
+                 data : {"name":"One-size summer hat",
+                         "unitPrice":15.5,
+                         "quantity":1}}]
                 });
 
         // order of Events
-        // successful event
     },
 
     'Number of good events after REMOVEFROMBASKET is equal to three' : function(browser) {
@@ -65,13 +65,14 @@ module.exports = {
 
         browser.assert.successfulEvent({
                 "eventType":"ue",
-                "schema": "iglu:com.snowplowanalytics.snowplow/remove_from_cart/jsonschema/1-0-0",
+                "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
                 "parameters":{
-                            "sku":"hh123",
-                            "name":"One-size summer hat",
-                            "unitPrice":15.5,
-                            "quantity":1
-                        }
+                            "type" : "remove"
+                        },
+                 "context": [{schema : "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                 data : {"name":"One-size summer hat",
+                         "unitPrice":15.5,
+                         "quantity":1}}]
                 });
 
     },
