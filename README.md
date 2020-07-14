@@ -22,7 +22,7 @@ $ git clone https://github.com/snowplow-incubator/snowplow-micro-examples.git
 
 $ cd snowplow-micro-examples
 
-$ docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
+$ docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
 
 ```
 

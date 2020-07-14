@@ -11,77 +11,77 @@ context( 'testing 01_micro_spec', () => {
     // matching by eventType
     it( 'asserts number of unstructured events by eventType', () => {
 
-        cy.eventsWithEventType( "ue", 4 );
+        cy.eventsWithEventType( "ue", 3 );
 
     });
 
 
-    // matching unstructured events
-    it( 'assertions on unstructured events', () => {
+    // // matching unstructured events
+    // it( 'assertions on unstructured events', () => {
 
-        const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
+    //     const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
 
-        // different ways to assert similar things
+    //     // different ways to assert similar things
 
-        // 1. just with schema
-        cy.eventsWithSchema( submitFormSchema, 1 );
+    //     // 1. just with schema
+    //     cy.eventsWithSchema( submitFormSchema, 1 );
 
-        // 2. with schema and values
-        cy.eventsWithProperties( {
+    //     // 2. with schema and values
+    //     cy.eventsWithProperties( {
 
-            "schema": submitFormSchema,
-            "values": {
+    //         "schema": submitFormSchema,
+    //         "values": {
 
-                "elements": [{
+    //             "elements": [{
 
-                    "name": "user_email",
-                    "value": "john.doe@fake.com",
+    //                 "name": "user_email",
+    //                 "value": "john.doe@fake.com",
 
-                }]
+    //             }]
 
-            }
+    //         }
 
-        }, 1 );
+    //     }, 1 );
 
-        // 3. also without the schema key in event_options
-        cy.eventsWithProperties( {
+    //     // 3. also without the schema key in event_options
+    //     cy.eventsWithProperties( {
 
-            "values": {
+    //         "values": {
 
-                "elements": [{
+    //             "elements": [{
 
-                    "value": "MyCity",
+    //                 "value": "MyCity",
 
-                }]
+    //             }]
 
-            }
+    //         }
 
-        }, 1 );
+    //     }, 1 );
 
-        // 4. matching multiple input fields of a form
-        cy.eventsWithProperties( {
+    //     // 4. matching multiple input fields of a form
+    //     cy.eventsWithProperties( {
 
-            "schema": submitFormSchema,
-            "values": {
+    //         "schema": submitFormSchema,
+    //         "values": {
 
-                "elements": [
-                    {
-                        "name": "user_email",
-                        "value": "john.doe@fake.com",
-                    },
-                    {
-                        "name": "user_city",
-                        "value": "MyCity"
-                    },
-                    {
-                        "value":"John"
-                    }
-                ]
-            }
+    //             "elements": [
+    //                 {
+    //                     "name": "user_email",
+    //                     "value": "john.doe@fake.com",
+    //                 },
+    //                 {
+    //                     "name": "user_city",
+    //                     "value": "MyCity"
+    //                 },
+    //                 {
+    //                     "value":"John"
+    //                 }
+    //             ]
+    //         }
 
-        }, 1 );
+    //     }, 1 );
 
-    });
+    // });
 
 
     // assertion with context
@@ -89,7 +89,7 @@ context( 'testing 01_micro_spec', () => {
 
         const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 6 );
+        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 5 );
 
     });
 

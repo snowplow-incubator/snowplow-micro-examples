@@ -25,7 +25,7 @@ function ready() {
         button.addEventListener('click', addToCartClicked)
     }
 
-    document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toCheckout);
+    document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toThanks);
 
 }
 
@@ -167,18 +167,29 @@ function toUrlParams (obj) {
     return urlParams.toString();
 }
 
-function toCheckout () {
+// function toCheckout () {
+//     if (userCart.length === 0) {
+//         alert("No items in your basket");
+
+//         return;
+//     } else {
+//         var res = {
+//             "subtotal": Math.round(calcSubtotal(userCart) * 100) / 100
+//         };
+//         var qString = toUrlParams(res);
+//         var action = 'checkout' + '?' + qString;
+
+//         window.location.href= window.location.href + action;
+//     }
+// }
+
+function toThanks () {
     if (userCart.length === 0) {
         alert("No items in your basket");
 
         return;
     } else {
-        var res = {
-            "subtotal": Math.round(calcSubtotal(userCart) * 100) / 100
-        };
-        var qString = toUrlParams(res);
-        var action = 'checkout' + '?' + qString;
-
-        window.location.href= window.location.href + action;
+        window.location.href = 'http://' + window.location.host + '/thanks/';
     }
+
 }

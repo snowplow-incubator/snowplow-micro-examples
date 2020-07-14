@@ -7,7 +7,7 @@ module.exports = {
 
     'Number of good events after ADDTOBASKET is equal to two' : function(browser) {
         browser
-            .url('http://127.0.0.1:8000/');
+            .url('http://127.0.0.1:8000/index');
 
          const quantityClass = '.cart-quantity-input';
          const buttonClass ='.shop-item-button';
@@ -27,7 +27,7 @@ module.exports = {
 
     'Number of good events after REMOVEFROMBASKET is equal to three' : function(browser) {
         browser
-            .url('http://127.0.0.1:8000/');
+            .url('http://127.0.0.1:8000/index');
 
         const quantityClass = '.cart-quantity-input';
         const buttonClass_add ='.shop-item-button';
@@ -54,7 +54,7 @@ module.exports = {
 
      'Number of good events after SELECTION is equal to one' : function(browser) {
             browser
-                .url('http://127.0.0.1:8000/');
+                .url('http://127.0.0.1:8000/index');
 
               const quantityClass = '.cart-quantity-input';
             browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="1"]');

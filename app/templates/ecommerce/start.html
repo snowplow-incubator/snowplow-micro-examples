@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -44,7 +45,7 @@
       window.snowplow('enableLinkClickTracking', null, true, true);
       window.snowplow('enableFormTracking');
 
-      window.snowplow('trackPageView', 'ecommerce.checkout');
+      window.snowplow('trackPageView');
 
     </script>
     <!-- Snowplow stops plowing -->
@@ -55,81 +56,42 @@
 
     <div class="container">
 
-      <div class="row" style="margin-top:2em; margin-bottom:2em;background-color:lightblue;">
+      <div class="jumbotron" style="margin-top:5em;background-color:white;border:2px solid grey;">
 
-        <div class="col-lg-2">
-        </div>
-
-        <div class="col-lg-8">
-          <h1>Ready for checkout?</h1>
-        </div>
-
-        <div class="col-lg-2">
-        </div>
-
+      <div class="jumbotron" style="text-align:center;margin-top:5em;">
+        <h1>WELCOME</h1>
+        <h3>to the Snowplow demo store!</h3>
       </div>
 
       <div class="row">
-
-        <div class="col-lg-2">
+        <div class="col-lg-4">
         </div>
 
-        <div class="col-lg-8">
-          <h4>Your purchase so far</h4>
-          <p>Subtotal: {{ subtotal }}</p><br>
-        </div>
-
-        <div class="col-lg-2">
-        </div>
-
-      </div>
-
-      <div class="row">
-
-        <div class="col-lg-2">
-        </div>
-
-        <div class="col-lg-8">
-          <form method="get" action="javascript:void(0);">
+        <div class="col-lg-4">
+          <form action="/login">
 
             <div class="form-group">
-              <legend>Contact information</legend>
+              <legend></legend>
+
               <label for="email">Email:</label>
-              <input type="email" class="form-control" name="user_email" id="email" value="john.doe@fake.com" required>
+              <input type="email" class="form-control" id="email" name="user_email" required>
+
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" name="user_password" required>
             </div>
 
             <div class="form-group">
-              <legend>Shipping information</legend>
-
-              <label for="name">Name:</label>
-              <input type="text" class="form-control" name="user_name" id="name" value="John" required>
-
-              <label for="surname">Surname:</label>
-              <input type="text" class="form-control" name="user_surname" id="surname" value="Doe" required>
-
-              <label for="address">Address:</label>
-              <input type="text" class="form-control" name="user_address" id="address" value="2 Second str" required>
-
-              <label for="city">City:</label>
-              <input type="text" class="form-control" name="user_city" id="city" value="MyCity" required>
-
-              <label for="country">Country:</label>
-              <input type="text" class="form-control" name="user_country" id="country" value="MyCountry" required>
-
-              <input type="text" name="user_subtotal" id="subtotal" autocomplete=off style="display: none;" value="{{ subtotal }}">
+              <button type="submit" class="btn btn-dark">START SHOPPING</button>
             </div>
-
-              <button type="submit" class="btn btn-primary">Complete payment</button>
-              <input type="reset" class="btn btn-dark">
 
           </form>
-
         </div>
 
-        <div class="col-lg-2">
+        <div class="col-lg-4">
         </div>
       </div>
 
+      </div>
     </div>
 
   </body>

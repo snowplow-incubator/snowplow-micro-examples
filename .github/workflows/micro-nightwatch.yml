@@ -25,7 +25,7 @@ jobs:
       - name: Start Micro
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 --network=host snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+          docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
 
       - name: Wait on port 9090
         run: while ! nc -z localhost 9090; do sleep 0.1; done
