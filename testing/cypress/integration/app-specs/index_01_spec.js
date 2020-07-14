@@ -10,7 +10,9 @@ describe( 'first test', () => {
     it( 'adds to cart', () => {
 
         // EVENTS: +3 (addToCart from 3 buttons)
-        cy.get('.shop-item-button').click({multiple:true});
+        cy.get( '[test-id=add-btn-1]' ).click( {} );
+        cy.get( '[test-id=add-btn-2]' ).click( {} );
+        cy.get( '[test-id=add-btn-3]' ).click( {} );
 
         // EVENTS: +1 (submit leads to pageview of checkout.html)
         cy.get('.btn-purchase').click( { force:true } );
