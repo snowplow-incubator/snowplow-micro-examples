@@ -47,7 +47,7 @@ function removeCartItem(event) {
     var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
     var sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
 
-    console.log(title, price, quantity, sku);
+    //console.log(title, price, quantity, sku);
 
     window.snowplow('trackSelfDescribingEvent',
                     {
@@ -92,7 +92,7 @@ function addToCartClicked(event) {
     quantity = quantity ? quantity : 1;
 
     var sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
-    console.log(sku);
+    //console.log(sku);
 
     addItemToCart(title, price, imageSrc, quantity, sku)
     updateCartTotal()
@@ -131,7 +131,7 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
-    console.log(sku);
+    //console.log(sku);
     window.snowplow('trackSelfDescribingEvent',
                     {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
