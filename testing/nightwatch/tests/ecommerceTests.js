@@ -35,7 +35,6 @@ module.exports = {
                          "quantity":1}}]
                 });
 
-        // order of Events
     },
 
     'Number of good events after REMOVEFROMBASKET is equal to three' : function(browser) {
@@ -87,5 +86,53 @@ module.exports = {
             browser.assert.noOfGoodEvents(1);
             browser.assert.noBadEvents();
             browser.assert.noOfTotalEvents(1);
-        }
+        },
+
+        'Check the order of events; cart action always before purchase': function(browser) {
+
+            browser
+                .url('http://127.0.0.1:8000/index');
+
+         // ADD an item to the basket
+         const quantityClass = '.cart-quantity-input';
+         const buttonClass ='.shop-item-button';
+
+         browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="1"]');
+
+          browser.waitForElementVisible(buttonClass)
+          .click(buttonClass, function (result) {
+          this.assert.equal(true, result.status == 0, "Button clicked successfully");
+          });
+          // make a purchase
+        const purchaseClass = ".btn-purchase"
+
+        browser.waitForElementVisible(purchaseClass).element('css selector', purchaseClass, (result) => {
+                  browser.execute("arguments[0].click()",[result.value]);
+                });
+
+            events_list = [
+             {
+             "eventType":"ue",
+             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
+             "parameters":{
+                           "type" : "add"
+                          },
+             "context": [{"schema" : "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                         "data" : {"name":"One-size summer hat",
+                              "unitPrice":15.5,
+                              "quantity":1}}]
+
+            },
+            {"eventType":"ue",
+            "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
+            "parameters": {
+                "total": 15.5
+            },
+             "context": [{"schema" : "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                         "data" : {"name":"One-size summer hat",
+                              "unitPrice":15.5,
+                              "quantity":1}}]
+            }]
+            browser.assert.orderOfEvents(events_list);
+         }
 };

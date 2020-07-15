@@ -53,16 +53,16 @@ function removeCartItem(event) {
                     {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                         data: {
-                            type: "remove",
-                            quantity: parseInt(quantity)
-                        }
+                            type: "remove"
+                            }
                     },
                     [ {
                         schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
                         data: {
                             sku: sku,
                             name: title,
-                            price : parseFloat(price)
+                            price : parseFloat(price),
+                            quantity : parseInt(quantity)
                         }
                     } ]
                    );
@@ -85,7 +85,8 @@ function addToCartClicked(event) {
     var button = event.target
     var shopItem = button.parentElement.parentElement
     var title = shopItem.getElementsByClassName('product-title')[0].innerText
-    var price = shopItem.getElementsByClassName('product-price')[0].innerText.slice(2) // £ price
+
+    var price = shopItem.getElementsByClassName('product-price')[0].innerText.replace(/[^\d.-]/g, '')
     var imageSrc = shopItem.getElementsByClassName('product_img')[0].src
 
     var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
@@ -128,7 +129,8 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
     userCart.push({
         itemTitle: title,
         itemPrice: parseFloat(price),
-        itemQuant: quantity === "" ? 1 : parseInt(quantity)
+        itemQuant: quantity === "" ? 1 : parseInt(quantity),
+        itemSku : sku
     });
 
     //console.log(sku);
@@ -137,7 +139,6 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                         data: {
                             type: "add",
-                            quantity: parseInt(quantity)
                         }
                     },
                     [ {
@@ -145,7 +146,8 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
                         data: {
                             sku: sku,
                             name: title,
-                            price: parseFloat(price)
+                            price: parseFloat(price),
+                            quantity: parseInt(quantity)
                         }
                     } ]
                    );
@@ -161,14 +163,14 @@ function updateCartTotal() {
         var cartRow = cartRows[i]
         var priceElement = cartRow.getElementsByClassName('cart-price')[0]
         var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
-        var price = parseFloat(priceElement.innerText.replace('£', ''))
+        var price = parseFloat(priceElement.innerText.replace(/[^\d.-]/g, ''));
         var quantity = quantityElement.value
         total = total + (price * quantity)
 
         var title = cartRow.getElementsByClassName('cart-item-title')[0];
         userCart.forEach( function (elt) {
             if (title.innerText == elt['itemTitle']) {
-                elt['itemQuant'] = quantity;
+                elt['itemQuant'] = parseInt(quantity);
             }
         });
     }
@@ -212,10 +214,26 @@ function toThanks () {
         alert("No items in your basket");
         return;
     } else {
+        productsContext = []
+        userCart.forEach( function (elt) {
+                                productsContext.push({
+                                              schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                                              data: {
+                                                  sku: elt['itemSku'],
+                                                  name: elt['itemTitle'],
+                                                  price: parseFloat(elt['itemPrice']),
+                                                  quantity : elt['itemQuant']
+                                                  }
+                                              })
+                           });
+
+        total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
+
         window.snowplow('trackSelfDescribingEvent', {
                 schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
-                data : {}
-            });
+                data : {total : parseFloat(total)}
+            }, productsContext);
+
         window.location.href = 'http://' + window.location.host + '/thanks/';
     }
 

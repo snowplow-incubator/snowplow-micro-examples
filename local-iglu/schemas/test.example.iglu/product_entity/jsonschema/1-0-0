@@ -17,17 +17,22 @@
                         "type": ["string", "null"],
                         "maxLength": 255
                 },
-		"name": {
-			"type": "string",
-			"maxLength": 255
-		},
-		"price": {
-			"type": "number",
-			"minimum": 0,
-			"maximum": 100000,
-			"multipleOf": 0.01
-		}
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000,
+                    "multipleOf": 0.01
+                },
+                "quantity": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 10000
+                 }
 	},
-        "required": ["sku","name","price"],
+    "required": ["sku","name","price", "quantity"],
 	"additionalProperties": false
 }

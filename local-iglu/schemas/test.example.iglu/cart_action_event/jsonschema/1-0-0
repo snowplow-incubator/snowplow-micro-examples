@@ -12,13 +12,8 @@
 		"type": {
 			"type": "string",
 			"enum": ["add","remove"]
-		},
-                "quantity": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 10000
-                }
+		}
 	},
-        "required": ["type", "quantity"],
+        "required": ["type"],
 	"additionalProperties": false
 }
