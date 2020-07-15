@@ -43,7 +43,17 @@
       window.snowplow('setUserId', 'tester');
       window.snowplow('enableActivityTracking', 20, 20);
       window.snowplow('enableLinkClickTracking', null, true, true);
-      window.snowplow('enableFormTracking');
+
+      var config = {
+          forms: {
+              blacklist: []
+          },
+          fields: {
+              blacklist: ['user_password']
+          }
+      };
+
+      window.snowplow('enableFormTracking', config);
 
       window.snowplow('trackPageView');
 
