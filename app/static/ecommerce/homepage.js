@@ -92,6 +92,7 @@ function addToCartClicked(event) {
     quantity = quantity ? quantity : 1;
 
     var sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
+    console.log(sku);
 
     addItemToCart(title, price, imageSrc, quantity, sku)
     updateCartTotal()
@@ -130,6 +131,7 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         itemQuant: quantity === "" ? 1 : parseInt(quantity)
     });
 
+    console.log(sku);
     window.snowplow('trackSelfDescribingEvent',
                     {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
@@ -141,7 +143,7 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
                     [ {
                         schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
                         data: {
-                            sku: "add",
+                            sku: sku,
                             name: title,
                             price: parseFloat(price)
                         }
