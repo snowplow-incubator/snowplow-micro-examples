@@ -1,4 +1,4 @@
-describe( 'simple scenario', () => {
+describe( 'scenario involving changing quantities', () => {
 
     before( () => {
 
@@ -6,7 +6,7 @@ describe( 'simple scenario', () => {
 
     });
 
-    it( 'user logins, adds to cart, completes purchase', () => {
+    it( 'user logins, adds to cart, changes quantites, completes purchase', () => {
 
         // EVENTS: +1: (1 * pv)
         // - pageView of start.html
@@ -27,15 +27,29 @@ describe( 'simple scenario', () => {
             .click();
 
         // EVENTS: +3: (3 * ue)
-        // - 3 buttons * cart_action_event
+        // - 3 buttons * cart_action_event (add to cart)
+        //   - selects quantity - adds to cart
+        cy.get( '[test-id=shop-select-quant-1]' ).select( '3' );
         cy.get( '[test-id=add-btn-1]' ).click( {} );
+
+
+        //   - selects quantity - adds to cart
+        cy.get( '[test-id=shop-select-quant-2]' ).select( '2' );
         cy.get( '[test-id=add-btn-2]' ).click( {} );
+
+        //   - adds to cart
         cy.get( '[test-id=add-btn-3]' ).click( {} );
+
+        //   - changes quantity from within cart
+        cy.get( '[test-id=cart-change-quant-1]' )
+            .clear()
+            .type( '2' );
+
 
         // EVENTS: +2: (1 * ue + 1 * pv)
         // - 1.purchase_event
         // - 2.pageview of thanks.html
-        cy.get('.btn-purchase').click( { force:true } );
+        cy.get('.btn-purchase').click();
 
     });
 

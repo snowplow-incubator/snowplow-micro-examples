@@ -57,6 +57,4 @@ jobs:
       - name: Cypress-run the specs
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm run cypress:run -- --spec "cypress/integration/resetMicro.js"
-          npm run cypress:run -- --spec "cypress/integration/app-specs/*"
-          npm run cypress:run -- --spec "cypress/integration/micro-specs/*"
+          npm run cypress:run

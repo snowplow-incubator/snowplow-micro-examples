@@ -90,12 +90,13 @@ function addToCartClicked(event) {
     quantity = quantity ? quantity : 1;
 
     var sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
+    var id = shopItem.getElementsByClassName('product-id')[0].innerText;
 
-    addItemToCart(title, price, imageSrc, quantity, sku)
+    addItemToCart(title, price, imageSrc, quantity, sku, id)
     updateCartTotal()
 }
 
-function addItemToCart(title, price, imageSrc, quantity, sku) {
+function addItemToCart(title, price, imageSrc, quantity, sku, id) {
     var cartRow = document.createElement('div')
     cartRow.classList.add('cart-row')
     var cartItems = document.getElementsByClassName('cart-items')[0]
@@ -114,8 +115,8 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         </div>
         <span class="cart-price cart-column">£ ${price}</span>
         <div class="cart-quantity cart-column">
-            <input class="cart-quantity-input" type="number" value="${quantity ? quantity : 1}">
-            <button class="btn btn-danger" type="button">REMOVE</button>
+            <input class="cart-quantity-input" type="number" value="${quantity ? quantity : 1}" test-id="cart-change-quant-${id}">
+            <button class="btn btn-danger" type="button" test-id="rem-btn-${id}">REMOVE</button>
         </div>`
     cartRow.innerHTML = cartRowContents
     cartItems.append(cartRow)

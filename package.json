@@ -1,27 +1,30 @@
 {
-    "name": "snowplow-micro-examples",
-    "version": "1.0.0",
-    "description": "Examples of how to apply Snowplow Micro to popular test strategies",
-    "private": true,
-    "scripts": {
-        "test": "cd testing; nightwatch",
-        "cypress:open": "cd testing; cypress open --config-file false",
-        "cypress:run": "cd testing; cypress run --config-file false"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/snowplow-incubator/snowplow-micro-examples.git"
-    },
-    "author": "",
-    "license": "",
-    "bugs": {
-        "url": "https://github.com/snowplow-incubator/snowplow-micro-examples/issues"
-    },
-    "homepage": "https://github.com/snowplow-incubator/snowplow-micro-examples#readme",
-    "devDependencies": {
-        "chromedriver": "^83.0.1",
-        "cypress": "^4.10.0",
-        "nightwatch": "^1.3.6"
-    },
-    "dependencies": {}
+        "name": "snowplow-micro-examples",
+        "version": "1.0.0",
+        "description": "Examples of how to apply Snowplow Micro to popular test strategies",
+        "private": true,
+        "scripts": {
+                "test": "cd testing; nightwatch",
+                "cypress:open": "cd testing && cypress open --config-file false",
+                "cypress:run": "cd testing && cypress run --config-file false",
+                "cy-micro:pair-run": "cd testing && npm run cypress:run -- --spec \"**/integration/*$PAIR_PATTERN*app_spec.js\"",
+                "postcy-micro:pair-run": "cd testing && npm run cypress:run -- --spec \"**/integration/*$PAIR_PATTERN*micro_spec.js\""
+
+        },
+        "repository": {
+                "type": "git",
+                "url": "git+https://github.com/snowplow-incubator/snowplow-micro-examples.git"
+        },
+        "author": "",
+        "license": "",
+        "bugs": {
+                "url": "https://github.com/snowplow-incubator/snowplow-micro-examples/issues"
+        },
+        "homepage": "https://github.com/snowplow-incubator/snowplow-micro-examples#readme",
+        "devDependencies": {
+                "chromedriver": "^83.0.1",
+                "cypress": "^4.10.0",
+                "nightwatch": "^1.3.6"
+        },
+        "dependencies": {}
 }

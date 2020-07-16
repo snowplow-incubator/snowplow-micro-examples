@@ -1,4 +1,4 @@
-context( 'testing 01_micro_spec', () => {
+context( 'testing events from 01_app_spec.js', () => {
 
     // noBadEvents
     it( 'asserts no bad events', () => {
@@ -100,9 +100,9 @@ context( 'testing 01_micro_spec', () => {
     // assertion with context
     it( 'asserts webpage context in all events', () => {
 
-        const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
+        const webPageContextSchema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 10 );
+        cy.eventsWithContexts( [ { "schema": webPageContextSchema } ], 10 );
 
     });
 

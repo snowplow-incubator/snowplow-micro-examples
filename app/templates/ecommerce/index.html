@@ -79,12 +79,13 @@
 
           </div>
           <div class="product-sku" style="display:none;">{{ product.sku }}</div>
+          <div class="product-id" style="display:none;">{{ product.id }}</div>
           <div class="product-title">{{ product.description }}</div>
             <p>
               <label>Quantity</label>
               <!-- ** -->
 
-              <select class="cart-quantity-input">
+              <select class="cart-quantity-input" test-id="shop-select-quant-{{ product.id }}">
                 <option value="" selected disabled hidden>Choose here</option>
                 {% for quantity in product.quantity %}
                 <option value = "{{ quantity }}">{{ quantity }}</option>
@@ -99,21 +100,23 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="position-fixed" style="padding-top: 5em;">
-          <h2 class="section-header">CART</h2>
-          <div class="cart-row">
-            <span class="cart-item cart-header cart-column">ITEM</span>
-            <span class="cart-price cart-header cart-column">PRICE</span>
-            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        <div style="position:fixed;bottom:5%;top:40%;">
+          <div class="" style="overflow-y:scroll; height:100%">
+            <h2 class="section-header">CART</h2>
+            <div class="cart-row">
+              <span class="cart-item cart-header cart-column">ITEM</span>
+              <span class="cart-price cart-header cart-column">PRICE</span>
+              <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            </div>
+            <div class="cart-items">
+            </div>
+            <div class="cart-total">
+              <strong class="cart-total-title">Total</strong>
+              <span class="cart-total-price">£ 0</span>
+            </div>
+            <button class="btn btn-primary btn-purchase" type="button">PURCHASE
+            </button>
           </div>
-          <div class="cart-items">
-          </div>
-          <div class="cart-total">
-            <strong class="cart-total-title">Total</strong>
-            <span class="cart-total-price">£ 0</span>
-          </div>
-          <button class="btn btn-primary btn-purchase" type="button">PURCHASE
-          </button>
         </div>
       </div>
 

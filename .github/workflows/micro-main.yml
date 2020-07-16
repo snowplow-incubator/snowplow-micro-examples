@@ -62,6 +62,9 @@ jobs:
       - name: Run Cypress tests
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm run cypress:run -- --spec "cypress/integration/resetMicro.js"
-          npm run cypress:run -- --spec "cypress/integration/app-specs/*"
-          npm run cypress:run -- --spec "cypress/integration/micro-specs/*"
+          npm run cypress:run
+
+      - name: Sample running the pair-run npm script
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          PAIR_PATTERN=02 npm run cy-micro:pair-run
