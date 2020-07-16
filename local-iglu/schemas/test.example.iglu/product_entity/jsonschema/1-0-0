@@ -2,7 +2,7 @@
 	"$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
 	"description": "Schema for a product entity",
 	"self": {
-		"vendor": "com.example",
+		"vendor": "test.example",
 		"name": "product_entity",
 		"format": "jsonschema",
 		"version": "1-0-0"

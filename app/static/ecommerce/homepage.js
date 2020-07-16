@@ -1,4 +1,5 @@
-var userCart = []; // [ {itemTitle:title, itemPrice: price, itemQuant:quantity}, {...},... ]
+// userCart = [ {itemSku:sku, itemTitle:title, itemPrice: price, itemQuant:quantity},... ]
+var userCart = [];
 
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready)
@@ -29,26 +30,16 @@ function ready() {
 
 }
 
-function purchaseClicked() {
-    alert('Thank you for your purchase')
-    var cartItems = document.getElementsByClassName('cart-items')[0]
-    while (cartItems.hasChildNodes()) {
-        cartItems.removeChild(cartItems.firstChild)
-    }
-    updateCartTotal()
-}
-
 function removeCartItem(event) {
     var buttonClicked = event.target
     var cartItem = buttonClicked.parentElement.parentElement
 
     var title = cartItem.getElementsByClassName('cart-item-title')[0].innerText
-    var price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.slice(2) // £ price
+    var price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.replace(/[^\d.-]/g, '')
     var quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value
     var sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
 
-    //console.log(title, price, quantity, sku);
-
+    // cart_action_event
     window.snowplow('trackSelfDescribingEvent',
                     {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
@@ -67,6 +58,13 @@ function removeCartItem(event) {
                     } ]
                    );
 
+    // remove the item also from userCart (assuming there is a single item to be removed)
+    userCart.forEach( function (elt, idx) {
+        if ( sku === elt['itemSku'] ) {
+            userCart.splice(idx, 1);
+        }
+    });
+
     buttonClicked.parentElement.parentElement.remove()
 
     updateCartTotal()
@@ -78,7 +76,6 @@ function quantityChanged(event) {
         input.value = 1
     }
     updateCartTotal();
-    //input.parentElement.parentElement.getElementsByClassName('shop-item-button')[0].disabled = false;
 }
 
 function addToCartClicked(event) {
@@ -93,7 +90,6 @@ function addToCartClicked(event) {
     quantity = quantity ? quantity : 1;
 
     var sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
-    //console.log(sku);
 
     addItemToCart(title, price, imageSrc, quantity, sku)
     updateCartTotal()
@@ -133,7 +129,7 @@ function addItemToCart(title, price, imageSrc, quantity, sku) {
         itemSku : sku
     });
 
-    //console.log(sku);
+    // cart_action_event
     window.snowplow('trackSelfDescribingEvent',
                     {
                         schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
@@ -168,6 +164,8 @@ function updateCartTotal() {
         total = total + (price * quantity)
 
         var title = cartRow.getElementsByClassName('cart-item-title')[0];
+
+        // also update userCart just in case quantity changed
         userCart.forEach( function (elt) {
             if (title.innerText == elt['itemTitle']) {
                 elt['itemQuant'] = parseInt(quantity);
@@ -178,6 +176,42 @@ function updateCartTotal() {
     document.getElementsByClassName('cart-total-price')[0].innerText = '£' + total
 }
 
+function toThanks () {
+    if (userCart.length === 0) {
+        alert("No items in your basket");
+        return;
+    } else {
+        // create the contexts array
+        var productsContext = [];
+        userCart.forEach( function (elt) {
+            productsContext.push({
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: elt['itemSku'],
+                    name: elt['itemTitle'],
+                    price: parseFloat(elt['itemPrice']),
+                    quantity : elt['itemQuant']
+                }
+            });
+        });
+
+        var total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
+
+        // purchase_event
+        window.snowplow('trackSelfDescribingEvent',
+                        {
+                            schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
+                            data : {
+                                total : parseFloat(total)
+                            }
+                        },
+                        productsContext);
+
+        window.location.href = 'http://' + window.location.host + '/thanks/';
+    }
+}
+
+// helpers
 function calcSubtotal (cart) {
     let prices = cart.map(function (elt) {
         return elt['itemPrice'] * elt['itemQuant'];
@@ -191,50 +225,4 @@ function toUrlParams (obj) {
     var urlParams = new URLSearchParams(obj);
 
     return urlParams.toString();
-}
-
-// function toCheckout () {
-//     if (userCart.length === 0) {
-//         alert("No items in your basket");
-
-//         return;
-//     } else {
-//         var res = {
-//             "subtotal": Math.round(calcSubtotal(userCart) * 100) / 100
-//         };
-//         var qString = toUrlParams(res);
-//         var action = 'checkout' + '?' + qString;
-
-//         window.location.href= window.location.href + action;
-//     }
-// }
-
-function toThanks () {
-    if (userCart.length === 0) {
-        alert("No items in your basket");
-        return;
-    } else {
-        productsContext = []
-        userCart.forEach( function (elt) {
-                                productsContext.push({
-                                              schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                                              data: {
-                                                  sku: elt['itemSku'],
-                                                  name: elt['itemTitle'],
-                                                  price: parseFloat(elt['itemPrice']),
-                                                  quantity : elt['itemQuant']
-                                                  }
-                                              })
-                           });
-
-        total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
-
-        window.snowplow('trackSelfDescribingEvent', {
-                schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
-                data : {total : parseFloat(total)}
-            }, productsContext);
-
-        window.location.href = 'http://' + window.location.host + '/thanks/';
-    }
-
 }

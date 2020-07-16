@@ -11,78 +11,90 @@ context( 'testing 01_micro_spec', () => {
     // matching by eventType
     it( 'asserts number of events by eventType', () => {
 
-        cy.eventsWithEventType( "ue", 4 );
-        cy.eventsWithEventType( "pv", 2 );
+        cy.eventsWithEventType( "ue", 7 );
+        cy.eventsWithEventType( "pv", 3 );
 
     });
 
 
-    // // matching unstructured events
-    // it( 'assertions on unstructured events', () => {
+    // checking form events
+    it( 'assertions on form events', () => {
 
-    //     const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
 
-    //     // different ways to assert similar things
+        const focusFormSchema = "iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0";
+        const changeFormSchema = "iglu:com.snowplowanalytics.snowplow/change_form/jsonschema/1-0-0";
+        const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
 
-    //     // 1. just with schema
-    //     cy.eventsWithSchema( submitFormSchema, 1 );
 
-    //     // 2. with schema and values
-    //     cy.eventsWithProperties( {
+        // different ways to assert similar things
 
-    //         "schema": submitFormSchema,
-    //         "values": {
+        // 1. just with schema
+        cy.eventsWithSchema( submitFormSchema, 1 );
 
-    //             "elements": [{
+        // 2. with schema and values
+        cy.eventsWithProperties( {
 
-    //                 "name": "user_email",
-    //                 "value": "john.doe@fake.com",
+            "schema": changeFormSchema,
+            "values": {
+                "type": "email",
+                "value": "fake@email.com",
+            }
 
-    //             }]
+        }, 1 );
 
-    //         }
+        // 3. also without the schema key in event_options
+        // NOTE: we are expecting this to match only with focus_form and change_form events
+        //       and not with the submit_form one.
+        //       The reason is that the submit_form schema,
+        //       wraps the inputs' values in an array ("elements"). See below.
+        cy.eventsWithProperties( {
 
-    //     }, 1 );
+            "values": {
+                    "elementId": "user_email",
+            }
 
-    //     // 3. also without the schema key in event_options
-    //     cy.eventsWithProperties( {
+        }, 2 );
 
-    //         "values": {
+        // 4. matching a submit form
+        cy.eventsWithProperties( {
 
-    //             "elements": [{
+            "schema": submitFormSchema,
+            "values": {
+                "elements": [
+                    {
+                        "name": "user_email",
+                        "value": "fake@email.com",
+                    }
+                ]
+            }
 
-    //                 "value": "MyCity",
+        }, 1 );
 
-    //             }]
+        // 5. checking that password field was never tracked
+        // 5.1 - for submit_form
+        cy.eventsWithProperties( {
 
-    //         }
+            "schema": submitFormSchema,
+            "values": {
+                "elements": [
+                    {
+                        "name": "user_password",
+                    }
+                ]
+            }
 
-    //     }, 1 );
+        }, 0 );
 
-    //     // 4. matching multiple input fields of a form
-    //     cy.eventsWithProperties( {
+        // 5.2 - for change_form and focus_form
+        cy.eventsWithProperties( {
 
-    //         "schema": submitFormSchema,
-    //         "values": {
+            "values": {
+                "name": "user_password",
+            }
 
-    //             "elements": [
-    //                 {
-    //                     "name": "user_email",
-    //                     "value": "john.doe@fake.com",
-    //                 },
-    //                 {
-    //                     "name": "user_city",
-    //                     "value": "MyCity"
-    //                 },
-    //                 {
-    //                     "value":"John"
-    //                 }
-    //             ]
-    //         }
+        }, 0 );
 
-    //     }, 1 );
-
-    // });
+    });
 
 
     // assertion with context
@@ -90,7 +102,7 @@ context( 'testing 01_micro_spec', () => {
 
         const web_page_schema = "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0";
 
-        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 6 );
+        cy.eventsWithContexts( [ { "schema": web_page_schema } ], 10 );
 
     });
 

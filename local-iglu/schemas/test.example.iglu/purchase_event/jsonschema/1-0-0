@@ -2,17 +2,20 @@
 	"$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
 	"description": "Schema for a purchase event",
 	"self": {
-		"vendor": "com.example",
-		"name": "purchase",
+		"vendor": "test.example",
+		"name": "purchase_event",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
 	"type": "object",
 	"properties": {
-        "total": {
-                  "type": "number",
-                  "minimum": 1
+                "total": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100000,
+                        "multipleOf": 0.01
                 }
 	},
+        "required": ["total"],
 	"additionalProperties": false
 }
