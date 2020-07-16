@@ -80,11 +80,11 @@ function quantityChanged(event) {
 
 function addToCartClicked(event) {
     var button = event.target
-    var shopItem = button.parentElement.parentElement
+    var shopItem = button.parentElement.parentElement.parentElement
     var title = shopItem.getElementsByClassName('product-title')[0].innerText
 
     var price = shopItem.getElementsByClassName('product-price')[0].innerText.replace(/[^\d.-]/g, '')
-    var imageSrc = shopItem.getElementsByClassName('product_img')[0].src
+    var imageSrc = shopItem.getElementsByClassName('product-img')[0].src
 
     var quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value
     quantity = quantity ? quantity : 1;

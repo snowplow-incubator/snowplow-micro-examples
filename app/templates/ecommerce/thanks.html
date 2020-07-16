@@ -25,7 +25,7 @@
               n.src = w;
               g.parentNode.insertBefore(n, g)
           }
-      }(window, document, "script", "{% static 'ecommerce/sp.js' %}", "snowplow"));
+      }(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 
       window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
 

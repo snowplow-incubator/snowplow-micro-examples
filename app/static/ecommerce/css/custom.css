@@ -1,0 +1,9 @@
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}
+
+.cart-img{
+  height: 50px;
+  width: 50px;
+}

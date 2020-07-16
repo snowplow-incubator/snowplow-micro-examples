@@ -1,16 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <!-- Bootstrap core CSS -->
+  <link href={% static 'ecommerce/css/bootstrap.min.css' %} rel="stylesheet">
 
-    <title>Shopping Spree</title>
-    <script src="/static/ecommerce/homepage.js" async></script>
+  <!-- Custom fonts for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href={% static 'ecommerce/css/one-page-wonder.min.css' %} rel="stylesheet">
+  <link href={% static 'ecommerce/css/custom.css' %} rel="stylesheet">
+
+    <script src="/static/ecommerce/js/homepage.js" async></script>
     <script type="text/javascript">
-
       ;(function (p, l, o, w, i, n, g) {
           if (!p[i]) {
               p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
@@ -25,7 +35,7 @@
               n.src = w;
               g.parentNode.insertBefore(n, g)
           }
-      }(window, document, "script", "{% static 'ecommerce/sp.js' %}", "snowplow"));
+      }(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 
       window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
 
@@ -50,78 +60,106 @@
     </script>
     <!-- Snowplow stops plowing -->
     <script type="text/javascript">
-
     </script>
 </head>
 
 <body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">Snowplow Example App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
 
-  <div class="sticky-top">
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+      <h1 class="masthead-heading mb-0">Shopping Spree!</h1>
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+
+<!--  <div class="sticky-top">
     <div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0; max-height:100px;">
       <h1>Shopping Spree!</h1>
     </div>
     <nav class="navbar bg-dark navbar-dark">
       <a class="navbar-brand" href="#">SNOWPLOW</a>
     </nav>
+  </div>-->
+<div class="row">
+  <div class="col-xs-6">
+  <div class="col-lg-8 shop-items">
+    {% for product in product_list %}
+    <section>
+      <div class="container">
+        <div class="row align-items-left shop-item">
+          <div class="col-lg-6 order-lg-2">
+            <div class="p-5">
+              <img class="img-fluid rounded-circle product-img" src="/static/ecommerce/images/{{ product.image_name }}" alt="">
+            </div>
+          </div>
+          <div class="col-lg-6 order-lg-1">
+            <div class="p-5">
+              <h2 class="display-4 product-title">{{ product.name }}</h2>
+              <p class="product-sku" style="display:none;">{{ product.sku }}</p>
+              <p>
+                <label>Quantity</label>
+                <!-- ** -->
+                <select class="cart-quantity-input">
+                  <option value="" selected disabled hidden>Choose here</option>
+                  {% for quantity in product.quantity %}
+                  <option value = "{{ quantity }}">{{ quantity }}</option>
+                  {% endfor %}
+                </select>
+              </p>
+              <p class="product-price">£ {{ product.price }}</p>
+              <button class="btn btn-primary shop-item-button" test-id="add-btn-{{ product.id }}"type="button">ADD TO CART</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endfor %}
   </div>
+
+  </div>
+<div class="col-xs-6">
+  <div class="" style="overflow-y:scroll; height:100%">
 
   <div class="container">
-    <div class="row">
-
-      <div class="col-lg-8 shop-items">
-        {% for product in product_list %}
-        <!-- Product Detail -->
-        <div class="wrapper">
-          <div class = "shop-item">
-          <input type="image" class="product_img" src="/static/ecommerce/images/{{ product.image_name }}">
-          <div class="container content-selection">
-            <h2 class ="section-header"> Shopping Spree!</h2>
-
+        <div class="cart-row">
+          <div class="col-xs-6">
+            <h1 class="section-header display-4">CART</h1>
           </div>
-          <div class="product-sku" style="display:none;">{{ product.sku }}</div>
-          <div class="product-id" style="display:none;">{{ product.id }}</div>
-          <div class="product-title">{{ product.description }}</div>
-            <p>
-              <label>Quantity</label>
-              <!-- ** -->
-
-              <select class="cart-quantity-input" test-id="shop-select-quant-{{ product.id }}">
-                <option value="" selected disabled hidden>Choose here</option>
-                {% for quantity in product.quantity %}
-                <option value = "{{ quantity }}">{{ quantity }}</option>
-                {% endfor %}
-              </select>
-            </p>
-            <span class="product-price">£ {{ product.price }}</span>
-            <button class="btn btn-primary shop-item-button" test-id="add-btn-{{ product.id }}"type="button">ADD TO CART</button>
+          <div class="col-xs-6">
+            <img class="img-fluid cart-img" src="/static/ecommerce/images/cart.png" alt="">
           </div>
         </div>
-        {% endfor %}
-      </div>
-
-      <div class="col-lg-4">
-        <div style="position:fixed;bottom:5%;top:40%;">
-          <div class="" style="overflow-y:scroll; height:100%">
-            <h2 class="section-header">CART</h2>
-            <div class="cart-row">
-              <span class="cart-item cart-header cart-column">ITEM</span>
-              <span class="cart-price cart-header cart-column">PRICE</span>
-              <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-            </div>
-            <div class="cart-items">
-            </div>
-            <div class="cart-total">
-              <strong class="cart-total-title">Total</strong>
-              <span class="cart-total-price">£ 0</span>
-            </div>
-            <button class="btn btn-primary btn-purchase" type="button">PURCHASE
-            </button>
+          <div class="cart-items">
           </div>
-        </div>
-      </div>
-
-    </div>
+          <div class="cart-total">
+            <strong class="cart-total-title">Total</strong>
+            <span class="cart-total-price">£ 0</span>
+          </div>
+          <button class="btn btn-primary btn-purchase" type="button">PURCHASE
+          </button>
   </div>
+</div>
+</div>
+</div>
+
+<!-- Bootstrap core JavaScript -->
+<script src={% static 'ecommerce/js/jquery.min.js' %}></script>
+<script src={% static 'ecommerce/js/bootstrap.bundle.min.js' %}></script>
 
 </body>
 

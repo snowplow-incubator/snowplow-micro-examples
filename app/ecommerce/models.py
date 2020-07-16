@@ -3,11 +3,11 @@ from django.db import models
 # Create your models here.
 
 class ViewProductItem:
-    def __init__(self, id, sku, image_name, description, quantity, colours, price, currency):
+    def __init__(self, id, sku, image_name, name, quantity, colours, price, currency):
         self.id = id
         self.sku = sku
         self.image_name = image_name
-        self.description = description
+        self.name = name
         self.quantity = range(1, quantity + 1)
         self.colours = colours
         self.price = price
@@ -17,7 +17,7 @@ productDB = [
         {"id": "1",
          "sku": "hh123",
          "image_name": "hat.jpg",
-         "description": "One-size summer hat",
+         "name": "One-size summer hat",
          "quantity": 4,
          "colours":["Black", "White"],
          "price": 15.50,
@@ -25,7 +25,7 @@ productDB = [
         {"id" : "2",
          "sku": "hh456",
          "image_name": "green_hat.jpg",
-         "description": "One-size bucket hat",
+         "name": "One-size bucket hat",
          "quantity": 4,
          "colours":["Green", "Blue", "Yellow"],
          "price": 24.49,
@@ -33,7 +33,7 @@ productDB = [
         {"id":"3",
          "sku": "bb123",
          "image_name": "bag.jpg",
-         "description": "Plain tote bag ",
+         "name": "Plain tote bag ",
          "quantity": 4,
          "colours":["Black", "White"],
          "price": 20.50,
@@ -43,7 +43,7 @@ productDB = [
 def retrieveProducts():
     product_items = []
     for db_item in productDB:
-        product_items.append(ViewProductItem(db_item["id"], db_item["sku"], db_item["image_name"], db_item["description"], db_item["quantity"], db_item["colours"], db_item["price"], db_item["currency"]))
+        product_items.append(ViewProductItem(db_item["id"], db_item["sku"], db_item["image_name"], db_item["name"] , db_item["quantity"], db_item["colours"], db_item["price"], db_item["currency"]))
     return product_items
 
 
