@@ -25,7 +25,7 @@ jobs:
       - name: Start Micro
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          docker compose up &
+          docker-compose up &
 
       - name: Wait on port 9090
         run: while ! nc -z localhost 9090; do sleep 0.1; done
