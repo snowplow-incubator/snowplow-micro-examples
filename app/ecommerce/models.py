@@ -45,21 +45,3 @@ def retrieveProducts():
     for db_item in productDB:
         product_items.append(ViewProductItem(db_item["id"], db_item["sku"], db_item["image_name"], db_item["name"] , db_item["quantity"], db_item["colours"], db_item["price"], db_item["currency"]))
     return product_items
-
-
-shipDB = {
-    "UK": 10.0,
-    "USA": 15.0,
-    "Spain": 10.0,
-    "Argentina": 15.0,
-    "Mexico": 15.0,
-    "Australia": 20.0,
-    "China": 20.0,
-    "Japan": 20.0
-}
-
-def calcShippingCost(key):
-    if key in shipDB:
-        return shipDB[key]
-    else:
-        return 5.0

@@ -74,9 +74,9 @@
   </div>
 </nav>
 
-<header class="masthead text-center text-white">
+<header class="masthead text-center text-white" style="max-height:100px;">
   <div class="masthead-content">
-    <div class="container">
+    <div class="container" style="top:50%;transform:translateY(-50%);">
       <h1 class="masthead-heading mb-0">Shopping Spree!</h1>
     </div>
   </div>
@@ -93,27 +93,28 @@
     <nav class="navbar bg-dark navbar-dark">
       <a class="navbar-brand" href="#">SNOWPLOW</a>
     </nav>
-  </div>-->
+</div>-->
 <div class="row">
-  <div class="col-xs-6">
+  <div class="col-xs-6" style="margin-left:200px;">
   <div class="col-lg-8 shop-items">
     {% for product in product_list %}
     <section>
-      <div class="container">
+      <div class="container" style="border-bottom:1px solid lightgrey;">
         <div class="row align-items-left shop-item">
           <div class="col-lg-6 order-lg-2">
             <div class="p-5">
-              <img class="img-fluid rounded-circle product-img" src="/static/ecommerce/images/{{ product.image_name }}" alt="">
+              <img class="img-fluid rounded-circle product-img" src="/static/ecommerce/images/{{ product.image_name }}" alt="" style="border:1px solid lightgrey;">
             </div>
           </div>
           <div class="col-lg-6 order-lg-1">
             <div class="p-5">
               <h2 class="display-4 product-title">{{ product.name }}</h2>
               <p class="product-sku" style="display:none;">{{ product.sku }}</p>
+              <p class="product-id" style="display:none;">{{ product.id }}</p>
               <p>
                 <label>Quantity</label>
                 <!-- ** -->
-                <select class="cart-quantity-input">
+                <select class="cart-quantity-input" test-id="shop-select-quant-{{ product.id }}">
                   <option value="" selected disabled hidden>Choose here</option>
                   {% for quantity in product.quantity %}
                   <option value = "{{ quantity }}">{{ quantity }}</option>
@@ -130,14 +131,14 @@
     </section>
     {% endfor %}
   </div>
-
   </div>
+
 <div class="col-xs-6">
-  <div class="" style="overflow-y:scroll; height:100%">
+  <!-- <div style="overflow-y:scroll;height:100%;"> -->
 
   <div class="container">
         <div class="cart-row">
-          <div class="col-xs-6">
+          <div class="col-xs-6" style="margin-top:150px;">
             <h1 class="section-header display-4">CART</h1>
           </div>
           <div class="col-xs-6">
@@ -153,7 +154,7 @@
           <button class="btn btn-primary btn-purchase" type="button">PURCHASE
           </button>
   </div>
-</div>
+<!-- </div> -->
 </div>
 </div>
 
