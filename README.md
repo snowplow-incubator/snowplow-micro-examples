@@ -165,9 +165,9 @@ So, following on the 3 test's phases:
 1. Preparing state:
     1. Reset Micro
     2. Configure Cypress to visit your app
-2. Actions
+2. Actions:
     Cypress interacts with the app creating events
-3. Assertions
+3. Assertions:
     Cypress sends requests to Micro, and attempts assertions on the responses
 
 
@@ -176,11 +176,15 @@ So, following on the 3 test's phases:
 
 Another Cypress' recommendation for best [practices](https://docs.cypress.io/guides/references/best-practices.html#Having-tests-rely-on-the-state-of-previous-tests) is the decoupling of tests, which, for the case of testing with Snowplow Micro, would mean to run both the state-changing and the micro-requests in the same spec file.
 However, there were some issues in doing so. More specifically, those issues had only to do with cases where links (or submit buttons) were clicked, in other words in cases where a window [unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) was fired.
+
 To describe the issue, we first describe what normally happens upon an unload event:
 When a user clicks, for example, a link, on one hand the browser wants to navigate on the link, and on the other hand, the tracker (in our case the [Javascript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker)) tries to send the [link click](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#39-link-click-tracking) or the [submit form](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking) events, while also storing them in local storage, just in case the events don't get sent before the page unloads.
 While it is normal for browsers to cancel all requests, a cancelled request does not necessarily mean that the request did not reach the server, but that the client sending it, does not wait for an answer anymore. So, there is no way to know from client side whether the request (be it POST or GET) succeeded.
-That problem was especially apparent when Micro was being queried in the same spec file with the app's actions. For example, POST requests appeared as cancelled in Cypress' test runner, but the events may reached Micro.
-Taking advantage of the fact that Cypress also clears browser cache when it changes spec file, we decided to move the testing part of Micro into separate spec files. The consequences of this decision are:
+
+That problem was especially apparent when Micro was being queried in the same spec file with the app's actions. For example, POST requests appeared as cancelled in Cypress' test runner, but the events may have reached Micro.
+Taking advantage of the fact that Cypress also clears browser cache when it changes spec file, we decided to move the testing part of Micro into separate spec files.
+
+The consequences of this decision are:
 1. You need to ensure a naming strategy, and the reason for this is the fact that Cypress decides the order of execution for test files based on alphabetical order. In this example, we use this naming strategy:
  - `xx_app_spec.js` for the spec files that visit the app and create events
  - `xx_micro_spec.js` for the spec files that query micro and make the assertions on events
@@ -218,11 +222,10 @@ Example call:
 
 ```
     cy.noBadEvents();
-
 ```
 Arguments: None
 
-Even if this is the only thing that you check in your tests, you are already brilliant. It is going to ensure that your app is not sending any bad events, in other words you ensure that all your events end up in your warehouse. There are no more gaps in your data or in your analytics and no recovery jobs to get those bad events back, jobs that are not going to be trivial especially if you are dealing with high volume of events.
+Even if this is the only thing that you check in your tests, you are already brilliant. It is going to ensure that your app is not sending any bad events, in other words you ensure that all your events end up in your warehouse. There are no more gaps in your data or in your analytics and no recovery jobs to get those bad events back, jobs that are not going to be trivial, especially if you are dealing with high volume of events.
 
 #### numGoodEvents
 Example call:
@@ -233,7 +236,7 @@ cy.numGoodEvents( 19 );
 Arguments:
  - int >= 0, the number of good events you expect
 
-This commands ensures that all the events you want to track, actually get tracked. Because there may be not bad events, but maybe your tracker is not implemented correctly into the app's logic.
+This command ensures that all the events you want to track, actually get tracked. Because there may be not bad events, but maybe your tracker is not implemented correctly into the app's logic.
 
 #### eventsWithEventType
 Example call:

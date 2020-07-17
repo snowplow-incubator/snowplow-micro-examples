@@ -11,38 +11,24 @@
 
     <!-- Snowplow starts plowing -->
     <script type="text/javascript">
-      ;(function (p, l, o, w, i, n, g) {
-          if (!p[i]) {
-              p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
-              p.GlobalSnowplowNamespace.push(i);
-              p[i] = function () {
-                  (p[i].q = p[i].q || []).push(arguments)
-              };
-              p[i].q = p[i].q || [];
-              n = l.createElement(o);
-              g = l.getElementsByTagName(o)[0];
-              n.async = 1;
-              n.src = w;
-              g.parentNode.insertBefore(n, g)
-          }
-      }(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
+    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+    n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 
-      window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+    window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+        encodeBase64: false,
+        appId: 'sh0pspr33',
+        platform: "web",
+        discoverRootDomain: true,
+        eventMethod: "beacon",
+        contexts : {
+            webPage: true
+        }
+    });
 
-          encodeBase64: false,
-          appId: 'sh0pspr33',
-          platform: "web",
-          discoverRootDomain: true,
-          eventMethod: "beacon", // "post", "get", "beacon"
-          contexts : {
-              webPage: true
-          }
-
-      });
-
-      window.snowplow('setUserId', 'tester');
-      window.snowplow('trackPageView');
-
+    window.snowplow('setUserId', 'tester');
+    window.snowplow('trackPageView');
     </script>
     <!-- Snowplow stops plowing -->
 

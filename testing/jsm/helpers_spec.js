@@ -1,3 +1,5 @@
+// to run this spec file move it to cypress/integration directory
+
 import * as Micro from '../../jsm/helpers.js';
 
 

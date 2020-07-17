@@ -19,13 +19,9 @@ from django.urls import path, re_path
 from ecommerce import views
 
 urlpatterns = [
-    path('', views.startPage),
+    path('', views.indexPage),
     path('login/', views.logredir),
-    path('index/', views.IndexView.as_view(), name='index'),
+    path('shop/', views.ShopView.as_view(), name='shop'),
     path('thanks/', views.sayThanks),
     path('admin/', admin.site.urls),
 ]
-
-# urlpatterns += [
-#     re_path(r'^checkout/$', views.checkout)
-# ]
