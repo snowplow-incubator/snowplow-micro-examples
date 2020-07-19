@@ -1,12 +1,12 @@
 # snowplow-micro-examples
 Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies
 
-![Snowplow Micro examples with Nightwatch and Cypress](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/Snowplow%20Micro%20examples%20with%20Nightwatch%20and%20Cypress/badge.svg)
+![testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
 
 
 ## 1. Local setup
 
-#### 1.1 Prerequisites
+### 1.1 Prerequisites
 We recommend setting up the following two tools before starting:
 
  - Docker and Docker-compose
@@ -14,7 +14,7 @@ We recommend setting up the following two tools before starting:
  - Python 3 and pip
 
 
-#### 1.2 Clone this repository and start Snowplow Micro
+### 1.2 Clone this repository and start Snowplow Micro
 
 ```
 $ git clone https://github.com/snowplow-incubator/snowplow-micro-examples.git
@@ -22,10 +22,9 @@ $ git clone https://github.com/snowplow-incubator/snowplow-micro-examples.git
 $ cd snowplow-micro-examples
 
 $ docker-compose up
-
 ```
 
-This essentially pulls Micro's docker image, mounts the `micro` and `local-iglu` folders in the Docker container and sets the port 9090 for access.
+This will pull Micro's docker image, mount the `micro` and `local-iglu` folders in the Docker container and set the port 9090 for access.
 1. Inside the `micro` folder are the [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and the [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json).
 2. The `local-iglu` folder, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
 
@@ -35,14 +34,14 @@ This essentially pulls Micro's docker image, mounts the `micro` and `local-iglu`
 
 Now [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is up on localhost:9090 offering the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
 
-Additional resources:
+**Additional resources**:
  - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
  - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
  - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
  - Another [Docker Compose Example](https://github.com/snowplow/iglu/blob/release/0.6.0/2-repositories/iglu-server/docker/docker-compose.yml)
 
 
-#### 1.3 Install dependencies and start serving the app
+### 1.3 Install dependencies and start serving the app
 
 ```
 $ pwd
@@ -53,30 +52,26 @@ $ pip3 install -r app/requirements.txt
 $ python3 app/manage.py runserver 8000
 
 $ npm install
-
 ```
 You can now visit the app on http://localhost:8000 . You can then see the events being tracked from the app on [Micro's API endpoints](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api).
 
 
-#### 1.4 Run the tests
+### 1.4 Run the tests
 
 To quickly see the tests running:
 
 For [Nightwatch](https://nightwatchjs.org/):
 ```
 $ npm test
-
 ```
 
 For [Cypress](https://www.cypress.io/):
 ```
 $ npm run cypress:run
-
 ```
 And to open Cypress' Test Runner:
 ```
 $ npm run cypress:open
-
 ```
 
 
@@ -98,7 +93,7 @@ This repo therefore shows you how to set up trackers, how to make customised (un
 7) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
 
 
-## 2.1 Setting up Nightwatch
+### 2.1 Setting up Nightwatch
 Powered by Node.js, Nightwatch.js is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
 
 This framework relies on Selenium and provides several commands and assertions within the framework to perform operations on the DOM elements.
@@ -131,7 +126,7 @@ npm test
 ```
 
 
-## 2.2 Snowplow Micro and Cypress
+### 2.2 Snowplow Micro and Cypress
 
 [Cypress](https://www.cypress.io/) is an open [source](https://github.com/cypress-io/cypress) JavaScript End-to-End testing framework with extensive [documentation](https://docs.cypress.io/).
 In this section we note few things that are specifically related to using this test tool with Snowplow Micro, describe the rationale behind the tests' organization used in this example and document the commands used.
@@ -158,7 +153,6 @@ For example:
         url: 'http://localhost:9090/micro/all',
         json:true
     });
-
 ```
 
 So, following on the 3 test's phases:
@@ -189,6 +183,19 @@ The consequences of this decision are:
  - `xx_app_spec.js` for the spec files that visit the app and create events
  - `xx_micro_spec.js` for the spec files that query micro and make the assertions on events
 , where `xx` stands for numbering (but it could be anything as long as it matches uniquely).
+
+```
+$ tree testing/cypress/integration
+
+testing/cypress/integration/
+├── 01_app_spec.js
+├── 01_micro_spec.js
+├── 02_app_spec.js
+├── 02_micro_spec.js
+├── 03_app_spec.js
+├── 03_micro_spec.js
+```
+
 2. You need to consider how and when you reset Micro. We chose to use a Before [hook](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Hooks) in the start of every `xx_app_spec.js` file, since the naming strategy ensures that the tests will run in `app`-`micro` pairs.
 3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and also run the corresponding micro spec file. The script can be seen in [package.json](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/package.json).
 
@@ -200,13 +207,13 @@ $ npm run cypress:run
 
 2. To run an app-micro pair of spec files given a name pattern
 ```
-PAIR_PATTERN=03 npm run cy-micro:pair-run
+PAIR_PATTERN=03 npm run cy-micro:pair-run  # will run first the 03_app_spec.js and then the 03_micro_spec.js
 ```
 Just make sure that this name pattern is unique for this pair.
 
-This kind of organization also has the benefit, that you can keep having the tests you had normally for your app (just adding the resetMicro before hook), and just add a corresponding micro-spec file, to test the events emitted from the original run of the test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
+This kind of organization also has the benefit, that you can keep having the tests you had normally for your app (just adding the before-hook to reset Micro), and just add a corresponding micro-spec file, to test the events emitted from the original run of the test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
 
-Additional resources:
+**Additional resources**:
 1. [a cypress issue describing a similar situation](https://github.com/cypress-io/cypress/issues/2968)
 2. [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
 3. From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
@@ -217,43 +224,46 @@ Additional resources:
 
 Since Cypress allows to define your own [custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html), in this repo you can find commands specifically for use with Snowplow Micro and assertions of events. You can see them all in [commands.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/support/commands.js).
 
-#### noBadEvents
-Example call:
+#### .noBadEvents
+
+*Example call*:
 
 ```
     cy.noBadEvents();
 ```
-Arguments: None
+*Arguments*: None
 
 Even if this is the only thing that you check in your tests, you are already brilliant. It is going to ensure that your app is not sending any bad events, in other words you ensure that all your events end up in your warehouse. There are no more gaps in your data or in your analytics and no recovery jobs to get those bad events back, jobs that are not going to be trivial, especially if you are dealing with high volume of events.
 
-#### numGoodEvents
-Example call:
+#### .numGoodEvents
+
+*Example call*:
 
 ```
 cy.numGoodEvents( 19 );
 ```
-Arguments:
+*Arguments*:
  - int >= 0, the number of good events you expect
 
 This command ensures that all the events you want to track, actually get tracked. Because there may be not bad events, but maybe your tracker is not implemented correctly into the app's logic.
 
-#### eventsWithEventType
-Example call:
+#### .eventsWithEventType
+
+*Example call*:
 
 ```
     cy.eventsWithEventType( "pv", 8 );
     cy.eventsWithEventType( "se", 45 );
-
 ```
-Arguments:
+*Arguments*:
  - string, the eventType you want to match against
  - int >= 0, the number of matching events you expect
 
 This command is useful when you want to ensure that a particular type of events got tracked as many times as it should.
 
-#### eventsWithParams
-Example call:
+#### .eventsWithParams
+
+*Example call*:
 
 ```
     cy.eventsWithParams(
@@ -265,27 +275,28 @@ Example call:
         }, 3 );
 
 ```
-Arguments:
+*Arguments*:
  - Object (parameter-value pairs)
  - int >= 0, the number of matching events you expect
 
 This command accepts as first argument an object with parameter-value pairs. You can see all available parameters in the [Snowplow Tracker Protocol](). This command is particularly useful when checking on [structured events]().
 
-#### eventsWithSchema
-Example call:
+#### .eventsWithSchema
+
+*Example call*:
 
 ```
     cy.eventsWithSchema( "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0", 5 );
-
 ```
-Arguments:
+*Arguments*:
  - string, the Schema you are looking for
  - int >= 0, the number of matching events you expect
 
  With this command you can look specifically for [unstructured events](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/understanding-schemas-and-validation/), which include both custom unstructured [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#310-custom-unstructured-event-tracking) and all other default Snowplow events that are of "ue" eventType (link-click, submit-form ad-impression etc.)
 
-#### eventsWithContexts
-Example call:
+#### .eventsWithContexts
+
+*Example call*:
 
 ```
     cy.eventsWithContexts( [ { "schema": "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0" } ], 10 );
@@ -310,16 +321,16 @@ Example call:
                     }
                 }
             ], 2 );
-
 ```
-Arguments:
+*Arguments*:
  - Array of contexts (see below)
  - int >= 0, the number of matching events you expect
 
 With this command you can check whether the predefined(e.g. webpage, geolocation) or [custom](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#4-custom-contexts) contexts/entities got properly attached to events. You can not only check by the schema of the entities but also by their data. Note that the first argument to this command should be an array of objects, like the contexts' array that can be attached to any Snowplow event. The keys of these objects can be either "schema" or "data". For "schema" the value should be a string (the schema). For "data" the value should be an object of key-value pairs, depending on the context.
 
-#### eventsWithProperties
-Example call:
+#### .eventsWithProperties
+
+*Example call*:
 ```
     cy.eventsWithProperties({
 
@@ -347,7 +358,7 @@ Example call:
         }, 1 );
 
 ```
-Arguments:
+*Arguments*:
  - Object with specific keys (see below)
  - int >= 0, the number of matching events you expect
 
@@ -361,11 +372,34 @@ It will return the events that have all those properties.
 As shown in the examples above, you do not have to use all the properties, and the command works accordingly.
 
 
-#### 2.2.4 Some notes on how to use
+#### 2.2.4 Some further notes
 
-1. As you can see in the `commands.js` file, the commands are defined based on the `Micro` helper module, which you can find [here](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/jsm/helpers.js), together with a [spec file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/jsm/helpers_spec.js) that describes what to expect to be matched. You can put this file into `cypress/integration` folder and run it normally, which means that you can tweak the helper functions to suit your matching logic best, and then test them to see if so.
-2. Also note, that you don't have to set `encodeBase64: false`, in order for the above commands to work.
-3. Concerning environment variables, Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set. In this example we chose to set them in the `plugins/index.js` file [here](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/plugins/index.js).
+```
+$ tree testing/cypress/
+
+testing/cypress/
+├── integration
+│   ├── 01_app_spec.js
+│   ├── 01_micro_spec.js
+│   ├── 02_app_spec.js
+│   ├── 02_micro_spec.js
+│   ├── 03_app_spec.js
+│   ├── 03_micro_spec.js
+│   └── helpers_spec.js
+├── plugins
+│   └── index.js
+└── support
+    ├── commands.js
+    └── index.js
+```
+
+1. Helpers
+    - In the `commands.js` file, the commands are defined based on the `Micro` [helper module](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/jsm/helpers.js)
+    - The `integration/helpers_spec.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/integration/helpers_spec.js) tests the helper functions that define the matching logic. For a different custom matching logic, you can tweak the helper functions, and then test them.
+    - As a note, you don't need to set `encodeBase64: false` in your tracker configuration [parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/general-parameters/initializing-a-tracker-2/), in order for the matching to work.
+
+2. Environment variables.
+    - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/plugins/index.js).
 
 
 

@@ -40,30 +40,25 @@ function removeCartItem(event) {
     const sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
 
     // cart_action_event
-    window.snowplow('trackSelfDescribingEvent',
-                    {
-                        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                        data: {
-                            type: "remove"
-                            }
-                    },
-                    [ {
-                        schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                        data: {
-                            sku: sku,
-                            name: title,
-                            price : parseFloat(price),
-                            quantity : parseInt(quantity)
-                        }
-                    } ]
-                   );
+    window.snowplow('trackSelfDescribingEvent', {
+            schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+            data: {
+                type: "remove"
+            }
+        },
+        [{
+            schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+            data: {
+                sku: sku,
+                name: title,
+                price: parseFloat(price),
+                quantity: parseInt(quantity)
+            }
+        }]
+    );
 
     // remove the item also from userCart (assuming there is a single item to be removed)
-    userCart.forEach( function (elt, idx) {
-        if ( sku === elt['itemSku'] ) {
-            userCart.splice(idx, 1);
-        }
-    });
+    remItFromCart(sku, userCart);
 
     buttonClicked.parentElement.parentElement.remove();
 
@@ -127,27 +122,26 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
         itemTitle: title,
         itemPrice: parseFloat(price),
         itemQuant: quantity === "" ? 1 : parseInt(quantity),
-        itemSku : sku
+        itemSku: sku
     });
 
     // cart_action_event
-    window.snowplow('trackSelfDescribingEvent',
-                    {
-                        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                        data: {
-                            type: "add",
-                        }
-                    },
-                    [ {
-                        schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                        data: {
-                            sku: sku,
-                            name: title,
-                            price: parseFloat(price),
-                            quantity: parseInt(quantity)
-                        }
-                    } ]
-                   );
+    window.snowplow('trackSelfDescribingEvent', {
+            schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+            data: {
+                type: "add",
+            }
+        },
+        [{
+            schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+            data: {
+                sku: sku,
+                name: title,
+                price: parseFloat(price),
+                quantity: parseInt(quantity)
+            }
+        }]
+    );
 
 }
 
@@ -164,34 +158,29 @@ function updateCartTotal() {
         let quantity = quantityElement.value;
         total = total + (price * quantity);
 
-        let title = cartRow.getElementsByClassName('cart-item-title')[0];
-
         // also update userCart just in case quantity changed
-        userCart.forEach( function (elt) {
-            if (title.innerText === elt['itemTitle']) {
-                elt['itemQuant'] = parseInt(quantity);
-            }
-        });
+        let sku = cartRow.getElementsByClassName('cart-item-sku')[0].innerText;
+        updateCartQuant(userCart, sku, quantity);
     }
     total = Math.round(total * 100) / 100;
     document.getElementsByClassName('cart-total-price')[0].innerText = '£' + total;
 }
 
-function toThanks () {
+function toThanks() {
     if (userCart.length === 0) {
         alert("No items in your basket");
         return;
     } else {
         // create the contexts array
         let productsContext = [];
-        userCart.forEach( function (elt) {
+        userCart.forEach(function(elt) {
             productsContext.push({
                 schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
                 data: {
-                    sku: elt['itemSku'],
-                    name: elt['itemTitle'],
-                    price: parseFloat(elt['itemPrice']),
-                    quantity : elt['itemQuant']
+                    sku: elt.itemSku,
+                    name: elt.itemTitle,
+                    price: parseFloat(elt.itemPrice),
+                    quantity: parseInt(elt.itemQuant)
                 }
             });
         });
@@ -199,15 +188,30 @@ function toThanks () {
         let total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
 
         // purchase_event
-        window.snowplow('trackSelfDescribingEvent',
-                        {
-                            schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
-                            data : {
-                                total : parseFloat(total)
-                            }
-                        },
-                        productsContext);
+        window.snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
+                data: {
+                    total: parseFloat(total)
+                }
+            },
+            productsContext);
 
         window.location.href = 'http://' + window.location.host + '/thanks/';
     }
+}
+
+function updateCartQuant(cart, itSku, newQuant) {
+    cart.forEach(function(elt) {
+        if (itSku === elt.itemSku) {
+            elt.itemQuant = parseInt(newQuant);
+        }
+    });
+}
+
+function remItFromCart(itSku, cart) {
+    cart.forEach(function(elt, idx) {
+        if (itSku === elt.itemSku) {
+            cart.splice(idx, 1);
+        }
+    });
 }

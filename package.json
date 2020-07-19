@@ -9,7 +9,6 @@
                 "cypress:run": "cd testing && cypress run --config-file false",
                 "cy-micro:pair-run": "cd testing && npm run cypress:run -- --spec \"**/integration/*$PAIR_PATTERN*app_spec.js\"",
                 "postcy-micro:pair-run": "cd testing && npm run cypress:run -- --spec \"**/integration/*$PAIR_PATTERN*micro_spec.js\""
-
         },
         "repository": {
                 "type": "git",
@@ -26,5 +25,8 @@
                 "cypress": "^4.10.0",
                 "nightwatch": "^1.3.6"
         },
-        "dependencies": {}
+        "dependencies": {},
+        "jshintConfig": {
+                "esversion": 6
+        }
 }

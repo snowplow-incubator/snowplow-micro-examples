@@ -5,9 +5,10 @@
   <head>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href={% static 'ecommerce/style.css' %}>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <link href={% static 'ecommerce/css/custom.css' %} rel="stylesheet">
 
     <!-- Snowplow starts plowing -->
     <script type="text/javascript">
@@ -51,31 +52,30 @@
 
     <div class="container">
 
-      <div class="jumbotron" style="margin-top:5em;background-color:white;border:2px solid grey;">
+      <div class="jumbotron" style="margin-top:7em;background-color:white;border:2px solid grey;">
 
-      <div class="jumbotron" style="text-align:center;margin-top:5em;">
+      <div class="jumbotron" style="text-align:center;margin-top:2em;">
         <h1>WELCOME</h1>
         <h3>to the Snowplow demo store!</h3>
       </div>
 
-      <div class="row">
+      <div class="row" style="padding-top:2em;">
         <div class="col-lg-4">
         </div>
 
         <div class="col-lg-4">
           <form action="/login">
 
-            <div class="form-group">
-              <legend></legend>
+            <div class="form-group" data-toggle="popover-msg">
 
               <label for="email">Email:</label>
-              <input type="email" class="form-control" id="email" name="user_email" test-id="email-input" required>
+              <input type="email" class="form-control" id="email" name="user_email" test-id="email-input" data-toggle="popover-1" required>
 
               <label for="password">Password:</label>
-              <input type="password" class="form-control" id="password" name="user_password" test-id="password-input" required>
+              <input type="password" class="form-control" id="password" name="user_password" test-id="password-input" data-toggle="popover-2" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="padding-top:1em;">
               <button type="submit" class="btn btn-dark" test-id="submit-button">START SHOPPING</button>
             </div>
 
@@ -88,6 +88,39 @@
 
       </div>
     </div>
+
+    <!-- for Bootstrap Popover -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+
+    <script>
+      $(document).ready(function(){
+          $('[data-toggle="popover-msg"]').popover({
+              trigger: 'manual',
+              container: 'body',
+              placement: 'left',
+              title: 'Important message',
+              content: 'This form is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. You can type anything and continue (We recommend that you don\'t use your personal data).'
+          });
+          $('[data-toggle="popover-1"]').popover({
+              trigger: 'focus',
+              container: 'body',
+              placement: 'right',
+              title: 'e-mail',
+              content: 'Any email-like, e.g. fake@email.com'
+          });
+          $('[data-toggle="popover-2"]').popover({
+              trigger: 'focus',
+              container: 'body',
+              placement: 'right',
+              title: 'password',
+              content: 'Anything, e.g. fakepassword'
+          });
+
+          $('[data-toggle="popover-msg"]').popover('show');
+      })
+    </script>
 
   </body>
 
