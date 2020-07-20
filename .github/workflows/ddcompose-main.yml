@@ -1,0 +1,48 @@
+name: testing with Snowplow Micro
+
+on:
+
+  push:
+    branches:
+      - ddcompose
+
+jobs:
+
+  testing:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: snowplow-micro-examples
+
+      - name: Start Containers
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          docker-compose up -d
+
+      - name: Wait on ports 9090 and 8000
+        run: |
+          while ! nc -z localhost 9090; do sleep 0.1; done
+          while ! nc -z localhost 8000; do sleep 0.1; done
+
+      - name: Npm install
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm install
+
+      - name: Run Nightwatch tests
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm test
+
+      - name: Run Cypress tests
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          npm run cypress:run
