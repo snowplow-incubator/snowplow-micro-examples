@@ -67,7 +67,11 @@ TEMPLATES = [
     },
 ]
 
+<<<<<<< HEAD
 # WSGI_APPLICATION = 'mysite.wsgi.application'
+=======
+#WSGI_APPLICATION = 'mysite.wsgi.application'
+>>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
