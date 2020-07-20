@@ -8,31 +8,19 @@ if (document.readyState === 'loading') {
 }
 
 function ready() {
-<<<<<<< HEAD
-    let removeCartItemButtons = document.getElementsByClassName('btn-danger');
-=======
     const removeCartItemButtons = document.getElementsByClassName('btn-danger');
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
     for (let i = 0; i < removeCartItemButtons.length; i++) {
         let button = removeCartItemButtons[i];
         button.addEventListener('click', removeCartItem);
     }
 
-<<<<<<< HEAD
-    let quantityInputs = document.getElementsByClassName('cart-quantity-input');
-=======
     const quantityInputs = document.getElementsByClassName('cart-quantity-input');
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
     for (let i = 0; i < quantityInputs.length; i++) {
         let input = quantityInputs[i];
         input.addEventListener('change', quantityChanged);
     }
 
-<<<<<<< HEAD
-    let addToCartButtons = document.getElementsByClassName('shop-item-button');
-=======
     const addToCartButtons = document.getElementsByClassName('shop-item-button');
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
     for (let i = 0; i < addToCartButtons.length; i++) {
         let button = addToCartButtons[i];
         button.addEventListener('click', addToCartClicked);
@@ -40,44 +28,9 @@ function ready() {
 
     document.getElementsByClassName('btn-purchase')[0].addEventListener('click', toThanks);
 
-};
+}
 
 function removeCartItem(event) {
-<<<<<<< HEAD
-    let buttonClicked = event.target;
-    let cartItem = buttonClicked.parentElement.parentElement;
-
-    let title = cartItem.getElementsByClassName('cart-item-title')[0].innerText;
-    let price = cartItem.getElementsByClassName('cart-price cart-column')[0].innerText.replace(/[^\d.-]/g, '');
-    let quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value;
-    let sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
-
-    // cart_action_event
-    window.snowplow('trackSelfDescribingEvent',
-                    {
-                        schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
-                        data: {
-                            type: "remove"
-                            }
-                    },
-                    [ {
-                        schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                        data: {
-                            sku: sku,
-                            name: title,
-                            price : parseFloat(price),
-                            quantity : parseInt(quantity)
-                        }
-                    } ]
-                   )
-
-    // remove the item also from userCart (assuming there is a single item to be removed)
-    userCart.forEach( function (elt, idx) {
-        if ( sku === elt['itemSku'] ) {
-            userCart.splice(idx, 1);
-        }
-    })
-=======
     const buttonClicked = event.target;
     const cartItem = buttonClicked.parentElement.parentElement;
 
@@ -106,16 +59,11 @@ function removeCartItem(event) {
 
     // remove the item also from userCart (assuming there is a single item to be removed)
     remItFromCart(sku, userCart);
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
     buttonClicked.parentElement.parentElement.remove();
 
     updateCartTotal();
-<<<<<<< HEAD
-};
-=======
 }
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
 function quantityChanged(event) {
     let input = event.target;
@@ -123,42 +71,19 @@ function quantityChanged(event) {
         input.value = 1;
     }
     updateCartTotal();
-};
+}
 
 function addToCartClicked(event) {
-<<<<<<< HEAD
-    let button = event.target;
-    let shopItem = button.parentElement.parentElement.parentElement;
-    let title = shopItem.getElementsByClassName('product-title')[0].innerText;
-
-    let price = shopItem.getElementsByClassName('product-price')[0].innerText.replace(/[^\d.-]/g, '');
-    let imageSrc = shopItem.getElementsByClassName('product-img')[0].src;
-=======
     const button = event.target;
     const shopItem = button.parentElement.parentElement.parentElement;
     const title = shopItem.getElementsByClassName('product-title')[0].innerText;
 
     const price = shopItem.getElementsByClassName('product-price')[0].innerText.replace(/[^\d.-]/g, '');
     const imageSrc = shopItem.getElementsByClassName('product-img')[0].src;
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
     let quantity = shopItem.getElementsByClassName('cart-quantity-input')[0].value;
     quantity = quantity ? quantity : 1;
 
-<<<<<<< HEAD
-    let sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
-    let id = shopItem.getElementsByClassName('product-id')[0].innerText;
-
-    addItemToCart(title, price, imageSrc, quantity, sku, id);
-    updateCartTotal();
-};
-
-function addItemToCart(title, price, imageSrc, quantity, sku, id) {
-    let cartRow = document.createElement('div');
-    cartRow.classList.add('cart-row');
-    let cartItems = document.getElementsByClassName('cart-items')[0]
-    let cartItemNames = cartItems.getElementsByClassName('cart-item-title');
-=======
     const sku = shopItem.getElementsByClassName('product-sku')[0].innerText;
     const id = shopItem.getElementsByClassName('product-id')[0].innerText;
 
@@ -171,22 +96,17 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
     cartRow.classList.add('cart-row');
     const cartItems = document.getElementsByClassName('cart-items')[0];
     const cartItemNames = cartItems.getElementsByClassName('cart-item-title');
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
     for (let i = 0; i < cartItemNames.length; i++) {
         if (cartItemNames[i].innerText === title) {
             alert('This item is already added to the cart');
             return;
         }
     }
-<<<<<<< HEAD
-    let cartRowContents = `
-=======
     const cartRowContents = `
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
         <div class="cart-item cart-column">
             <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
             <span class="cart-item-title">${title}</span>
-            <span class="cart-item-sku" style="display:none">${sku}</span>
+            <span class="cart-item-sku" style="display:none;">${sku}</span>
         </div>
         <span class="cart-price cart-column">£ ${price}</span>
         <div class="cart-quantity cart-column">
@@ -223,17 +143,12 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
         }]
     );
 
-};
+}
 
 
 function updateCartTotal() {
-<<<<<<< HEAD
-    let cartItemContainer = document.getElementsByClassName('cart-items')[0];
-    let cartRows = cartItemContainer.getElementsByClassName('cart-row');
-=======
     const cartItemContainer = document.getElementsByClassName('cart-items')[0];
     const cartRows = cartItemContainer.getElementsByClassName('cart-row');
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
     let total = 0;
     for (let i = 0; i < cartRows.length; i++) {
         let cartRow = cartRows[i];
@@ -242,21 +157,6 @@ function updateCartTotal() {
         let price = parseFloat(priceElement.innerText.replace(/[^\d.-]/g, ''));
         let quantity = quantityElement.value;
         total = total + (price * quantity);
-<<<<<<< HEAD
-
-        let title = cartRow.getElementsByClassName('cart-item-title')[0];
-
-        // also update userCart just in case quantity changed
-        userCart.forEach( function (elt) {
-            if (title.innerText === elt['itemTitle']) {
-                elt['itemQuant'] = parseInt(quantity);
-            }
-        });
-    }
-    total = Math.round(total * 100) / 100;
-    document.getElementsByClassName('cart-total-price')[0].innerText = '£' + total;
-};
-=======
 
         // also update userCart just in case quantity changed
         let sku = cartRow.getElementsByClassName('cart-item-sku')[0].innerText;
@@ -265,7 +165,6 @@ function updateCartTotal() {
     total = Math.round(total * 100) / 100;
     document.getElementsByClassName('cart-total-price')[0].innerText = '£' + total;
 }
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
 function toThanks() {
     if (userCart.length === 0) {
@@ -274,11 +173,7 @@ function toThanks() {
     } else {
         // create the contexts array
         let productsContext = [];
-<<<<<<< HEAD
-        userCart.forEach( function (elt) {
-=======
         userCart.forEach(function(elt) {
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
             productsContext.push({
                 schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
                 data: {
@@ -287,7 +182,7 @@ function toThanks() {
                     price: parseFloat(elt.itemPrice),
                     quantity: parseInt(elt.itemQuant)
                 }
-            })
+            });
         });
 
         let total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
@@ -303,16 +198,8 @@ function toThanks() {
 
         window.location.href = 'http://' + window.location.host + '/thanks/';
     }
-};
+}
 
-<<<<<<< HEAD
-// helpers
-function toUrlParams (obj) {
-    let urlParams = new URLSearchParams(obj);
-
-    return urlParams.toString();
-};
-=======
 function updateCartQuant(cart, itSku, newQuant) {
     cart.forEach(function(elt) {
         if (itSku === elt.itemSku) {
@@ -328,4 +215,3 @@ function remItFromCart(itSku, cart) {
         }
     });
 }
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854

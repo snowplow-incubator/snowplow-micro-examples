@@ -56,9 +56,6 @@ $ npm install
 You can now visit the app on http://localhost:8000 . You can then see the events being tracked from the app on [Micro's API endpoints](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api).
 
 
-<<<<<<< HEAD
-##Tests Ran
-=======
 ### 1.4 Run the tests
 
 To quickly see the tests running:
@@ -79,7 +76,6 @@ $ npm run cypress:open
 
 
 ## 2. Testing with Snowplow Micro
->>>>>>> 2349cdac4d37da4e9f653a43228febbdf4acb854
 
 The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retriving the correct data for every tracker.
 This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
