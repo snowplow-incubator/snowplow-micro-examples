@@ -7,3 +7,43 @@ button:disabled {
   height: 50px;
   width: 50px;
 }
+
+:root {
+    --primary-light: #9965eb;
+    --primary-main: #6638b8;
+    --primary-dark: #310887;
+
+    --secondary-light: #a5eddd;
+    --secondary-main: #28d1b1;
+    --secondary-dark: #009f82;
+
+    --info-light: #81d4fa;
+    --info-main: #03a9f4;
+    --info-dark: #0277bd;
+
+    --warning-light: #ffe082;
+    --warning-main: #ffc107;
+    --warning-dark: #ff8f00;
+
+    --error-light: #ef9a9a;
+    --error-main: #f44336;
+    --error-dark: #c62828;
+
+    --success-light: #a5d6a7;
+    --success-main: #4caf50;
+    --success-dark: #2e7d32;
+
+    --grey-light: #eeeeee;
+    --grey-main: #9e9e9e;
+    --grey-dark: #424242;
+    --grey-vdark: #374250;
+}
+
+.popover {
+    background: var(--info-light);
+}
+
+.popover-header {
+    background-color: var(--info-dark);
+    color: white;
+}

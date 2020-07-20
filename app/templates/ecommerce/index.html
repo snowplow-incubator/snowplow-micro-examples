@@ -49,14 +49,19 @@
   </head>
 
   <body>
+    <header class="header" style="background-color:var(--primary-light);position:fixed;top:0;width:100%;min-height:5em;">
+      <div class="container">
+        <span class="text-muted"></span>
+      </div>
+    </header>
 
     <div class="container">
 
-      <div class="jumbotron" style="margin-top:7em;background-color:white;border:2px solid grey;">
+      <div class="jumbotron" style="margin-top:7em;background-color:var(--grey-light);border:2px solid grey;">
 
-      <div class="jumbotron" style="text-align:center;margin-top:2em;">
-        <h1>WELCOME</h1>
-        <h3>to the Snowplow demo store!</h3>
+      <div class="jumbotron" style="text-align:center;margin-top:2em;background-color:var(--primary-light);">
+        <h1 style="color:white;">WELCOME</h1>
+        <h3 style="color:white;">to the Snowplow demo store!</h3>
       </div>
 
       <div class="row" style="padding-top:2em;">
@@ -76,7 +81,7 @@
             </div>
 
             <div class="form-group" style="padding-top:1em;">
-              <button type="submit" class="btn btn-dark" test-id="submit-button">START SHOPPING</button>
+              <button type="submit" class="btn btn-dark" test-id="submit-button" style="background:var(--grey-vdark);">START SHOPPING</button>
             </div>
 
           </form>
@@ -88,6 +93,12 @@
 
       </div>
     </div>
+
+    <footer class="footer" style="background-color:var(--grey-vdark);position:fixed;bottom:0;width:100%;min-height:5em;">
+      <div class="container">
+        <span class="text-muted"></span>
+      </div>
+    </footer>
 
     <!-- for Bootstrap Popover -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
