@@ -22,17 +22,22 @@ jobs:
         with:
           path: snowplow-micro-examples
 
-      - name: Start Containers
+      - name: Start Containers and wait on ports 9090 and 8000
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           docker-compose up -d
-
-      - name: Wait on ports 9090 and 8000
-        run: |
           while ! nc -z localhost 9090; do sleep 0.1; done
           while ! nc -z localhost 8000; do sleep 0.1; done
 
-      - name: Npm install
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashfiles('**/package-lock.json') }}
+
+      - name: Install dependencies
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm install
