@@ -238,7 +238,7 @@ n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 
 - [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
 
 
-## 2. Testing with Snowplow Micro
+## 3. Testing with Snowplow Micro
 
 The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retriving the correct data for every tracker.
 This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
@@ -256,7 +256,7 @@ This repo therefore shows you how to set up trackers, how to make customised (un
 7) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
 
 
-### 2.1 Setting up Nightwatch
+### 3.1 Setting up Nightwatch
 Powered by Node.js, Nightwatch.js is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
 
 This framework relies on Selenium and provides several commands and assertions within the framework to perform operations on the DOM elements.
@@ -289,12 +289,12 @@ npm test
 ```
 
 
-### 2.2 Snowplow Micro and Cypress
+### 3.2 Snowplow Micro and Cypress
 
 [Cypress](https://www.cypress.io/) is an open [source](https://github.com/cypress-io/cypress) JavaScript End-to-End testing framework with extensive [documentation](https://docs.cypress.io/).
 In this section we note few things that are specifically related to using this test tool with Snowplow Micro, describe the rationale behind the tests' organization used in this example and document the commands used.
 
-#### 2.2.1 Introduction
+#### 3.2.1 Introduction
 
 Generally, a test involves 3 phases:
 1. Prepare a state
@@ -329,7 +329,7 @@ So, following on the 3 test's phases:
 
 
 
-#### 2.2.2 Tests' organization
+#### 3.2.2 Tests' organization
 
 Another Cypress' recommendation for best [practices](https://docs.cypress.io/guides/references/best-practices.html#Having-tests-rely-on-the-state-of-previous-tests) is the decoupling of tests, which, for the case of testing with Snowplow Micro, would mean to run both the state-changing and the micro-requests in the same spec file.
 However, there were some issues in doing so. More specifically, those issues had only to do with cases where links (or submit buttons) were clicked, in other words in cases where a window [unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) was fired.
@@ -383,7 +383,7 @@ This kind of organization also has the benefit, that you can keep having the tes
 
 
 
-#### 2.2.3 Commands
+#### 3.2.3 Commands
 
 Since Cypress allows to define your own [custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html), in this repo you can find commands specifically for use with Snowplow Micro and assertions of events. You can see them all in [commands.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/support/commands.js).
 
@@ -533,7 +533,7 @@ It will return the events that have all those properties.
 As shown in the examples above, you do not have to use all the properties, and the command works accordingly.
 
 
-#### 2.2.4 Some further notes
+#### 3.2.4 Some further notes
 
 ```
 $ tree testing/cypress/
@@ -564,7 +564,7 @@ testing/cypress/
 
 
 
-## 3. Github Actions
+## 4. Github Actions
 Inside the `.github/workflows/` folder you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress. The steps are broken so that you can use any that you need.
 A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which currently is:
 
