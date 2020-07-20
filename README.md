@@ -48,6 +48,7 @@ To make running micro easier we set up a docker compose file. Docker compose is 
 [Docker Compose Example](https://github.com/snowplow/iglu/blob/release/0.6.0/2-repositories/iglu-server/docker/docker-compose.yml)
 
 ##Tests Ran
+
 The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retriving the correct data for every tracker.
 This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
 #### The tests implemented in this repo are:

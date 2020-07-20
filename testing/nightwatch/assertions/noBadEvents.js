@@ -32,7 +32,7 @@ NoBadEvents = function(msg) {
 
     request({url:'http://localhost:9090/micro/all', json:true}, (err, res, body) => {
       if (err) {
-        console.log(error);
+        console.warn(error);
         return false;
       }
       callback(body);

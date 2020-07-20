@@ -49,12 +49,15 @@ SameEvent = function (expected_event, noOfEvents=1, msg) {
     };
 
 
-    function sortContextBySchema(a,b){
-        if (a["schema"] < b["schema"])
-          return -1;
-        if ( a["schema"] > b["schema"])
-          return 1;
-        return 0;
+//    function sortContextBySchema(a,b){
+//        if (a["schema"] < b["schema"])
+//          return -1;
+//        if ( a["schema"] > b["schema"])
+//          return 1;
+//        return 0;
+//    }
+    function sortContextBySchema(a,b) {
+      return a["schema"].localeCompare(b["schema"])
     }
 
     function equalEventContext(eventContexts, microContexts){
