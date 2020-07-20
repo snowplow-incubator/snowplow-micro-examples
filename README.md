@@ -90,7 +90,7 @@ The form of the login-page is only for demonstrating the tracking of form events
 
 Each page serves the purpose of demonstrating possible event-tracking, which will then be tested using Snowplow Micro and a test tool.
 
-### Event dictionary
+### 2.2 Event dictionary
 
 Using the [JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker):
 ```
@@ -199,7 +199,7 @@ n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 
     2. purchase-event ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/local-iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
         - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
         - This is a self-describing event that captures the total amount of the transaction.
-        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved, which are described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
         - Implemented in the shop-page (see file [homepage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/homepage.js)):
         ```
         // create the contexts array - homepage.js line 175
