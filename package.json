@@ -4,6 +4,7 @@
         "description": "Examples of how to apply Snowplow Micro to popular test strategies",
         "private": true,
         "scripts": {
+                "preinstall": "npx npm-force-resolutions",
                 "test": "cd testing; nightwatch",
                 "cypress:open": "cd testing && cypress open --config-file false",
                 "cypress:run": "cd testing && cypress run --config-file false",
@@ -28,5 +29,8 @@
         "dependencies": {},
         "jshintConfig": {
                 "esversion": 6
+        },
+        "resolutions": {
+                "lodash": "4.17.19"
         }
 }
