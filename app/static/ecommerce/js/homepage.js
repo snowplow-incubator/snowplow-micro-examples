@@ -39,7 +39,7 @@ function removeCartItem(event) {
     const quantity = cartItem.getElementsByClassName('cart-quantity-input')[0].value;
     const sku = cartItem.getElementsByClassName('cart-item-sku')[0].innerText;
 
-    // cart_action_event
+    // TRACK cart_action_event (remove)
     window.snowplow('trackSelfDescribingEvent', {
             schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
             data: {
@@ -125,7 +125,7 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
         itemSku: sku
     });
 
-    // cart_action_event
+    // TRACK cart_action_event (add)
     window.snowplow('trackSelfDescribingEvent', {
             schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
             data: {
@@ -187,7 +187,7 @@ function toThanks() {
 
         let total = document.getElementsByClassName('cart-total-price')[0].innerText.replace(/[^\d.-]/g, '');
 
-        // purchase_event
+        // TRACK purchase_event
         window.snowplow('trackSelfDescribingEvent', {
                 schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
                 data: {

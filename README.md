@@ -7,7 +7,7 @@ Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/
 ## 1. Local setup
 
 ### 1.1 Prerequisites
-We recommend setting up the following two tools before starting:
+We recommend setting up the following three tools before starting:
 
  - Docker and Docker-compose
  - Npm
@@ -34,7 +34,7 @@ This will pull Micro's docker image, mount the `micro` and `local-iglu` folders 
 
 Now [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is up on localhost:9090 offering the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
 
-**Additional resources**:
+**Additional resources:**
  - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
  - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
  - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
@@ -73,6 +73,169 @@ And to open Cypress' Test Runner:
 ```
 $ npm run cypress:open
 ```
+
+## 2. Tracking Design
+
+### 2.1 Overview of the app
+
+The example application is a simple ecommerce app consisting of just 3 pages:
+
+ 1. a start page with a sample login form (no authentication involved - see also the **Note** below)
+ 2. the shop page (also containing the cart)
+ 3. the confirmation page
+
+**Note:**
+
+The form of the login-page is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. While you can type anything and continue to the shop-page, we recommend that you do not use any personal data.
+
+Each page serves the purpose of demonstrating possible event-tracking, which will then be tested using Snowplow Micro and a test tool.
+
+### Event dictionary
+
+Using the [JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker):
+```
+<!-- Snowplow starts plowing -->
+<script type="text/javascript">
+;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
+```
+, the tracking implemented consists of:
+
+1. [Pageview tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#31-pageviews)
+
+    - This event happens when a user visits a page.
+    - It is a predefined Snowplow event, that automatically captures the URL, referrer and page title.
+    - Method call:
+    ```
+    window.snowplow('trackPageView');
+    ```
+    - Implemented in all 3 pages.
+
+2. [Activity Tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#32-track-engagement-with-a-web-page-over-time-page-pings)
+
+    - This event happens when a user engages with a page (e.g. user scrolls).
+    - It is a predefined Snowplow event, that automatically records the maximum scroll left-right, up-down in the last ping period.
+    - Method call (before the trackPageView method call):
+    ```
+    window.snowplow('enableActivityTracking', minimumVisitLength, heartBeat );
+    ```
+    - Implemented in login-page and shop-page, with different `minimumVisitLength` and `heartBeat`:
+    ```
+    // login-page
+    window.snowplow('enableActivityTracking', 20, 20);
+
+    // shop-page:
+    window.snowplow('enableActivityTracking', 10, 10);
+    ```
+
+3. [Form Tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking)
+    - This set of events happens when a user interacts with a web form (e.g. focus on an form element, change a value of input-textarea-select element form, submit a form)
+    - These are predefined Snowplow events that are of unstructured eventType and can be customized. Data captured:
+        - **focus_form**: id, classes of the form and name, type, value of the form element that received focus.
+        - **change_form**: name, type, new value of the element, id of the parent form
+        - **submit_form**: id, classes of the form and name, type, value of all form elements
+    - Implemented in the login-page:
+    ```
+    var config = {
+        forms: {
+            blacklist: []
+        },
+        fields: {
+            blacklist: ['user_password']
+        }
+    };
+
+    window.snowplow('enableFormTracking', config);
+    ```
+    - Note: By default, Form Tracking does not track password fields. We used the above `config` to demonstrate how you can ensure the Non-tracking of sensitive fields. With Snowplow Micro we can also later test that any blacklisting of forms is implemented correctly and that no sensitive fields are tracked.
+
+4. [Tracking custom self-describing(unstructured) events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#37-tracking-custom-self-describing-unstructured-events)
+
+    1. cart-events ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/local-iglu/schemas/test.example.iglu/cart_action_event/jsonschema/1-0-0))
+        - These events happen when a user interacts with the cart, adding or removing items, using the Add-to-cart or Remove buttons.
+        - This is a self-describing event that captures the type of cart interaction: "add" versus "remove".
+        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - Implemented in the shop-page (see file [homepage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/homepage.js)):
+        ```
+        // TRACK cart_action_event (add) - homepage.js line 129
+        window.snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                data: {
+                    type: "add",
+                }
+            },
+            [{
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: sku,
+                    name: title,
+                    price: parseFloat(price),
+                    quantity: parseInt(quantity)
+                }
+            }]
+        );
+
+        // TRACK cart_action_event (remove) - homepage.js line 43
+        window.snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
+                data: {
+                    type: "remove"
+                }
+            },
+            [{
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: sku,
+                    name: title,
+                    price: parseFloat(price),
+                    quantity: parseInt(quantity)
+                }
+            }]
+        );
+        ```
+
+    2. purchase-event ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/local-iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
+        - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
+        - This is a self-describing event that captures the total amount of the transaction.
+        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved, which are described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - Implemented in the shop-page (see file [homepage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/homepage.js)):
+        ```
+        // create the contexts array - homepage.js line 175
+        let productsContext = [];
+        userCart.forEach(function(elt) {
+            productsContext.push({
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: elt.itemSku,
+                    name: elt.itemTitle,
+                    price: parseFloat(elt.itemPrice),
+                    quantity: parseInt(elt.itemQuant)
+                }
+            });
+        });
+
+        // TRACK purchase_event - homepage.js line 191
+        window.snowplow('trackSelfDescribingEvent', {
+                schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
+                data: {
+                    total: parseFloat(total)
+                }
+            },
+            productsContext);
+        ```
+
+5. Custom contexts
+
+    - [Predefined Context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) [webPage]
+    - Product Entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
+
+
+**Additional resources:**
+
+- [Snowplow Docs](https://docs.snowplowanalytics.com/)
+- [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
 
 
 ## 2. Testing with Snowplow Micro
@@ -140,7 +303,7 @@ Generally, a test involves 3 phases:
 
 While Cypress considers as state the application's state, it is still a fact that an app is rarely an isolated system without side effects.
 
-This is especially true when a tracking strategy is implemented, which means that any action can fire [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol) through the [trackers](https://github.com/snowplow/snowplow/wiki/trackers). There is an increasing number of reports (see Gartner) highlighting the importance of upstream data quality and Data Ops, which means that testing your Data Collection and trackers' implementation besides your product's features is of highest priority. Tracking is as important as your shipping, and that is why it is higly recommended that you include its testing in your E2E tests.
+This is especially true when a tracking strategy is implemented, which means that any action can fire [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol) through the [trackers](https://github.com/snowplow/snowplow/wiki/trackers). There is an increasing number of reports (see Gartner) highlighting the importance of upstream data quality and Data Ops, which means that testing your Data Collection and trackers' implementation besides your product's features is of highest priority. Tracking is as important as your shipping, and that is why it is highly recommended that you include its testing in your E2E tests.
 
 Cypress, even though it considers as [best practice](https://docs.cypress.io/guides/references/best-practices.html#Visiting-external-sites) to avoid requiring or testing 3rd party services, it still offers the ability to "talk" to 3rd party API's via [cy.request()](https://docs.cypress.io/api/commands/request.html), that:
  - entirely bypasses CORS
@@ -176,12 +339,12 @@ When a user clicks, for example, a link, on one hand the browser wants to naviga
 While it is normal for browsers to cancel all requests, a cancelled request does not necessarily mean that the request did not reach the server, but that the client sending it, does not wait for an answer anymore. So, there is no way to know from client side whether the request (be it POST or GET) succeeded.
 
 That problem was especially apparent when Micro was being queried in the same spec file with the app's actions. For example, POST requests appeared as cancelled in Cypress' test runner, but the events may have reached Micro.
-Taking advantage of the fact that Cypress also clears browser cache when it changes spec file, we decided to move the testing part of Micro into separate spec files.
+Taking advantage of the fact that Cypress also clears browser cache when it changes spec file (see also this [issue](https://github.com/cypress-io/cypress/issues/686)), we decided to move the testing part of Micro into separate spec files.
 
 The consequences of this decision are:
 1. You need to ensure a naming strategy, and the reason for this is the fact that Cypress decides the order of execution for test files based on alphabetical order. In this example, we use this naming strategy:
  - `xx_app_spec.js` for the spec files that visit the app and create events
- - `xx_micro_spec.js` for the spec files that query micro and make the assertions on events
+ - `xx_micro_spec.js` for the spec files that query micro and make the assertions on those events
 , where `xx` stands for numbering (but it could be anything as long as it matches uniquely).
 
 ```
@@ -197,7 +360,7 @@ testing/cypress/integration/
 ```
 
 2. You need to consider how and when you reset Micro. We chose to use a Before [hook](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Hooks) in the start of every `xx_app_spec.js` file, since the naming strategy ensures that the tests will run in `app`-`micro` pairs.
-3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and also run the corresponding micro spec file. The script can be seen in [package.json](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/package.json).
+3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro spec file after the matching app spec. The script can be seen in [package.json](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/package.json).
 
 Example usage:
 1. To run all spec files in your `cypress/integration` folder (in alphabetical order)
@@ -211,7 +374,7 @@ PAIR_PATTERN=03 npm run cy-micro:pair-run  # will run first the 03_app_spec.js a
 ```
 Just make sure that this name pattern is unique for this pair.
 
-This kind of organization also has the benefit, that you can keep having the tests you had normally for your app (just adding the before-hook to reset Micro), and just add a corresponding micro-spec file, to test the events emitted from the original run of the test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
+This kind of organization also has the benefit, that you can keep having the tests you normally had for your app (just adding the before-hook to reset Micro), and just add a corresponding micro-spec file, to test the events emitted from the original run of that app test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
 
 **Additional resources**:
 1. [a cypress issue describing a similar situation](https://github.com/cypress-io/cypress/issues/2968)
@@ -273,7 +436,6 @@ This command is useful when you want to ensure that a particular type of events 
             "se_ac": "Play video",
             "se_la": "Surfing"
         }, 3 );
-
 ```
 *Arguments*:
  - Object (parameter-value pairs)
@@ -356,7 +518,6 @@ With this command you can check whether the predefined(e.g. webpage, geolocation
             ]
 
         }, 1 );
-
 ```
 *Arguments*:
  - Object with specific keys (see below)
