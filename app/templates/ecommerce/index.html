@@ -2,136 +2,118 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+    <head>
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link href={% static 'ecommerce/css/custom.css' %} rel="stylesheet">
 
-    <link href={% static 'ecommerce/css/custom.css' %} rel="stylesheet">
+        <!-- Snowplow starts plowing -->
+        <script type="text/javascript">
+        ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+        p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+        };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+        n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 
-    <!-- Snowplow starts plowing -->
-    <script type="text/javascript">
-    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
-    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
-    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-    n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
+        window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+            encodeBase64: false,
+            appId: 'sh0pspr33',
+            platform: "web",
+            discoverRootDomain: true,
+            eventMethod: "beacon",
+            contexts : {
+                webPage: true
+            }
+        });
 
-    window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
-        encodeBase64: false,
-        appId: 'sh0pspr33',
-        platform: "web",
-        discoverRootDomain: true,
-        eventMethod: "beacon",
-        contexts : {
-            webPage: true
-        }
-    });
+        window.snowplow('setUserId', 'tester');
+        window.snowplow('enableActivityTracking', 20, 20);
 
-    window.snowplow('setUserId', 'tester');
-    window.snowplow('enableActivityTracking', 20, 20);
+        var config = {
+            forms: {
+                blacklist: []
+            },
+            fields: {
+                blacklist: ['user_password']
+            }
+        };
 
-    var config = {
-        forms: {
-            blacklist: []
-        },
-        fields: {
-            blacklist: ['user_password']
-        }
-    };
+        window.snowplow('enableFormTracking', config);
+        window.snowplow('trackPageView');
+        </script>
+        <!-- Snowplow stops plowing -->
 
-    window.snowplow('enableFormTracking', config);
-    window.snowplow('trackPageView');
-    </script>
-    <!-- Snowplow stops plowing -->
+    </head>
 
-  </head>
+    <body>
 
-  <body>
-    <header class="header" style="background-color:var(--primary-light);position:fixed;top:0;width:100%;min-height:5em;">
-      <div class="container">
-        <span class="text-muted"></span>
-      </div>
-    </header>
+        <header class="header it-header">
+        </header>
 
-    <div class="container">
+        <div class="d-flex justify-content-center align-items-center vh-100">
+            <div class="col-8 mx-auto">
+                <div class="jumbotron it-jumb-1">
+                    <div class="jumbotron it-jumb-2">
+                        <h1 class="text-white">WELCOME</h1>
+                        <h3 class="text-white">to the Snowplow demo store!</h3>
+                    </div>
+                    <div class="row pad-2">
+                        <div class="col-lg-4 mx-auto">
+                            <form action="/login">
+                                <div class="form-group" data-toggle="popover-msg">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control" id="email" name="user_email" test-id="email-input" data-toggle="popover-1" required>
 
-      <div class="jumbotron" style="margin-top:7em;background-color:var(--grey-light);border:2px solid grey;">
-
-      <div class="jumbotron" style="text-align:center;margin-top:2em;background-color:var(--primary-light);">
-        <h1 style="color:white;">WELCOME</h1>
-        <h3 style="color:white;">to the Snowplow demo store!</h3>
-      </div>
-
-      <div class="row" style="padding-top:2em;">
-        <div class="col-lg-4">
-        </div>
-
-        <div class="col-lg-4">
-          <form action="/login">
-
-            <div class="form-group" data-toggle="popover-msg">
-
-              <label for="email">Email:</label>
-              <input type="email" class="form-control" id="email" name="user_email" test-id="email-input" data-toggle="popover-1" required>
-
-              <label for="password">Password:</label>
-              <input type="password" class="form-control" id="password" name="user_password" test-id="password-input" data-toggle="popover-2" required>
+                                    <label for="password">Password:</label>
+                                    <input type="password" class="form-control" id="password" name="user_password" test-id="password-input" data-toggle="popover-2" required>
+                                </div>
+                                <div class="form-group pad-1">
+                                    <button type="submit" class="btn btn-dark bg-vdark" test-id="submit-button">START SHOPPING</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group" style="padding-top:1em;">
-              <button type="submit" class="btn btn-dark" test-id="submit-button" style="background:var(--grey-vdark);">START SHOPPING</button>
-            </div>
-
-          </form>
         </div>
 
-        <div class="col-lg-4">
-        </div>
-      </div>
+        <footer class="footer it-footer">
+        </footer>
 
-      </div>
-    </div>
+        <!-- for Bootstrap Popover -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 
-    <footer class="footer" style="background-color:var(--grey-vdark);position:fixed;bottom:0;width:100%;min-height:5em;">
-      <div class="container">
-        <span class="text-muted"></span>
-      </div>
-    </footer>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
 
-    <!-- for Bootstrap Popover -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                $('[data-toggle="popover-msg"]').popover({
+                    trigger: 'manual',
+                    container: 'body',
+                    placement: 'left',
+                    title: 'Important message',
+                    content: 'This form is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. You can type anything and continue (We recommend that you don\'t use your personal data).'
+                });
+                $('[data-toggle="popover-1"]').popover({
+                    trigger: 'focus',
+                    container: 'body',
+                    placement: 'right',
+                    title: 'e-mail',
+                    content: 'Any email-like, e.g. fake@email.com'
+                });
+                $('[data-toggle="popover-2"]').popover({
+                    trigger: 'focus',
+                    container: 'body',
+                    placement: 'right',
+                    title: 'password',
+                    content: 'Anything, e.g. fakepassword'
+                });
 
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+                $('[data-toggle="popover-msg"]').popover('show');
+            })
+        </script>
 
-    <script>
-      $(document).ready(function(){
-          $('[data-toggle="popover-msg"]').popover({
-              trigger: 'manual',
-              container: 'body',
-              placement: 'left',
-              title: 'Important message',
-              content: 'This form is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. You can type anything and continue (We recommend that you don\'t use your personal data).'
-          });
-          $('[data-toggle="popover-1"]').popover({
-              trigger: 'focus',
-              container: 'body',
-              placement: 'right',
-              title: 'e-mail',
-              content: 'Any email-like, e.g. fake@email.com'
-          });
-          $('[data-toggle="popover-2"]').popover({
-              trigger: 'focus',
-              container: 'body',
-              placement: 'right',
-              title: 'password',
-              content: 'Anything, e.g. fakepassword'
-          });
-
-          $('[data-toggle="popover-msg"]').popover('show');
-      })
-    </script>
-
-  </body>
+    </body>
 
 </html>
