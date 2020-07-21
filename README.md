@@ -7,11 +7,10 @@ Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/
 ## 1. Local setup
 
 ### 1.1 Prerequisites
-We recommend setting up the following three tools before starting:
+We recommend setting up the following two tools before starting:
 
  - Docker and Docker-compose
  - Npm
- - Python 3 and pip
 
 
 ### 1.2 Clone this repository and start Snowplow Micro
@@ -24,15 +23,19 @@ $ cd snowplow-micro-examples
 $ docker-compose up
 ```
 
-This will pull Micro's docker image, mount the `micro` and `local-iglu` folders in the Docker container and set the port 9090 for access.
-1. Inside the `micro` folder are the [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and the [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json).
-2. The `local-iglu` folder, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
+This will:
 
-```
-    schemas/{vendor}/{schema-name}/jsonschema/{schema-version}
-```
+1. start Snowplow Micro, mounting the `micro` and `local-iglu` folders and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
+    1. Inside the `micro` folder are:
+        1. the [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
+        2. the [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
+    2. The `local-iglu` folder, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
 
-Now [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is up on localhost:9090 offering the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
+    ```
+        schemas/{vendor}/{schema-name}/jsonschema/{schema-version}
+    ```
+2. start Django to serve the app on localhost:8000
+
 
 **Additional resources:**
  - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
@@ -41,19 +44,12 @@ Now [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is up
  - Another [Docker Compose Example](https://github.com/snowplow/iglu/blob/release/0.6.0/2-repositories/iglu-server/docker/docker-compose.yml)
 
 
-### 1.3 Install dependencies and start serving the app
+### 1.3 Install npm dependencies
 
 ```
-$ pwd
-/home/user/snowplow-micro-examples
-
-$ pip3 install -r app/requirements.txt
-
-$ python3 app/manage.py runserver 8000
-
 $ npm install
 ```
-You can now visit the app on http://localhost:8000 . You can then see the events being tracked from the app on [Micro's API endpoints](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api).
+This step will install Nightwatch and Cypress.
 
 
 ### 1.4 Run the tests
