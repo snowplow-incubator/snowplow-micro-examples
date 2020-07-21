@@ -22,32 +22,12 @@ jobs:
         with:
           path: snowplow-micro-examples
 
-      - name: Start Micro
+      - name: Start Containers and wait on ports 9090 and 8000
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           docker-compose up -d
-
-      - name: Wait on port 9090
-        run: while ! nc -z localhost 9090; do sleep 0.1; done
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          if [ -f app/requirements.txt ]; then pip install -r app/requirements.txt; fi
-
-      - name: Start Django server
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          python app/manage.py runserver 8000 > /dev/null 2>&1 &
-
-      - name: Wait on port 8000
-        run: while ! nc -z localhost 8000; do sleep 0.1; done
+          while ! nc -z localhost 9090; do sleep 0.1; done
+          while ! nc -z localhost 8000; do sleep 0.1; done
 
       - name: Npm install
         run: |
@@ -58,3 +38,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm run cypress:run
+
+      - name: Sample running the pair-run npm script
+        run: |
+          cd $GITHUB_WORKSPACE/snowplow-micro-examples
+          PAIR_PATTERN=02 npm run cy-micro:pair-run
