@@ -13,24 +13,24 @@
  * @api assertions
  */
 
-TrackerSuccess = function (event_names_list, msg) {
-    this.message = msg || 'Testing tracker successfully sent following structured events: ' +event_names_list;
+TrackerSuccess = function(event_names_list, msg) {
+    this.message = msg || 'Testing tracker successfully sent following structured events: ' + event_names_list;
 
     this.expected = () => {
-      return event_names_list;
+        return event_names_list;
     }
 
     this.pass = (array1) => {
-      //compares that the expected events are equal to the number of good structured events in micro
-      return array1.length === this.expected().length && (array1.sort().join(',') === this.expected().sort().join(','));
+        //compares that the expected events are equal to the number of good structured events in micro
+        return array1.length === this.expected().length && (array1.sort().join(',') === this.expected().sort().join(','));
     };
 
     this.value = (json) => {
         var struct_events = []
-        for(i = 0; i < json.length; i++){
+        for (i = 0; i < json.length; i++) {
             // if the event is a structured event
-            if (json[i]["eventType"] === "se"){
-              struct_events.push(json[i]["event"]["parameters"]["se_ac"]);
+            if (json[i]["eventType"] === "se") {
+                struct_events.push(json[i]["event"]["parameters"]["se_ac"]);
             }
         }
 
@@ -39,17 +39,20 @@ TrackerSuccess = function (event_names_list, msg) {
     };
 
     this.command = (callback) => {
-      const request = require('request');
+        const request = require('request');
 
-      request({url:'http://localhost:9090/micro/good', json:true}, (err, res, body) => {
-        if (err) {
-          console.log(error);
-          return false;
-        }
-        callback(body);
-      });
+        request({
+            url: 'http://localhost:9090/micro/good',
+            json: true
+        }, (err, res, body) => {
+            if (err) {
+                console.log(error);
+                return false;
+            }
+            callback(body);
+        });
     };
 
-  };
+};
 
-  module.exports.assertion = TrackerSuccess;
+module.exports.assertion = TrackerSuccess;

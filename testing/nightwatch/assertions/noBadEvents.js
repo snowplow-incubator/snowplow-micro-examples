@@ -13,31 +13,34 @@
  */
 
 NoBadEvents = function(msg) {
-  this.message = msg || 'Testing no bad events have been sent';
+    this.message = msg || 'Testing no bad events have been sent';
 
-  this.expected = () => {
-    return 0;
-  }
+    this.expected = () => {
+        return 0;
+    }
 
-  this.pass = (value) => {
-    return value === this.expected();
-  };
+    this.pass = (value) => {
+        return value === this.expected();
+    };
 
-  this.value = (json) => {
-    return parseInt(json['bad']);
-  };
+    this.value = (json) => {
+        return parseInt(json['bad']);
+    };
 
-  this.command = (callback) => {
-    const request = require('request');
+    this.command = (callback) => {
+        const request = require('request');
 
-    request({url:'http://localhost:9090/micro/all', json:true}, (err, res, body) => {
-      if (err) {
-        console.warn(error);
-        return false;
-      }
-      callback(body);
-    });
-  };
+        request({
+            url: 'http://localhost:9090/micro/all',
+            json: true
+        }, (err, res, body) => {
+            if (err) {
+                console.warn(error);
+                return false;
+            }
+            callback(body);
+        });
+    };
 
 };
 

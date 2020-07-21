@@ -13,33 +13,36 @@
  * @api assertions
  */
 
-NoOfTotalEvents = function (expected_value, msg) {
-    this.message = msg || 'Testing that the total number of events is: ' +expected_value;
+NoOfTotalEvents = function(expected_value, msg) {
+    this.message = msg || 'Testing that the total number of events is: ' + expected_value;
 
     this.expected = () => {
-      return expected_value;
+        return expected_value;
     }
 
     this.pass = (value) => {
-      return value === this.expected();
+        return value === this.expected();
     };
 
     this.value = (json) => {
-      return parseInt(json['total']);
+        return parseInt(json['total']);
     };
 
     this.command = (callback) => {
-      const request = require('request');
+        const request = require('request');
 
-      request({url:'http://localhost:9090/micro/all', json:true}, (err, res, body) => {
-        if (err) {
-          console.log(error);
-          return false;
-        }
-        callback(body);
-      });
+        request({
+            url: 'http://localhost:9090/micro/all',
+            json: true
+        }, (err, res, body) => {
+            if (err) {
+                console.log(error);
+                return false;
+            }
+            callback(body);
+        });
     };
 
-  };
+};
 
-  module.exports.assertion = NoOfTotalEvents;
+module.exports.assertion = NoOfTotalEvents;

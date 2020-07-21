@@ -1,7 +1,7 @@
 module.exports = {
-    "src_folders" : ["nightwatch/tests"],
+    "src_folders": ["nightwatch/tests"],
 
-    "webdriver" : {
+    "webdriver": {
         "start_process": true,
         "server_path": "../node_modules/.bin/chromedriver",
         "port": 9515
