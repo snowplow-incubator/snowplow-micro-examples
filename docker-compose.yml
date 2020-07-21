@@ -10,3 +10,12 @@ services:
     ports:
       - "9090:9090"
     command: "--collector-config /config/micro.conf --iglu /config/iglu.json"
+
+  web:
+    container_name: django
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/code
+    ports:
+        - "8000:8000"
