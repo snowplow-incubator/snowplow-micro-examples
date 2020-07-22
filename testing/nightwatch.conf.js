@@ -1,3 +1,4 @@
+require('babel-register')()
 module.exports = {
     "src_folders": ["nightwatch/tests"],
 

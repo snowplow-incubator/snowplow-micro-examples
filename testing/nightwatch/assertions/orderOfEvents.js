@@ -3,13 +3,15 @@ Check that events are sent to micro in the correct order
 
 ...
     this.demoTest = function (order) {
-        browser.assert.orderOfEvents(True);
+        browser.assert.orderOfEvents(events_list);
     };
 
 @method orderOfEvents
-@param event1 event2
+ * @param {Array} [events]  Events in the order we expect to see on micro
+ * @param {string} [message] Optional log message to display in the output. If missing, one is displayed by default.
 */
-var eventMatcher = require('./successfulEvent');
+
+var eventMatcher = require('../../jsm/helpers.js');
 
 
 OrderOfEvents = function(events, msg) {
@@ -25,9 +27,9 @@ OrderOfEvents = function(events, msg) {
         // index of test events
         var j = 0;
         for (i = 0; i < matchedEvents.length & j < events.length; i++) {
-            if (eventMatcher.matchEvents(events[j], matchedEvents[i])) {
+            if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
                 j++;
-            } else if (eventMatcher.matchEvents(events[events.length - 1], matchedEvents[i])) {
+            } else if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
                 return false;
             }
         }
@@ -43,26 +45,21 @@ OrderOfEvents = function(events, msg) {
             return 1;
         }
         return 0;
-    }
-
+    };
 
     this.value = (eventsOnMicro) => {
         // collect matched events
         matchedEvents = [];
-        for (i = 0; i < eventsOnMicro.length; i++) {
-            var eventM = eventsOnMicro[i];
             for (j = 0; j < events.length; j++) {
-                event = events[j];
-                if (eventMatcher.matchEvents(event, eventM)) {
-                    matchedEvents.push(eventM);
-                    break;
-                }
+                currMatchedEvents = eventMatcher.matchEvents(eventsOnMicro, events[j]);
+                matchedEvents.push.apply(matchedEvents,currMatchedEvents);
             }
-        }
+
         matchedEvents.sort(sortEventsByTimestamp);
 
         return matchedEvents;
     };
+
     this.command = (callback) => {
         const request = require('request');
 
@@ -71,7 +68,7 @@ OrderOfEvents = function(events, msg) {
             json: true
         }, (err, res, body) => {
             if (err) {
-                console.log(error);
+                console.warn(error);
                 return false;
             }
             callback(body);

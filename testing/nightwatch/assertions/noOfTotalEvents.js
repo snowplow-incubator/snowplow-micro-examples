@@ -8,7 +8,7 @@
  * ```
  *
  * @method NoOfTotalEvents
- * @param {number} [expected_value] Number of good events expected to be sent to micro
+ * @param {number} [expected_value] Number of total events expected to be sent to micro
  * @param {string} [message] Optional log message to display in the output. If missing, one is displayed by default.
  * @api assertions
  */

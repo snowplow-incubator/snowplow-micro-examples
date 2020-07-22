@@ -26,17 +26,19 @@ module.exports = {
         browser.assert.successfulEvent({
             "eventType": "ue",
             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
-            "parameters": {
+            "values": {
                 "type": "add"
             },
-            "context": [{
-                schema: "test.example.iglu/product_entity/jsonschema/1-0-0",
-                data: {
+            "contexts": [{
+                "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                "data": {
+                   "sku": "hh123",
                     "name": "One-size summer hat",
-                    "unitPrice": 15.5,
+                    "price": 15.5,
                     "quantity": 1
                 }
-            }]
+               }
+            ]
         });
 
     },
@@ -69,14 +71,14 @@ module.exports = {
         browser.assert.successfulEvent({
             "eventType": "ue",
             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
-            "parameters": {
+            "values": {
                 "type": "remove"
             },
-            "context": [{
-                schema: "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
-                data: {
+            "contexts": [{
+                "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                "data": {
                     "name": "One-size summer hat",
-                    "unitPrice": 15.5,
+                    "price": 15.5,
                     "quantity": 1
                 }
             }]
@@ -119,36 +121,39 @@ module.exports = {
         });
 
         events_list = [{
-                "eventType": "ue",
-                "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
-                "parameters": {
-                    "type": "add"
-                },
-                "context": [{
-                    "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
-                    "data": {
-                        "name": "One-size summer hat",
-                        "unitPrice": 15.5,
-                        "quantity": 1
-                    }
-                }]
-
-            },
+                       "eventType": "ue",
+                       "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
+                       "values": {
+                           "type": "add"
+                       },
+                       "contexts": [{
+                           "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                           "data": {
+                              "sku": "hh123",
+                               "name": "One-size summer hat",
+                               "price": 15.5,
+                               "quantity": 1
+                           }
+                          }
+                       ]
+                   },
             {
-                "eventType": "ue",
-                "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
-                "parameters": {
-                    "total": 15.5
-                },
-                "context": [{
-                    "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
-                    "data": {
-                        "name": "One-size summer hat",
-                        "unitPrice": 15.5,
-                        "quantity": 1
-                    }
-                }]
-            }
+            "eventType": "ue",
+            "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
+            "values": {
+                "total": 15.5
+            },
+            "contexts": [{
+                "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                "data": {
+                   "sku": "hh123",
+                    "name": "One-size summer hat",
+                    "price": 15.5,
+                    "quantity": 1
+                }
+               }
+            ]
+        }
         ]
         browser.assert.orderOfEvents(events_list);
     }

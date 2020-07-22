@@ -1,5 +1,5 @@
 /**
- * Checks that the number of expected total events are correct
+ * Checks that the tracker is sent to micro as expected
  *
  * ```
  *    this.demoTest = function (client) {
@@ -26,7 +26,7 @@ TrackerSuccess = function(event_names_list, msg) {
     };
 
     this.value = (json) => {
-        var struct_events = []
+        let struct_events = [];
         for (i = 0; i < json.length; i++) {
             // if the event is a structured event
             if (json[i]["eventType"] === "se") {

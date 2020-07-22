@@ -173,7 +173,6 @@ function hasSchema(schema) {
         if (ev["eventType"] === "ue") {
 
             let ue_pr;
-
             if (ev["event"]["parameters"].hasOwnProperty("ue_pr")) {
 
                 ue_pr = JSON.parse(ev["event"]["parameters"]["ue_pr"]);
@@ -299,6 +298,32 @@ function hasContexts(expCoArr) {
 
 }
 
+function matchEvents(microEvents, eventOptions){
+    // allow user to pass a microEvent only
+    if (Object.prototype.toString.call(microEvents) !== "[object Array]"){
+        microEvents = [microEvents]
+    }
+    let res = microEvents;
+    if (eventOptions["schema"]) {
+
+        res = matchBySchema(res, eventOptions["schema"]);
+    }
+
+    if (eventOptions["values"]) {
+        res = matchByVals(res, eventOptions["values"]);
+    }
+
+    if (eventOptions["contexts"]) {
+        res = matchByContexts(res, eventOptions["contexts"]);
+    }
+
+    if (eventOptions["parameters"]) {
+
+        res = matchByParams(res, eventOptions["parameters"]);
+    }
+
+    return res;
+}
 
 function keyIncludedIn(obj) {
 
@@ -481,9 +506,12 @@ function base64decode(encodedData) {
 
 }
 
+
 //
 // EXPORTS
 //
+
+
 export {
     sane,
     matchByEventType,
@@ -492,5 +520,9 @@ export {
     matchByParams,
     matchByContexts,
     compare,
-    base64decode
+    base64decode,
+    matchEvents
 };
+
+
+exports.matchEvents = matchEvents;
