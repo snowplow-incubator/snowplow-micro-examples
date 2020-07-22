@@ -37,7 +37,16 @@ const BAD = Cypress.env('SNOWPLOW_MICRO_URI') + Cypress.env('MICRO_BAD');
 const RESET = Cypress.env('SNOWPLOW_MICRO_URI') + Cypress.env('MICRO_RESET');
 
 
-// request with json:true
+/**
+ * Returns the response of cy.request() having parsed the response body as JSON
+ *
+ * ```
+ * cy.requestJson('http://localhost:9090/micro/all');
+ * ```
+ *
+ * @method requestJson
+ * @param {string} myUrl The url to make the request to
+ */
 Cypress.Commands.add('requestJson', (myurl) => {
 
     cy.request({
@@ -48,7 +57,15 @@ Cypress.Commands.add('requestJson', (myurl) => {
 });
 
 
-// reset micro
+/**
+ * Resets Snowplow Micro
+ *
+ * ```
+ * cy.resetMicro();
+ * ```
+ *
+ * @method resetMicro
+ */
 Cypress.Commands.add('resetMicro', () => {
 
     cy.request(RESET);
@@ -56,7 +73,15 @@ Cypress.Commands.add('resetMicro', () => {
 });
 
 
-// noBadEvents
+/**
+ * Asserts whether Snowplow Micro received any bad events
+ *
+ * ```
+ * cy.noBadEvents();
+ * ```
+ *
+ * @method noBadEvents
+ */
 Cypress.Commands.add('noBadEvents', () => {
 
     cy.requestJson(BAD)
@@ -69,7 +94,16 @@ Cypress.Commands.add('noBadEvents', () => {
 });
 
 
-// numGoodEvents
+/**
+ * Asserts on the number of good events received by Snowplow Micro
+ *
+ * ```
+ * cy.numGoodEvents(15);
+ * ```
+ *
+ * @method numGoodEvents
+ * @param {number} n The expected number of good events
+ */
 Cypress.Commands.add('numGoodEvents', (n) => {
 
     n = Micro.sane(n);
@@ -85,7 +119,17 @@ Cypress.Commands.add('numGoodEvents', (n) => {
 });
 
 
-// eventsWithSchema
+/**
+ * Asserts on the number of events having a given schema
+ *
+ * ```
+ * cy.eventsWithSchema("iglu:com.acme/test_event/jsonschema/1-0-0", 2);
+ * ```
+ *
+ * @method eventsWithSchema
+ * @param {string} schema The schema
+ * @param {number} [n=1] The expected number of matching events
+ */
 Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
 
     n = Micro.sane(n);
@@ -105,7 +149,17 @@ Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
 });
 
 
-// eventsWithEventType
+/**
+ * Asserts on the number of events having a given type of event
+ *
+ * ```
+ * cy.eventsWithEventType("se", 7);
+ * ```
+ *
+ * @method eventsWithEventType
+ * @param {string} eventType The type of the event
+ * @param {number} [n=1] The expected number of matching events
+ */
 Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
 
     n = Micro.sane(n);
@@ -125,8 +179,37 @@ Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
 });
 
 
-// eventsWithProperties (see also lamp-store-demo-nw-tests) (maybe rename?)
-Cypress.Commands.add('eventsWithProperties', (event_options, n = 1) => {
+/**
+ * Asserts on the number of events having a given set of properties (schema, values, contexts, parameters)
+ *
+ * ```
+ * cy.eventsWithProperties({
+ *     "schema": "iglu:com.acme/test_event/jsonschema/1-0-0",
+ *     "values": {
+ *         "testProperty": true
+ *     },
+ *     "contexts": [{
+ *         "schema": "iglu:com.acme/test_context/jsonschema/1-0-0",
+ *         "data": {
+ *             "testCoProp": 0,
+ *         },
+ *     }],
+ *     "parameters": {
+ *         "uid": "tester",
+ *         "tna": "myTrackerName"
+ *     }
+ * }, 3);
+ * ```
+ *
+ * @method eventsWithProperties
+ * @param {Object} eventOptions The options to match against
+ * @param {string} [eventOptions.schema] The event schema to match (for unstructured events)
+ * @param {Object} [eventOptions.values] The data values to match (for unstructured events)
+ * @param {Array.<schema:string, data:Object>} [eventOptions.contexts] The contexts to match
+ * @param {Object} [eventOptions.parameters] The parameters to match
+ * @param {number} [n=1] The expected number of matching events
+ */
+Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
 
     n = Micro.sane(n);
 
@@ -138,27 +221,27 @@ Cypress.Commands.add('eventsWithProperties', (event_options, n = 1) => {
 
             let res = $arr;
 
-            if (event_options["schema"]) {
+            if (eventOptions["schema"]) {
 
-                res = Micro.matchBySchema(res, event_options["schema"]);
-
-            }
-
-            if (event_options["values"]) {
-
-                res = Micro.matchByVals(res, event_options["values"]);
+                res = Micro.matchBySchema(res, eventOptions["schema"]);
 
             }
 
-            if (event_options["contexts"]) {
+            if (eventOptions["values"]) {
 
-                res = Micro.matchByContexts(res, event_options["contexts"]);
+                res = Micro.matchByVals(res, eventOptions["values"]);
 
             }
 
-            if (event_options["parameters"]) {
+            if (eventOptions["contexts"]) {
 
-                res = Micro.matchByParams(res, event_options["parameters"]);
+                res = Micro.matchByContexts(res, eventOptions["contexts"]);
+
+            }
+
+            if (eventOptions["parameters"]) {
+
+                res = Micro.matchByParams(res, eventOptions["parameters"]);
             }
 
             expect(res.length).to.eq(n);
@@ -168,7 +251,21 @@ Cypress.Commands.add('eventsWithProperties', (event_options, n = 1) => {
 });
 
 
-// eventsWithParams
+/**
+ * Asserts on the number of events having specific values of event parameters
+ *
+ * ```
+ * cy.eventsWithParams({
+ *     "e": "se",
+ *     "se_ca": "Mixes",
+ *     "se_ac": "Play"
+ * }, 3);
+ * ```
+ *
+ * @method eventsWithParams
+ * @param {Object} params The type of the event
+ * @param {number} [n=1] The expected number of matching events
+ */
 Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
 
     n = Micro.sane(n);
@@ -188,8 +285,23 @@ Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
 });
 
 
-// eventsWithContexts
-// the first argument must be array of objects
+/**
+ * Asserts on the number of events with given contexts attached
+ *
+ * ```
+ * cy.eventsWithContexts([
+ *     {
+ *         "schema": "iglu:com.acme/a_test_context/jsonschema/1-0-0",
+ *         "data": {"testProp": true}
+ *     },{
+ *         "schema": "iglu:com.acme/b_test_context/jsonschema/1-0-0"
+ *     }], 2);
+ * ```
+ *
+ * @method eventsWithContexts
+ * @param {Array.<{schema:string, data:Object}>} contextsArray The contexts to match against
+ * @param {number} [n=1] The expected number of matching events
+ */
 Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
 
     n = Micro.sane(n);

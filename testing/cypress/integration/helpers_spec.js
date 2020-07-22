@@ -318,14 +318,14 @@ describe('tests helper functions of helpers.js', () => {
 
     });
 
-    context('tests: base64decode', () => {
+    context('tests: compare with base64decode', () => {
 
         it('an example', () => {
 
-            expect(Micro.base64decode("")).to.eq("");
+            const encoded = "eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy91bnN0cnVjdF9ldmVudC9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9saW5rX2NsaWNrL2pzb25zY2hlbWEvMS0wLTEiLCJkYXRhIjp7InRhcmdldFVybCI6Imh0dHBzOi8vZG9jcy5zbm93cGxvd2FuYWx5dGljcy5jb20vIiwiZWxlbWVudElkIjoiIiwiZWxlbWVudENsYXNzZXMiOltdLCJlbGVtZW50VGFyZ2V0IjoiIiwiZWxlbWVudENvbnRlbnQiOiJEZW1vISJ9fX0";
+            const expectInData = {"targetUrl":"https://docs.snowplowanalytics.com/"};
 
-            expect(Micro.base64decode("eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy91bnN0cnVjdF9ldmVudC9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9zdWJtaXRfZm9ybS9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJmb3JtSWQiOiJGT1JNIiwiZm9ybUNsYXNzZXMiOltdLCJlbGVtZW50cyI6W3sibmFtZSI6InVzZXJfZW1haWwiLCJ2YWx1ZSI6ImZha2VAZW1haWwuY29tIiwibm9kZU5hbWUiOiJJTlBVVCIsInR5cGUiOiJlbWFpbCJ9XX19fQ"))
-                .to.eq("{\"schema\":\"iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0\",\"data\":{\"schema\":\"iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0\",\"data\":{\"formId\":\"FORM\",\"formClasses\":[],\"elements\":[{\"name\":\"user_email\",\"value\":\"fake@email.com\",\"nodeName\":\"INPUT\",\"type\":\"email\"}]}}}");
+            expect(Micro.compare(expectInData, JSON.parse(Micro.base64decode(encoded))['data']['data'])).to.eq(true);
 
         });
 

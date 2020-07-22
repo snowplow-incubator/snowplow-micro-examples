@@ -4,28 +4,64 @@
     jshint -W069
 */
 
+/**
+ * A Snowplow event object.
+ * @typedef {Object} Event
+ */
 
 
+/**
+ * A Context object.
+ * @typedef Context
+ * @type {Object}
+ * @property {string} schema - The schema of the context.
+ * @property {Object} data - The data of the context.
+ */
+
+
+/**
+ * The event parameters whose values are JSON strings
+ * @constant
+ * @type {Array}
+ * @default
+ */
 const needParse = ['ue_pr', 'co'];
+
+
+/**
+ * The event parameters whose values may be base64-encoded if the encodeBase64 tracker initialization parameter is set to true
+ * @constant
+ * @type {Array}
+ * @default
+ */
 const needDecode = ['ue_px', 'cx'];
 
 
-// recurring sanity check
+/**
+ * Ensures the argument is a non-negative integer
+ * @param   {*} n
+ * @returns {number}
+ */
 function sane(n) {
 
-    if (n < 0) {
-
-        throw ("number of events cannot be negative");
-
+    if (!(Number.isInteger(n) && n >= 0)) {
+        throw("number of events must be a non negative integer");
+    } else {
+        return n;
     }
-
-    return parseInt(n);
 
 }
 
 
-// Given an array of events and an eventType(string),
-// Returns an array of the events having that eventType
+/**
+ * Filters an array of Snowplow events based on eventType
+ * ```
+ * matchByEventType(goodEventsArray, "pv");
+ * ```
+ * @param {Array.<Event>} eventsArray An array of Snowplow events
+ * @param {string} eventType The eventType to match
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchByEventType(eventsArray, eventType) {
 
     return eventsArray.filter(hasEventType(eventType));
@@ -33,8 +69,17 @@ function matchByEventType(eventsArray, eventType) {
 }
 
 
-// Given an array of events and a schema,
-// Returns an array of the events having that schema
+/**
+ * Filters an array of Snowplow events based on schema
+ *
+ * ```
+ * matchBySchema(goodEventsArray, "iglu:com.acme/test_event/jsonschema/1-0-0");
+ * ```
+ *
+ * @param {Array.<Event>} eventsArray An array of Snowplow events
+ * @param {string} schema The schema to match
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchBySchema(eventsArray, schema) {
 
     return eventsArray.filter(hasSchema(schema));
@@ -42,9 +87,17 @@ function matchBySchema(eventsArray, schema) {
 }
 
 
-// Given an array of "ue" events and a values object
-// Returns an array of the events with matching properties
-// [assumes the second argument is an object]
+/**
+ * Filters an array of unstructured Snowplow events based on data values
+ *
+ * ```
+ * matchByVals(goodEventsArray, {"targetUrl": "https://docs.snowplowanalytics.com/"});
+ * ```
+ *
+ * @param {Array.<Event>} eventsArray An array of unstructured Snowplow events
+ * @param {Object} valsObj The object having as keys the data values to match
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchByVals(eventsArray, valsObj) {
 
     return eventsArray.filter(hasValues(valsObj));
@@ -52,8 +105,22 @@ function matchByVals(eventsArray, valsObj) {
 }
 
 
-// Given an array of events and a parameters object
-// Returns an array of the events with matching parameters
+/**
+ * Filters an array of Snowplow events based on parameter values
+ *
+ * ```
+ * matchByParams(goodEventsArray,
+ *               {
+ *                   "e": "se",
+ *                   "se_ca": "Mixes",
+ *                   "se_ac": "Play",
+ *               });
+ * ```
+ *
+ * @param {Array.<Event>} eventsArray An array of Snowplow events
+ * @param {Object} paramsObj An object having as keys the parameters to match
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchByParams(eventsArray, paramsObj) {
 
     return eventsArray.filter(hasParams(paramsObj));
@@ -61,8 +128,23 @@ function matchByParams(eventsArray, paramsObj) {
 }
 
 
-// Given an array of events and contexts(array of objects)
-// Returns an array of the events with matching contexts
+/**
+ * Filters an array of Snowplow events based on an array of contexts
+ *
+ * ```
+ * matchByContexts(goodEventsArray,
+ *                 [{
+ *                     "schema": "iglu:com.acme/a_test_context/jsonschema/1-0-0",
+ *                     "data": {"testprop": 0}
+ *                 },{
+ *                     "schema": "iglu:com.acme/b_test_context/jsonschema/1-0-0"
+ *                 }]);
+ * ```
+ *
+ * @param {Array.<Event>} eventsArray An array of Snowplow events
+ * @param {Array.<Context>} expectedContextsArray An array of contexts
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchByContexts(eventsArray, expectedContextsArray) {
 
     return eventsArray.filter(hasContexts(expectedContextsArray));
@@ -218,9 +300,6 @@ function hasContexts(expCoArr) {
 }
 
 
-// ------
-
-
 function keyIncludedIn(obj) {
 
     return function(key) {
@@ -257,6 +336,22 @@ function comparesIn(expected, actual) {
 }
 
 
+/**
+ * A function to deep compare (equality for primitive data types and containership for Objects and Arrays)
+ *
+ * ```
+ * compare(1, 1);  // true
+ * compare(1, "1");  // false
+ * compare([1, 2], [3, 1, 2]);  // true
+ * compare({"a":1, "b":2}, {"b":2, "c":3, "a":1});  // true
+ * compare([1, [2]], [[3, 2], 1, 4]);  // true
+ * compare({"a": [1, 2], "b": {"c":3}}, {"b": {"d":4, "c":3}, "a":[3, 2, 1]});  // true
+ * ```
+ *
+ * @param {*} expVal The expected value
+ * @param {*} actVal The actual value
+ * @returns {Boolean} Whether the expVal is equal to or deeply contained in actVal
+ */
 function compare(expVal, actVal) {
 
     let expType = Object.prototype.toString.call(expVal);
@@ -300,6 +395,11 @@ function compare(expVal, actVal) {
 }
 
 
+/**
+ * Decode a base64-encoded string
+ * @param {string} encodedData The base64-encoded string
+ * @returns {string} The decoded string
+ */
 function base64decode(encodedData) {
     //  discuss at: http://locutus.io/php/base64_decode/
     // original by: Tyler Akins (http://rumkin.com)
