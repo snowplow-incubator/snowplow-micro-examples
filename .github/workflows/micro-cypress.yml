@@ -24,22 +24,17 @@ jobs:
 
       - name: Start Containers and wait on ports 9090 and 8000
         run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
           docker-compose up -d
           while ! nc -z localhost 9090; do sleep 0.1; done
           while ! nc -z localhost 8000; do sleep 0.1; done
+        working-directory: snowplow-micro-examples
 
-      - name: Npm install
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm install
+      - name: Install dependencies
+        run: npm install
+        working-directory: snowplow-micro-examples
 
       - name: Cypress-run the specs
         run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
           npm run cypress:run
-
-      - name: Sample running the pair-run npm script
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
           PAIR_PATTERN=02 npm run cy-micro:pair-run
+        working-directory: snowplow-micro-examples

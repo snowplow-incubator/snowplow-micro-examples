@@ -24,17 +24,15 @@ jobs:
 
       - name: Start Containers and wait on ports 9090 and 8000
         run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
           docker-compose up -d
           while ! nc -z localhost 9090; do sleep 0.1; done
           while ! nc -z localhost 8000; do sleep 0.1; done
+        working-directory: snowplow-micro-examples
 
       - name: Npm install
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm install
+        run: npm install
+        working-directory: snowplow-micro-examples
 
       - name: Run Nightwatch tests
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          npm test
+        run: npm test:nightwatch
+        working-directory: snowplow-micro-examples
