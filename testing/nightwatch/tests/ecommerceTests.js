@@ -50,7 +50,7 @@ module.exports = {
         const quantityClass = '.cart-quantity-input';
         const buttonClass_add = '.shop-item-button';
 
-        const buttonClass_remove = '.btn-danger';
+        const buttonClass_remove = '.btn-remove';
         browser.waitForElementVisible(quantityClass).click('.cart-quantity-input option[value="1"]');
 
         browser.waitForElementVisible(buttonClass_add)
@@ -114,7 +114,7 @@ module.exports = {
                 this.assert.equal(true, result.status == 0, "Button clicked successfully");
             });
         // make a purchase
-        const purchaseClass = ".btn-purchase"
+        const purchaseClass = ".btn-purchase";
 
         browser.waitForElementVisible(purchaseClass).element('css selector', purchaseClass, (result) => {
             browser.execute("arguments[0].click()", [result.value]);
@@ -154,7 +154,7 @@ module.exports = {
                }
             ]
         }
-        ]
+        ];
         browser.assert.orderOfEvents(events_list);
     }
 };

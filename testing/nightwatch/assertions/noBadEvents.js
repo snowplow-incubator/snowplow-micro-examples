@@ -17,14 +17,14 @@ function NoBadEvents(msg) {
 
     this.expected = () => {
         return 0;
-    }
+    };
 
     this.pass = (value) => {
         return value === this.expected();
     };
 
     this.value = (json) => {
-        return parseInt(json['bad']);
+        return parseInt(json["bad"]);
     };
 
     this.command = (callback) => {
@@ -35,15 +35,14 @@ function NoBadEvents(msg) {
             json: true
         }, (err, res, body) => {
             if (err) {
-                console.warn(error);
+                console.warn(err);
                 return false;
             }
             callback(body);
         });
     };
 
-};
+}
 
 module.exports.assertion = NoBadEvents;
 
-//

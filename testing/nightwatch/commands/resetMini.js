@@ -1,3 +1,6 @@
+/**
+Clears micros cache - to be used before each test
+**/
 const EventEmitter = require('events');
 
 class ResetMini extends EventEmitter {

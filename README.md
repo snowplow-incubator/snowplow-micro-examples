@@ -1,4 +1,7 @@
 # snowplow-micro-examples
+##Overview
+
+
 Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies
 
 ![testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
@@ -58,7 +61,7 @@ To quickly see the tests running:
 
 For [Nightwatch](https://nightwatchjs.org/):
 ```
-$ npm test
+$ npm run test:nightwatch
 ```
 
 For [Cypress](https://www.cypress.io/):
@@ -252,12 +255,12 @@ This repo therefore shows you how to set up trackers, how to make customised (un
 7) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
 
 
-### 3.1 Setting up Nightwatch
+### 3.1 Snowplow Micro and Nightwatch
 Powered by Node.js, Nightwatch.js is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
 
 This framework relies on Selenium and provides several commands and assertions within the framework to perform operations on the DOM elements.
 
-#### How does Nightwatch JS work?
+#### 3.1.1 How does Nightwatch JS work?
 Nightwatch communicates over a restful API protocol that is defined by the W3C WebDriver API. It needs a restful HTTP API with a Selenium JavaScript WebDriver server.
 In order to perform any operation i.e. either a command or assertion, Nightwatch usually requires sending a minimum of two requests.
 
@@ -266,24 +269,99 @@ It works as follows:
 - The first request locates the required element with the given XPath expression or CSS selector.
 - The second request takes the element and performs the actual operation of command or assertion.
 
-#### Getting Started
+#### 3.1.2 Getting Started
+
+If you want to isolate Nightwatch JS testing, follow these steps, otherwise skip to " 3.1.3 Simulating a User with Nightwatch"
+
+Install nightwatch and a chrome driver which enables nightwatch to interact with the Chrome browser:
 
 ```
-$ git init
-$ npm init -y
 $ npm install nightwatch --save-dev
 $ npm install chromedriver --save-dev
 ```
+
 1. Create default json package
 2. Create node modules folder and add nightwatch to dev dependencies
 3. Add nightwatch.conf.js file (must contain basic configuration file)
 4. Add a chrome driver binary for nightwatch configs - adds it into node modules - allows us to send commands to the chrome driver
+5. Add `test:nightwatch` to the scripts section of the package.json
+
 
 Running nightwatch:
 ```
-npm test
+npm run test:nightwatch
+
 ```
 
+#### 3.1.3 Simulating a User with Nightwatch
+When using Nightwatch, one testing strategy is to simluate a user interaction with your app. This is useful so 
+that we can fire the exact events that a user would fire when using the app in the field.
+
+In Nightwatch a test involves 3 phases:
+1. Preparing a state:
+    1. Reset Micro command - deleting the cache in micro so that each test has independent events from other tests 
+    2. Configure Nightwatch to interact with your app
+2. Taking an action:
+    Nightwatch interacts with the app creating events
+3. Making an assertion on the resulting state:
+    Nighwatch requests the state of micro and based on a test performs the corresponding assertions
+    
+#### 3.1.4 Organisation of tests
+
+#### Commands
+
+#### resetMini
+The resetMini command can be added before each test as the beforeEach hook:
+[Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/master/guide/using-nightwatch/test-hooks.md) 
+
+*Example call*:
+
+```
+module.exports = {
+    beforeEach: function(browser) {
+        browser
+            .resetMini();
+    },
+    "test1" :function (browser0 {
+        // code here
+    }
+}
+```
+*Arguments*: None
+
+This command utilises micros ability to reset itself through the url:
+                "http://localhost:9090/micro/reset"
+                
+This is the general structure of how to create a command which aims to request information from snowplow micro using Nightwatch:
+
+```
+this.command = (callback) => {
+        const request = require('request');
+
+        request({
+            url: 'http://localhost:9090/micro/all',
+            json: true
+        }, (err, res, body) => {
+            if (err) {
+                console.warn(error);
+                return false;
+            }
+            callback(body);
+        });
+    };
+```
+#### Assertions
+
+#### .noBadEvents
+
+*Example call*:
+
+```
+    browser.assert.noBadEvents();
+```
+*Arguments*: None
+
+            
 
 ### 3.2 Snowplow Micro and Cypress
 

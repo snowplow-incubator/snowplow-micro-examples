@@ -8,7 +8,7 @@ if (document.readyState === 'loading') {
 }
 
 function ready() {
-    const removeCartItemButtons = document.getElementsByClassName('btn-danger');
+    const removeCartItemButtons = document.getElementsByClassName('btn-remove');
     for (let i = 0; i < removeCartItemButtons.length; i++) {
         let button = removeCartItemButtons[i];
         button.addEventListener('click', removeCartItem);
@@ -111,11 +111,11 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
         <span class="cart-price cart-column">£ ${price}</span>
         <div class="cart-quantity cart-column">
             <input class="cart-quantity-input" type="number" value="${quantity ? quantity : 1}" test-id="cart-change-quant-${id}">
-            <button class="btn btn-danger" type="button" test-id="rem-btn-${id}">REMOVE</button>
+            <button class="btn btn-remove" type="button" test-id="rem-btn-${id}">REMOVE</button>
         </div>`;
     cartRow.innerHTML = cartRowContents;
     cartItems.append(cartRow);
-    cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem);
+    cartRow.getElementsByClassName('btn-remove')[0].addEventListener('click', removeCartItem);
     cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged);
 
     userCart.push({

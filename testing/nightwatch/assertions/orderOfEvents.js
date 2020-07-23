@@ -11,6 +11,7 @@ Check that events are sent to micro in the correct order
  * @param {string} [message] Optional log message to display in the output. If missing, one is displayed by default.
 */
 
+
 var eventMatcher = require('../../jsm/helpers.js');
 
 
@@ -26,7 +27,7 @@ function OrderOfEvents(events, msg) {
     this.pass = (matchedEvents) => {
         // index of test events
         let j = 0;
-        for (let i = 0; i < matchedEvents.length & j < events.length; i++) {
+        for (let i = 0; i < matchedEvents.length && j < events.length; i++) {
             if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
                 j++;
             } else if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
@@ -45,7 +46,7 @@ function OrderOfEvents(events, msg) {
             return 1;
         }
         return 0;
-    };
+    }
 
     this.value = (eventsOnMicro) => {
         // collect matched events
@@ -68,13 +69,13 @@ function OrderOfEvents(events, msg) {
             json: true
         }, (err, res, body) => {
             if (err) {
-                console.warn(error);
+                console.warn(err);
                 return false;
             }
             callback(body);
         });
     };
 
-};
+}
 
 module.exports.assertion = OrderOfEvents;

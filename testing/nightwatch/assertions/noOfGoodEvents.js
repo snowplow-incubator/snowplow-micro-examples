@@ -14,35 +14,35 @@
  */
 
 function NoOfGoodEvents(expected_value, msg) {
-    this.message = msg || 'Testing number of good events is: ' + expected_value;
+     this.message = msg || 'Testing number of good events is: ' + expected_value;
 
-    this.expected = () => {
-        return expected_value;
-    };
+     this.expected = () => {
+         return expected_value;
+     };
 
-    this.pass = (value) => {
-        return value === this.expected();
-    };
+     this.pass = (value) => {
+         return value === this.expected();
+     };
 
-    this.value = (json) => {
-        return parseInt(json['good']);
-    };
+     this.value = (json) => {
+         return parseInt(json["good"]);
+     };
 
-    this.command = (callback) => {
-        const request = require('request');
+     this.command = (callback) => {
+         const request = require('request');
 
-        request({
-            url: 'http://localhost:9090/micro/all',
-            json: true
-        }, (err, res, body) => {
-            if (err) {
-                console.log(error);
-                return false;
-            }
-            callback(body);
-        });
-    };
+         request({
+             url: 'http://localhost:9090/micro/all',
+             json: true
+         }, (err, res, body) => {
+             if (err) {
+                 console.log(err);
+                 return false;
+             }
+             callback(body);
+         });
+     };
 
-};
+ }
 
-module.exports.assertion = NoOfGoodEvents;
+ module.exports.assertion = NoOfGoodEvents;

@@ -56,13 +56,13 @@ function SuccessfulEvent(expected_event, noOfEvents = 1, msg) {
             json: true
         }, (err, res, body) => {
             if (err) {
-                console.log(error);
+                console.log(err);
                 return false;
             }
             callback(body);
         });
     };
 
-};
+}
 
 module.exports.assertion = SuccessfulEvent;

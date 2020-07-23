@@ -106,3 +106,68 @@ button:disabled {
     background-color: var(--info-dark);
     color: white;
 }
+
+header.masthead {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(7rem + 72px);
+  padding-bottom: 7rem;
+  background: linear-gradient(0deg, var(--primary-light) 0%,  var(--primary-main) 100%);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+header.masthead .bg-circle {
+  z-index: 0;
+  position: absolute;
+  border-radius: 100%;
+  background: linear-gradient(0deg, var(--primary-light) 0%, var(--primary-main) 100%);
+}
+
+bg-primary {
+  background-color: var(--secondary-main) !important;
+}
+
+.btn-primary {
+  background-color: var(--secondary-main);
+  border-color: var(--secondary-light);
+}
+
+.btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+  background-color: var(--secondary-dark) !important;
+  border-color: var(--secondary-dark) !important;
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(238, 9, 121, 0.5);
+}
+
+.btn-secondary {
+  background-color: var(--info-main);
+  border-color: var(--info-light);
+}
+
+.btn-secondary:active, .btn-secondary:focus, .btn-secondary:hover {
+  background-color: var(--info-dark) !important;
+  border-color: var(--info-dark)!important;
+}
+
+.btn-remove:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
+}
+
+.btn-remove {
+  background-color: var(--warning-main);
+  border-color: var(--warning-light);
+}
+
+.btn-remove:active, .btn-remove:focus, .btn-remove:hover {
+  background-color: var(--warning-dark) !important;
+  border-color: var(--warning-dark)!important;
+}
+
+.btn-remove:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
+}
