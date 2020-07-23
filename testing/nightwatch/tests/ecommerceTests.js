@@ -156,5 +156,35 @@ module.exports = {
         }
         ];
         browser.assert.orderOfEvents(events_list);
-    }
+    },
+    'Checking form ': function(browser) {
+
+            browser
+                .url('http://127.0.0.1:8000');
+
+            // ADD an item to the basket
+            const emailInput = '[test-id=email-input]';
+            const pwdInput = '[test-id=password-input]';
+            const buttonClass = '[test-id=submit-button]'
+
+            browser.waitForElementVisible(emailInput).setValue(emailInput, 'fake@email.com');
+            browser.waitForElementVisible(pwdInput).setValue(pwdInput, '1234');
+            browser.waitForElementVisible(buttonClass)
+                        .click(buttonClass, function(result) {
+                                            this.assert.equal(true, result.status == 0, "Button clicked successfully");
+                                        });
+
+
+            browser.assert.successfulEvent({
+                                           "schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
+                                           "values": {
+                                               "elements": [{
+                                                   "name": "user_email",
+                                                   "value": "fake@email.com",
+                                               }]
+                                           }
+
+                                                   });
+        }
 };
+

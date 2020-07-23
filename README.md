@@ -285,7 +285,7 @@ $ npm install chromedriver --save-dev
 3. Add nightwatch.conf.js file (must contain basic configuration file)
 4. Add a chrome driver binary for nightwatch configs - adds it into node modules - allows us to send commands to the chrome driver
 5. Add `test:nightwatch` to the scripts section of the package.json
-
+6. Write your own tests
 
 Running nightwatch:
 ```
