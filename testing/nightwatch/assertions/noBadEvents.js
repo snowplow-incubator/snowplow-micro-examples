@@ -12,7 +12,7 @@
  * @api assertions
  */
 
-NoBadEvents = function(msg) {
+function NoBadEvents(msg) {
     this.message = msg || 'Testing no bad events have been sent';
 
     this.expected = () => {

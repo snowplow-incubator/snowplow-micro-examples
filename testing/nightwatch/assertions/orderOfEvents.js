@@ -14,7 +14,7 @@ Check that events are sent to micro in the correct order
 var eventMatcher = require('../../jsm/helpers.js');
 
 
-OrderOfEvents = function(events, msg) {
+function OrderOfEvents(events, msg) {
     let DEFAULT_MSG = 'Testing that events arrive to micro in the correct order';
 
     this.message = msg || DEFAULT_MSG;
@@ -25,8 +25,8 @@ OrderOfEvents = function(events, msg) {
 
     this.pass = (matchedEvents) => {
         // index of test events
-        var j = 0;
-        for (i = 0; i < matchedEvents.length & j < events.length; i++) {
+        let j = 0;
+        for (let i = 0; i < matchedEvents.length & j < events.length; i++) {
             if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
                 j++;
             } else if (eventMatcher.matchEvents(matchedEvents[i], events[events.length - 1])) {
@@ -49,9 +49,9 @@ OrderOfEvents = function(events, msg) {
 
     this.value = (eventsOnMicro) => {
         // collect matched events
-        matchedEvents = [];
-            for (j = 0; j < events.length; j++) {
-                currMatchedEvents = eventMatcher.matchEvents(eventsOnMicro, events[j]);
+        const matchedEvents = [];
+            for (let j = 0; j < events.length; j++) {
+                const currMatchedEvents = eventMatcher.matchEvents(eventsOnMicro, events[j]);
                 matchedEvents.push.apply(matchedEvents,currMatchedEvents);
             }
 

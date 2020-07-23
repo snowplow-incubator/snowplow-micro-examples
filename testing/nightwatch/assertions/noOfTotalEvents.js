@@ -13,7 +13,7 @@
  * @api assertions
  */
 
-NoOfTotalEvents = function(expected_value, msg) {
+function NoOfTotalEvents(expected_value, msg) {
     this.message = msg || 'Testing that the total number of events is: ' + expected_value;
 
     this.expected = () => {
