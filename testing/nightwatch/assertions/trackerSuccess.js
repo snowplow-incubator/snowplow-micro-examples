@@ -13,7 +13,7 @@
  * @api assertions
  */
 
-TrackerSuccess = function(event_names_list, msg) {
+function TrackerSuccess(event_names_list, msg) {
     this.message = msg || 'Testing tracker successfully sent following structured events: ' + event_names_list;
 
     this.expected = () => {

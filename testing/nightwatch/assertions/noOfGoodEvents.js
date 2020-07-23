@@ -13,7 +13,7 @@
  * @api assertions
  */
 
-NoOfGoodEvents = function(expected_value, msg) {
+function NoOfGoodEvents(expected_value, msg) {
     this.message = msg || 'Testing number of good events is: ' + expected_value;
 
     this.expected = () => {

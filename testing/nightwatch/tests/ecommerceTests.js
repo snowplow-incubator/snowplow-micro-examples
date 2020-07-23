@@ -120,7 +120,7 @@ module.exports = {
             browser.execute("arguments[0].click()", [result.value]);
         });
 
-        events_list = [{
+        const events_list = [{
                        "eventType": "ue",
                        "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
                        "values": {

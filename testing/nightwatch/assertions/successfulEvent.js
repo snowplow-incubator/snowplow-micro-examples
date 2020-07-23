@@ -31,7 +31,7 @@
 
 var eventMatcher = require('../../jsm/helpers.js');
 
-SuccessfulEvent = function(expected_event, noOfEvents = 1, msg) {
+function SuccessfulEvent(expected_event, noOfEvents = 1, msg) {
     this.message = msg || 'Testing micro received the expected ' + noOfEvents + ' events of type' + expected_event;
 
     this.expected = () => {
