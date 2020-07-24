@@ -383,7 +383,7 @@ this.command = (callback) => {
 ```
 *Arguments*: None
 
-This is arguably the most important test, if you only implement one test this is a great place to start.
+This is arguably the most important assertion, if you only implement one this is a great place to start.
 It ensures that all of your data is sent to micro and ends up in good events, so all of your data is in your warehouse and you can interpret it as expected.
 
 #### .noOfGoodEvents
@@ -395,9 +395,9 @@ It ensures that all of your data is sent to micro and ends up in good events, so
 ```
 *Arguments*: Number of expected good events to be sent to micro
 
-An extension of noBadEvents, this test asserts that you sent the correct number of good events to micro for a given event.
-For example you might expect the onClick() action to send 2 good events, 
-then you can make sure 2 are sent to good events and call noBadEvents on the same test to doub 
+An extension of noBadEvents, asserts that you sent the correct number of good events to micro for a given event.
+For example, you might expect the onClick() action to send 2 good events, 
+then you can make sure 2 are sent to good events and call noBadEvents on the same assertion as total number of events = number of good events + number of bad events. 
 
 #### .noOfTotalEvents
 
@@ -408,8 +408,8 @@ then you can make sure 2 are sent to good events and call noBadEvents on the sam
 ```
 *Arguments*: Number of expected total events sent to micro
 
-A further extension on noOfGoodEvents, this test asserts that both the correct number events are sent to micro, and that no bad events are sent.
-Using all 3 of these tests consecutively provides the best assurances that every event you send is sent to your warehouse properly. 
+A further extension on noOfGoodEvents, this assertion ensures that both the correct number events are sent to micro, and that no bad events are sent.
+Using all 3 of these assertions consecutively provides the best assurance that every event you send is sent to your warehouse properly. 
 
 #### .orderOfEvents
 
@@ -421,7 +421,7 @@ Using all 3 of these tests consecutively provides the best assurances that every
 ```
 *Arguments*: events_list
 
-This test checks that event a occurs before event b, in other words when one event must occur before the other your applciation to work as expected,
+Checks that event a occurs before event b, in other words when one event must occur before the other your applciation to work as expected,
 you can assert that event a reaches micro before event b. In our case we use this to check that a cart action occurs before purchasing an item.
 If our application didn't get this order of events correct then the application does not act as expected, this can also be considered a race condition test.
 
@@ -447,12 +447,12 @@ browser.assert.successfulEvent({
         });
 ```
 *Arguments*: test_event (with schema, eventType, values and context), number_of_occurences
-
-This test ensures that when an event is sent to micro the correct parameters are sent as expected.
-In our case we check that the schema, properties and contexts are correct - we match what the user expects to be sent
-to what is recieved on micro. We macth our test event with the event recieved on micro, they are matched if test event matches by schema, eventType, values and context
-and if these assertions are correct the event will pass.            
-
+         
+Ensures that when an event is sent to micro the correct parameters are sent as expected. 
+In our case we check that the schema, properties and contexts are correct:
+ - We match what the user expects to be sent to what is received on micro. 
+- In the end, the number of matched events is retrieved and asserted to the expected number of occurrences. 
+- By doing that, we can also specify which events we don't expect on micro by setting the argument number_of_occurences=0.
 ### 3.2 Snowplow Micro and Cypress
 
 [Cypress](https://www.cypress.io/) is an open [source](https://github.com/cypress-io/cypress) JavaScript End-to-End testing framework with extensive [documentation](https://docs.cypress.io/).
