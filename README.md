@@ -1,10 +1,30 @@
 # snowplow-micro-examples
-##Overview
+
+Test that your website is tracking snowplow events correctly.
+
+## Quick start
+## Launch the web app that we want to test:
+```
+
+docker-compose up -d web
+```
+#### Launch snowplow micro
+```
+docker-compose up -d micro
+```
+#### Run integration tests for snowplow tracking:
+```
+
+npm test
+
+```
+Did all tests pass? Then confidently push your web app to production!
 
 
 Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies
 
-![testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
+
+[Testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
 
 
 ## 1. Local setup
@@ -28,16 +48,16 @@ $ docker-compose up
 
 This will:
 
-1. start Snowplow Micro, mounting the `micro` and `local-iglu` folders and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
+1. Start Snowplow Micro, mounting the `micro` and `local-iglu` folders and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
     1. Inside the `micro` folder are:
-        1. the [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
-        2. the [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
+        1. The [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
+        2. The [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
     2. The `local-iglu` folder, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
 
     ```
         schemas/{vendor}/{schema-name}/jsonschema/{schema-version}
     ```
-2. start Django to serve the app on localhost:8000
+2. Start Django to serve the app on localhost:8000
 
 
 **Additional resources:**
@@ -76,12 +96,14 @@ $ npm run cypress:open
 ## 2. Tracking Design
 
 ### 2.1 Overview of the app
+Our demo web app uses snowplow micro to track user activity in an e-commerce application. 
+Through various testing mechanisms, we will be testing that tracking is properly configured on our site using both Nightwatch JS and Cypress.
 
 The example application is a simple ecommerce app consisting of just 3 pages:
 
- 1. a start page with a sample login form (no authentication involved - see also the **Note** below)
- 2. the shop page (also containing the cart)
- 3. the confirmation page
+ 1. A start-up page with a sample login form (no authentication involved - see also the **Note** below)
+ 2. The shop page (also containing the cart)
+ 3. The confirmation page
 
 **Note:**
 
@@ -100,7 +122,7 @@ p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(argum
 };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
 n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 ```
-, the tracking implemented consists of:
+The tracking implemented consists of:
 
 1. [Pageview tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#31-pageviews)
 
@@ -239,7 +261,7 @@ n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 
 
 ## 3. Testing with Snowplow Micro
 
-The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retriving the correct data for every tracker.
+The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retrieving the correct data for every tracker.
 This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
 
 
@@ -249,14 +271,14 @@ This repo therefore shows you how to set up trackers, how to make customised (un
 2) Number of good events = number of expected good events
 3) Ensuring that total number of events is right - expected number of good events + bad events (noBadEvents = True)
 4) Checking proper values of structured and unstructured events are sent to micro
-5) Test which shows that tracker is successfully sent to micro, and successfully received - used by checking name of event is sent to micro
-6) Event With Property test - context, event type and schema
+5) Event With Property test - context, event type and schema
 	- user puts in an event and we match by all 3 conditions (contexts, properties and schema - this determines whether or not the fake test event is equal to the one on micro - for both structured and unstructured)
-7) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
+6) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
+7) Form tracking test to ensure blacklisted form fields are not tracked, and to ensure the right properties are sent for each field 
 
 
 ### 3.1 Snowplow Micro and Nightwatch
-Powered by Node.js, Nightwatch.js is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
+Powered by Node.js, [Nightwatch.js](https://nightwatchjs.org/) is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
 
 This framework relies on Selenium and provides several commands and assertions within the framework to perform operations on the DOM elements.
 
@@ -361,7 +383,75 @@ this.command = (callback) => {
 ```
 *Arguments*: None
 
-            
+This is arguably the most important test, if you only implement one test this is a great place to start.
+It ensures that all of your data is sent to micro and ends up in good events, so all of your data is in your warehouse and you can interpret it as expected.
+
+#### .noOfGoodEvents
+
+*Example call*:
+
+```
+    browser.assert.noOfGoodEvents(2);
+```
+*Arguments*: Number of expected good events to be sent to micro
+
+An extension of noBadEvents, this test asserts that you sent the correct number of good events to micro for a given event.
+For example you might expect the onClick() action to send 2 good events, 
+then you can make sure 2 are sent to good events and call noBadEvents on the same test to doub 
+
+#### .noOfTotalEvents
+
+*Example call*:
+
+```
+    browser.assert.noOfTotalEvents(2);
+```
+*Arguments*: Number of expected total events sent to micro
+
+A further extension on noOfGoodEvents, this test asserts that both the correct number events are sent to micro, and that no bad events are sent.
+Using all 3 of these tests consecutively provides the best assurances that every event you send is sent to your warehouse properly. 
+
+#### .orderOfEvents
+
+*Example call*:
+
+```
+    browser.assert.orderOfEvents(events_list);
+
+```
+*Arguments*: events_list
+
+This test checks that event a occurs before event b, in other words when one event must occur before the other your applciation to work as expected,
+you can assert that event a reaches micro before event b. In our case we use this to check that a cart action occurs before purchasing an item.
+If our application didn't get this order of events correct then the application does not act as expected, this can also be considered a race condition test.
+
+#### .successfulEvent
+
+*Example call*:
+
+```
+browser.assert.successfulEvent({
+            "eventType": "ue",
+            "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
+            "values": {
+                "type": "remove"
+            },
+            "contexts": [{
+                "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                "data": {
+                    "name": "One-size summer hat",
+                    "price": 15.5,
+                    "quantity": 1
+                }
+            }]
+        });
+```
+*Arguments*: test_event (with schema, eventType, values and context), number_of_occurences
+
+This test ensures that when an event is sent to micro the correct parameters are sent as expected.
+In our case we check that the schema, properties and contexts are correct - we match what the user expects to be sent
+to what is recieved on micro. We macth our test event with the event recieved on micro, they are matched if test event matches by schema, eventType, values and context
+and if these assertions are correct the event will pass.            
 
 ### 3.2 Snowplow Micro and Cypress
 
@@ -380,9 +470,9 @@ While Cypress considers as state the application's state, it is still a fact tha
 This is especially true when a tracking strategy is implemented, which means that any action can fire [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol) through the [trackers](https://github.com/snowplow/snowplow/wiki/trackers). There is an increasing number of reports (see Gartner) highlighting the importance of upstream data quality and Data Ops, which means that testing your Data Collection and trackers' implementation besides your product's features is of highest priority. Tracking is as important as your shipping, and that is why it is highly recommended that you include its testing in your E2E tests.
 
 Cypress, even though it considers as [best practice](https://docs.cypress.io/guides/references/best-practices.html#Visiting-external-sites) to avoid requiring or testing 3rd party services, it still offers the ability to "talk" to 3rd party API's via [cy.request()](https://docs.cypress.io/api/commands/request.html), that:
- - entirely bypasses CORS
- - expects the server to exist and provide a response
- - does not retry its assertions (as that could affect external state)
+ - Entirely bypasses CORS
+ - Expects the server to exist and provide a response
+ - Does not retry its assertions (as that could affect external state)
 , which makes it great to use for querying Snowplow Micro's endpoints.
 For example:
 ```
@@ -451,7 +541,7 @@ Just make sure that this name pattern is unique for this pair.
 This kind of organization also has the benefit, that you can keep having the tests you normally had for your app (just adding the before-hook to reset Micro), and just add a corresponding micro-spec file, to test the events emitted from the original run of that app test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
 
 **Additional resources**:
-1. [a cypress issue describing a similar situation](https://github.com/cypress-io/cypress/issues/2968)
+1. [A cypress issue describing a similar situation](https://github.com/cypress-io/cypress/issues/2968)
 2. [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
 3. From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
 
@@ -649,9 +739,9 @@ A general workflow file would definitely use the [Snowplow Micro](https://github
           docker-compose up -d
 ```
 In order to use it, as it is, you will need:
-1. the `docker-compose.yml` file
-2. a `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
-3. a `local-iglu` folder to serve as local Iglu repository.
+1. The `docker-compose.yml` file
+2. A `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
+3. A `local-iglu` folder to serve as local Iglu repository.
 
 If you do not want to use `docker run` instead of `docker-compose`, you can make the step as:
 ```

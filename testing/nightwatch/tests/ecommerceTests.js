@@ -162,7 +162,7 @@ module.exports = {
             browser
                 .url('http://127.0.0.1:8000');
 
-            // ADD an item to the basket
+            // Input test email and password credentials
             const emailInput = '[test-id=email-input]';
             const pwdInput = '[test-id=password-input]';
             const buttonClass = '[test-id=submit-button]'
@@ -185,6 +185,14 @@ module.exports = {
                                            }
 
                                                    });
+            browser.assert.successfulEvent({
+                 		"schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
+                        "values": {
+                        "elements": [{
+                            "name": "user_password"
+            }]
+                   }
+                  }, 0);
         }
 };
 
