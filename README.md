@@ -43,6 +43,10 @@ Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/
 
 ## Snowplow Micro
 
+[Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is a very small version of a full [Snowplow](https://snowplowanalytics.com/) data collection pipeline that can be embedded in automated test suites and so enable Snowplow users to test their data collection setup and then release new versions of their apps, websites and servers with confidence that new changes won’t break the tracking set up. Snowplow Micro comes to fill a missing piece in automated test suites: the tests that validate that data collection has been setup properly.
+
+To check data collection, it is necessary to fire a set of events, process them and see if the output of that processing is as expected. Snowplow Micro is easy to integrate with your test tool and then run as part of your automated testing workflow. This repository aims to show in detail all the steps to do this using Nightwatch and Cypress as examples of test tools, to build end-to-end GitHub Actions testing workflows.
+
 
 ## 1. Local setup
 
@@ -84,6 +88,8 @@ This step will install Nightwatch and Cypress.
 
 
 ### 1.4 Run the tests
+
+Our demo web app uses snowplow to track user activity. We will be testing that tracking is properly configured on our site.
 
 To run all tests:
 ```
@@ -290,8 +296,16 @@ The tracking implemented consists of:
 
 ## 4. Testing with Snowplow Micro
 
-The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retrieving the correct data for every tracker.
-This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
+The purpose of this repo is to show how Snowplow Micro can be used to validate that the tracking implemented in a demo app is operating in the way we expect.
+
+Simulate particular situations, and check that:
+ - There are no bad events.
+ - The data sent is as expected.
+ - The right event data is sent with each event.
+ - The right entities / contexts are attached to each event.
+ - The right values are sent with each event.
+
+In this repo you can also find information on how to set up trackers, how to make customised (unstructured) events, and, mainly, how to configure and add tests in your test tool of choice, using as examples the popular web test tools Nightwatch and Cypress, in order to demonstate the capabilities of Snowplow Micro.
 
 
 #### The tests implemented in this repo are:
