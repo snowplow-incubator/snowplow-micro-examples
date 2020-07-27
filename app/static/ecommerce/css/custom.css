@@ -40,7 +40,7 @@ button:disabled {
 }
 
 .border-img {
-    border: 1px solid var(--grey-main);
+    border: 1px solid var(--grey-light);
 }
 
 .mast-height {
