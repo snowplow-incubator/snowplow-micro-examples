@@ -1,22 +1,18 @@
 # snowplow-micro-examples
+![testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
 
 Test that your website is tracking snowplow events correctly.
 
 ## Quick start
-## Launch the web app that we want to test:
 ```
-
+# Launch the web app that we want to test:
 docker-compose up -d web
-```
-#### Launch snowplow micro
-```
+
+# Launch snowplow micro
 docker-compose up -d micro
-```
-#### Run integration tests for snowplow tracking:
-```
 
+# Run integration tests for snowplow tracking:
 npm test
-
 ```
 Did all tests pass? Then confidently push your web app to production!
 
@@ -24,19 +20,33 @@ Did all tests pass? Then confidently push your web app to production!
 Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies
 
 
-[Testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
+## Table of Contents
+
+[ Snowplow Micro]()
+[1. Local setup]()
+[2. Github Actions]()
+[3. Tracking design]()
+ - [3.1 Overview of the demo app]()
+ - [3.2 Event dictionary]()
+[4. Testing with Snowplow Micro]()
+ - [4.1 Snowplow Micro and Nightwatch]()
+ - [4.2 Snowplow Micro and Cypress]()
+[5. Additional resources]()
+
+
+## Snowplow Micro
 
 
 ## 1. Local setup
 
 ### 1.1 Prerequisites
-We recommend setting up the following two tools before starting:
-
+We recommend setting up the following tools before starting:
+ - Git
  - Docker and Docker-compose
  - Npm
 
 
-### 1.2 Clone this repository and start Snowplow Micro
+### 1.2 Clone this repo, start Snowplow Micro and serve the app
 
 ```
 $ git clone https://github.com/snowplow-incubator/snowplow-micro-examples.git
@@ -45,27 +55,18 @@ $ cd snowplow-micro-examples
 
 $ docker-compose up
 ```
-
 This will:
 
-1. Start Snowplow Micro, mounting the `micro` and `local-iglu` folders and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
-    1. Inside the `micro` folder are:
+1. Start serving the app on localhost:8000
+2. Launch Snowplow Micro, mounting the `micro` and `local-iglu` directories and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
+    1. Inside the `micro` directory are:
         1. The [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
         2. The [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
-    2. The `local-iglu` folder, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
+    2. The `local-iglu` directory, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
 
     ```
         schemas/{vendor}/{schema-name}/jsonschema/{schema-version}
     ```
-2. Start Django to serve the app on localhost:8000
-
-
-**Additional resources:**
- - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
- - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
- - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
- - Another [Docker Compose Example](https://github.com/snowplow/iglu/blob/release/0.6.0/2-repositories/iglu-server/docker/docker-compose.yml)
-
 
 ### 1.3 Install npm dependencies
 
@@ -77,41 +78,67 @@ This step will install Nightwatch and Cypress.
 
 ### 1.4 Run the tests
 
-To quickly see the tests running:
+To run all tests:
+```
+$ npm test
+```
 
-For [Nightwatch](https://nightwatchjs.org/):
+For running only [Nightwatch](https://nightwatchjs.org/) tests:
 ```
 $ npm run test:nightwatch
 ```
 
-For [Cypress](https://www.cypress.io/):
+For running only [Cypress](https://www.cypress.io/) tests:
 ```
+# From the command line
 $ npm run cypress:run
-```
-And to open Cypress' Test Runner:
-```
+
+# To launch the Test Runner
 $ npm run cypress:open
 ```
 
-## 2. Tracking Design
+## 2. Github Actions
+Inside the `.github/workflows/` folder you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress. The steps are broken so that you can use any that you need.
+A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which currently is:
 
-### 2.1 Overview of the app
-Our demo web app uses snowplow micro to track user activity in an e-commerce application. 
-Through various testing mechanisms, we will be testing that tracking is properly configured on our site using both Nightwatch JS and Cypress.
+```
+- name: Start Micro
+    run: docker-compose up -d
+    working-directory: snowplow-micro-examples
+```
+In order to use it, as it is, you will need:
+1. The `docker-compose.yml` file
+2. A `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
+3. A `local-iglu` folder to serve as local Iglu repository.
+
+If you do not want to use `docker run` instead of `docker-compose`, you can make the step as:
+```
+- name: Start Micro
+    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+    working-directory: snowplow-micro-examples
+```
+
+If you do not have a `local-iglu` setup, you'll just need to not use the second mount.
+
+
+## 3. Tracking design
+
+Our demo web app uses Snowplow to track user activity. Then, using Snowplow Micro we will be testing that tracking is properly configured on our site using, as examples, two populat web test tools, Nightwatch and Cypress.
+
+### 3.1 Overview of the demo app
 
 The example application is a simple ecommerce app consisting of just 3 pages:
 
  1. A start-up page with a sample login form (no authentication involved - see also the **Note** below)
- 2. The shop page (also containing the cart)
- 3. The confirmation page
+ 2. The shop page including a same-page cart
+ 3. The purchase-confirmation page
 
-**Note:**
-
-The form of the login-page is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. While you can type anything and continue to the shop-page, we recommend that you do not use any personal data.
+> **Note:**
+> The form of the login-page is only for demonstrating the tracking of form events (which can also show that password fields are not being tracked). There is no authentication involved. While you can type anything and continue to the shop-page, we recommend that you do not use any personal data.
 
 Each page serves the purpose of demonstrating possible event-tracking, which will then be tested using Snowplow Micro and a test tool.
 
-### 2.2 Event dictionary
+### 3.2 Event dictionary
 
 Using the [JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker):
 ```
@@ -170,7 +197,8 @@ The tracking implemented consists of:
 
     window.snowplow('enableFormTracking', config);
     ```
-    - Note: By default, Form Tracking does not track password fields. We used the above `config` to demonstrate how you can ensure the Non-tracking of sensitive fields. With Snowplow Micro we can also later test that any blacklisting of forms is implemented correctly and that no sensitive fields are tracked.
+    > **Note**:
+    > By default, Form Tracking does not track password fields. We used the above `config` to demonstrate how you can ensure the Non-tracking of sensitive fields. With Snowplow Micro we can also later test that any blacklisting of forms is implemented correctly and that no sensitive fields are tracked.
 
 4. [Tracking custom self-describing(unstructured) events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#37-tracking-custom-self-describing-unstructured-events)
 
@@ -178,9 +206,9 @@ The tracking implemented consists of:
         - These events happen when a user interacts with the cart, adding or removing items, using the Add-to-cart or Remove buttons.
         - This is a self-describing event that captures the type of cart interaction: "add" versus "remove".
         - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
-        - Implemented in the shop-page (see file [homepage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/homepage.js)):
+        - Implemented in the shop-page (see file [shoppage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/shoppage.js)):
         ```
-        // TRACK cart_action_event (add) - homepage.js line 129
+        // TRACK cart_action_event (add)
         window.snowplow('trackSelfDescribingEvent', {
                 schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                 data: {
@@ -198,7 +226,7 @@ The tracking implemented consists of:
             }]
         );
 
-        // TRACK cart_action_event (remove) - homepage.js line 43
+        // TRACK cart_action_event (remove)
         window.snowplow('trackSelfDescribingEvent', {
                 schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                 data: {
@@ -221,9 +249,9 @@ The tracking implemented consists of:
         - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
         - This is a self-describing event that captures the total amount of the transaction.
         - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
-        - Implemented in the shop-page (see file [homepage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/homepage.js)):
+        - Implemented in the shop-page (see file [shoppage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/shoppage.js)):
         ```
-        // create the contexts array - homepage.js line 175
+        // create the contexts array
         let productsContext = [];
         userCart.forEach(function(elt) {
             productsContext.push({
@@ -237,7 +265,7 @@ The tracking implemented consists of:
             });
         });
 
-        // TRACK purchase_event - homepage.js line 191
+        // TRACK purchase_event
         window.snowplow('trackSelfDescribingEvent', {
                 schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
                 data: {
@@ -253,13 +281,7 @@ The tracking implemented consists of:
     - Product Entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
 
 
-**Additional resources:**
-
-- [Snowplow Docs](https://docs.snowplowanalytics.com/)
-- [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
-
-
-## 3. Testing with Snowplow Micro
+## 4. Testing with Snowplow Micro
 
 The purpose of this repo is to show that micro is operating in the way we would expect for a given application - showing no bad events, sending the correct events in the correct format, and retrieving the correct data for every tracker.
 This repo therefore shows you how to set up trackers, how to make customised (unstructured) events, and structured events, as well as adding in tests in both nightwatch and cypress to demonstate the capabilities of micro.
@@ -274,15 +296,15 @@ This repo therefore shows you how to set up trackers, how to make customised (un
 5) Event With Property test - context, event type and schema
 	- user puts in an event and we match by all 3 conditions (contexts, properties and schema - this determines whether or not the fake test event is equal to the one on micro - for both structured and unstructured)
 6) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
-7) Form tracking test to ensure blacklisted form fields are not tracked, and to ensure the right properties are sent for each field 
+7) Form tracking test to ensure blacklisted form fields are not tracked, and to ensure the right properties are sent for each field
 
 
-### 3.1 Snowplow Micro and Nightwatch
+### 4.1 Snowplow Micro and Nightwatch
 Powered by Node.js, [Nightwatch.js](https://nightwatchjs.org/) is an open-source automated testing framework that aims at providing complete E2E (end to end) solutions to automate testing with Selenium Javascript for web-based applications, browser applications, and websites.
 
 This framework relies on Selenium and provides several commands and assertions within the framework to perform operations on the DOM elements.
 
-#### 3.1.1 How does Nightwatch JS work?
+#### 4.1.1 How does Nightwatch JS work?
 Nightwatch communicates over a restful API protocol that is defined by the W3C WebDriver API. It needs a restful HTTP API with a Selenium JavaScript WebDriver server.
 In order to perform any operation i.e. either a command or assertion, Nightwatch usually requires sending a minimum of two requests.
 
@@ -291,7 +313,7 @@ It works as follows:
 - The first request locates the required element with the given XPath expression or CSS selector.
 - The second request takes the element and performs the actual operation of command or assertion.
 
-#### 3.1.2 Getting Started
+#### 4.1.2 Getting Started
 
 If you want to isolate Nightwatch JS testing, follow these steps, otherwise skip to " 3.1.3 Simulating a User with Nightwatch"
 
@@ -315,26 +337,26 @@ npm run test:nightwatch
 
 ```
 
-#### 3.1.3 Simulating a User with Nightwatch
-When using Nightwatch, one testing strategy is to simluate a user interaction with your app. This is useful so 
+#### 4.1.3 Simulating a User with Nightwatch
+When using Nightwatch, one testing strategy is to simluate a user interaction with your app. This is useful so
 that we can fire the exact events that a user would fire when using the app in the field.
 
 In Nightwatch a test involves 3 phases:
 1. Preparing a state:
-    1. Reset Micro command - deleting the cache in micro so that each test has independent events from other tests 
+    1. Reset Micro command - deleting the cache in micro so that each test has independent events from other tests
     2. Configure Nightwatch to interact with your app
 2. Taking an action:
     Nightwatch interacts with the app creating events
 3. Making an assertion on the resulting state:
     Nighwatch requests the state of micro and based on a test performs the corresponding assertions
-    
-#### 3.1.4 Organisation of tests
+
+#### 4.1.4 Organisation of tests
 
 #### Commands
 
 #### resetMini
 The resetMini command can be added before each test as the beforeEach hook:
-[Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/master/guide/using-nightwatch/test-hooks.md) 
+[Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/master/guide/using-nightwatch/test-hooks.md)
 
 *Example call*:
 
@@ -353,7 +375,7 @@ module.exports = {
 
 This command utilises micros ability to reset itself through the url:
                 "http://localhost:9090/micro/reset"
-                
+
 This is the general structure of how to create a command which aims to request information from snowplow micro using Nightwatch:
 
 ```
@@ -396,8 +418,8 @@ It ensures that all of your data is sent to micro and ends up in good events, so
 *Arguments*: Number of expected good events to be sent to micro
 
 An extension of noBadEvents, asserts that you sent the correct number of good events to micro for a given event.
-For example, you might expect the onClick() action to send 2 good events, 
-then you can make sure 2 are sent to good events and call noBadEvents on the same assertion as total number of events = number of good events + number of bad events. 
+For example, you might expect the onClick() action to send 2 good events,
+then you can make sure 2 are sent to good events and call noBadEvents on the same assertion as total number of events = number of good events + number of bad events.
 
 #### .noOfTotalEvents
 
@@ -409,7 +431,7 @@ then you can make sure 2 are sent to good events and call noBadEvents on the sam
 *Arguments*: Number of expected total events sent to micro
 
 A further extension on noOfGoodEvents, this assertion ensures that both the correct number events are sent to micro, and that no bad events are sent.
-Using all 3 of these assertions consecutively provides the best assurance that every event you send is sent to your warehouse properly. 
+Using all 3 of these assertions consecutively provides the best assurance that every event you send is sent to your warehouse properly.
 
 #### .orderOfEvents
 
@@ -447,18 +469,20 @@ browser.assert.successfulEvent({
         });
 ```
 *Arguments*: test_event (with schema, eventType, values and context), number_of_occurences
-         
-Ensures that when an event is sent to micro the correct parameters are sent as expected. 
+
+Ensures that when an event is sent to micro the correct parameters are sent as expected.
 In our case we check that the schema, properties and contexts are correct:
- - We match what the user expects to be sent to what is received on micro. 
-- In the end, the number of matched events is retrieved and asserted to the expected number of occurrences. 
+ - We match what the user expects to be sent to what is received on micro.
+- In the end, the number of matched events is retrieved and asserted to the expected number of occurrences.
 - By doing that, we can also specify which events we don't expect on micro by setting the argument number_of_occurences=0.
-### 3.2 Snowplow Micro and Cypress
+
+
+### 4.2 Snowplow Micro and Cypress
 
 [Cypress](https://www.cypress.io/) is an open [source](https://github.com/cypress-io/cypress) JavaScript End-to-End testing framework with extensive [documentation](https://docs.cypress.io/).
 In this section we note few things that are specifically related to using this test tool with Snowplow Micro, describe the rationale behind the tests' organization used in this example and document the commands used.
 
-#### 3.2.1 Introduction
+#### 4.2.1 Introduction
 
 Generally, a test involves 3 phases:
 1. Prepare a state
@@ -493,7 +517,7 @@ So, following on the 3 test's phases:
 
 
 
-#### 3.2.2 Tests' organization
+#### 4.2.2 Tests' organization
 
 Another Cypress' recommendation for best [practices](https://docs.cypress.io/guides/references/best-practices.html#Having-tests-rely-on-the-state-of-previous-tests) is the decoupling of tests, which, for the case of testing with Snowplow Micro, would mean to run both the state-changing and the micro-requests in the same spec file.
 However, there were some issues in doing so. More specifically, those issues had only to do with cases where links (or submit buttons) were clicked, in other words in cases where a window [unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) was fired.
@@ -540,14 +564,7 @@ Just make sure that this name pattern is unique for this pair.
 
 This kind of organization also has the benefit, that you can keep having the tests you normally had for your app (just adding the before-hook to reset Micro), and just add a corresponding micro-spec file, to test the events emitted from the original run of that app test. That way, you can test your app's features in the `app_spec` files and your tracking implementation in the corresponding `micro_spec` files.
 
-**Additional resources**:
-1. [A cypress issue describing a similar situation](https://github.com/cypress-io/cypress/issues/2968)
-2. [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
-3. From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
-
-
-
-#### 3.2.3 Commands
+#### 4.2.3 Commands
 
 Since Cypress allows to define your own [custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html), in this repo you can find commands specifically for use with Snowplow Micro and assertions of events. You can see them all in [commands.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/support/commands.js).
 
@@ -697,7 +714,7 @@ It will return the events that have all those properties.
 As shown in the examples above, you do not have to use all the properties, and the command works accordingly.
 
 
-#### 3.2.4 Some further notes
+#### 4.2.4 Some further notes
 
 ```
 $ tree testing/cypress/
@@ -727,30 +744,13 @@ testing/cypress/
     - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/plugins/index.js).
 
 
+## 5. Additional resources:**
 
-## 4. Github Actions
-Inside the `.github/workflows/` folder you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress. The steps are broken so that you can use any that you need.
-A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which currently is:
-
-```
-- name: Start Micro
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          docker-compose up -d
-```
-In order to use it, as it is, you will need:
-1. The `docker-compose.yml` file
-2. A `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
-3. A `local-iglu` folder to serve as local Iglu repository.
-
-If you do not want to use `docker run` instead of `docker-compose`, you can make the step as:
-```
-- name: Start Micro
-        run: |
-          cd $GITHUB_WORKSPACE/snowplow-micro-examples
-          docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
-```
-
-You will still need to provide a configuration for Micro and Iglu.
-
-If you do not have a `local-iglu` setup, you'll just need to not use the second mount.
+ - [Snowplow Docs](https://docs.snowplowanalytics.com/)
+ - [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
+ - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
+ - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
+ - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
+ - [A Cypress issue describing a similar situation with XHR Aborts](https://github.com/cypress-io/cypress/issues/2968)
+ - [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
+ - From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
