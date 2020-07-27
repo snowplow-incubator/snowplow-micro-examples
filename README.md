@@ -1,7 +1,7 @@
 # snowplow-micro-examples
 ![testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/workflows/testing%20with%20Snowplow%20Micro/badge.svg)
 
-Test that your website is tracking snowplow events correctly.
+Test that your website is tracking [Snowplow](https://snowplowanalytics.com/) events correctly.
 
 ## Quick start
 ```
@@ -22,16 +22,23 @@ Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/
 
 ## Table of Contents
 
-[ Snowplow Micro]()
-[1. Local setup]()
-[2. Github Actions]()
-[3. Tracking design]()
- - [3.1 Overview of the demo app]()
- - [3.2 Event dictionary]()
-[4. Testing with Snowplow Micro]()
- - [4.1 Snowplow Micro and Nightwatch]()
- - [4.2 Snowplow Micro and Cypress]()
-[5. Additional resources]()
+[ Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#snowplow-micro)
+
+[1. Local setup](https://github.com/snowplow-incubator/snowplow-micro-examples#1-local-setup)
+
+[2. Github Actions](https://github.com/snowplow-incubator/snowplow-micro-examples#2-github-actions)
+
+[3. Tracking design](https://github.com/snowplow-incubator/snowplow-micro-examples#3-tracking-design)
+
+ - [3.1 Overview of the demo app](https://github.com/snowplow-incubator/snowplow-micro-examples#31-overview-of-the-demo-app)
+ - [3.2 Event dictionary](https://github.com/snowplow-incubator/snowplow-micro-examples#32-event-dictionary)
+
+[4. Testing with Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#4-testing-with-snowplow-micro)
+
+ - [4.1 Snowplow Micro and Nightwatch](https://github.com/snowplow-incubator/snowplow-micro-examples#41-snowplow-micro-and-nightwatch)
+ - [4.2 Snowplow Micro and Cypress](https://github.com/snowplow-incubator/snowplow-micro-examples#42-snowplow-micro-and-cypress)
+
+[5. Additional resources](https://github.com/snowplow-incubator/snowplow-micro-examples#5-additional-resources)
 
 
 ## Snowplow Micro
@@ -575,8 +582,6 @@ Since Cypress allows to define your own [custom commands](https://docs.cypress.i
 ```
     cy.noBadEvents();
 ```
-*Arguments*: None
-
 Even if this is the only thing that you check in your tests, you are already brilliant. It is going to ensure that your app is not sending any bad events, in other words you ensure that all your events end up in your warehouse. There are no more gaps in your data or in your analytics and no recovery jobs to get those bad events back, jobs that are not going to be trivial, especially if you are dealing with high volume of events.
 
 #### .numGoodEvents
@@ -586,9 +591,6 @@ Even if this is the only thing that you check in your tests, you are already bri
 ```
 cy.numGoodEvents( 19 );
 ```
-*Arguments*:
- - int >= 0, the number of good events you expect
-
 This command ensures that all the events you want to track, actually get tracked. Because there may be not bad events, but maybe your tracker is not implemented correctly into the app's logic.
 
 #### .eventsWithEventType
@@ -599,10 +601,6 @@ This command ensures that all the events you want to track, actually get tracked
     cy.eventsWithEventType( "pv", 8 );
     cy.eventsWithEventType( "se", 45 );
 ```
-*Arguments*:
- - string, the eventType you want to match against
- - int >= 0, the number of matching events you expect
-
 This command is useful when you want to ensure that a particular type of events got tracked as many times as it should.
 
 #### .eventsWithParams
@@ -618,10 +616,6 @@ This command is useful when you want to ensure that a particular type of events 
             "se_la": "Surfing"
         }, 3 );
 ```
-*Arguments*:
- - Object (parameter-value pairs)
- - int >= 0, the number of matching events you expect
-
 This command accepts as first argument an object with parameter-value pairs. You can see all available parameters in the [Snowplow Tracker Protocol](). This command is particularly useful when checking on [structured events]().
 
 #### .eventsWithSchema
@@ -631,10 +625,6 @@ This command accepts as first argument an object with parameter-value pairs. You
 ```
     cy.eventsWithSchema( "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0", 5 );
 ```
-*Arguments*:
- - string, the Schema you are looking for
- - int >= 0, the number of matching events you expect
-
  With this command you can look specifically for [unstructured events](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/understanding-schemas-and-validation/), which include both custom unstructured [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#310-custom-unstructured-event-tracking) and all other default Snowplow events that are of "ue" eventType (link-click, submit-form ad-impression etc.)
 
 #### .eventsWithContexts
@@ -665,10 +655,6 @@ This command accepts as first argument an object with parameter-value pairs. You
                 }
             ], 2 );
 ```
-*Arguments*:
- - Array of contexts (see below)
- - int >= 0, the number of matching events you expect
-
 With this command you can check whether the predefined(e.g. webpage, geolocation) or [custom](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#4-custom-contexts) contexts/entities got properly attached to events. You can not only check by the schema of the entities but also by their data. Note that the first argument to this command should be an array of objects, like the contexts' array that can be attached to any Snowplow event. The keys of these objects can be either "schema" or "data". For "schema" the value should be a string (the schema). For "data" the value should be an object of key-value pairs, depending on the context.
 
 #### .eventsWithProperties
@@ -700,10 +686,6 @@ With this command you can check whether the predefined(e.g. webpage, geolocation
 
         }, 1 );
 ```
-*Arguments*:
- - Object with specific keys (see below)
- - int >= 0, the number of matching events you expect
-
 This is a command that combines some of the above (eventsWithSchema, eventsWithParams, eventsWithContexts), and also adds the ability to look into the data of unstructured events.
 The object that gets passed as the first argument, can have as keys:
  - "schema" : matches by schema
@@ -744,7 +726,7 @@ testing/cypress/
     - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/plugins/index.js).
 
 
-## 5. Additional resources:**
+## 5. Additional resources
 
  - [Snowplow Docs](https://docs.snowplowanalytics.com/)
  - [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
