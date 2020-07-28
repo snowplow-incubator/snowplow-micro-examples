@@ -3,7 +3,7 @@ Clears micros cache - to be used before each test
 **/
 const EventEmitter = require('events');
 
-class ResetMini extends EventEmitter {
+class ResetMicro extends EventEmitter {
     command() {
 
         const request = require('request');
@@ -20,4 +20,4 @@ class ResetMini extends EventEmitter {
     }
 }
 
-module.exports = ResetMini;
+module.exports = ResetMicro;

@@ -1,7 +1,7 @@
 module.exports = {
     beforeEach: function(browser) {
         browser
-            .resetMini();
+            .resetMicro();
     },
 
 
