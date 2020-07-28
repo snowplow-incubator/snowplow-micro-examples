@@ -124,7 +124,7 @@ In order to use it, as it is, you will need:
 2. A `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
 3. A `local-iglu` folder to serve as local Iglu repository.
 
-If you do not want to use `docker run` instead of `docker-compose`, you can make the step as:
+If you want to use `docker run` instead of `docker-compose`, you can make the step as:
 ```
 - name: Start Micro
     run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
@@ -375,8 +375,8 @@ In Nightwatch a test involves 3 phases:
 
 #### Commands
 
-#### resetMini
-The resetMini command can be added before each test as the beforeEach hook:
+#### resetMicro
+The resetMicro command can be added before each test as the beforeEach hook:
 [Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/master/guide/using-nightwatch/test-hooks.md)
 
 *Example call*:
@@ -385,7 +385,7 @@ The resetMini command can be added before each test as the beforeEach hook:
 module.exports = {
     beforeEach: function(browser) {
         browser
-            .resetMini();
+            .resetMicro();
     },
     "test1" :function (browser0 {
         // code here
