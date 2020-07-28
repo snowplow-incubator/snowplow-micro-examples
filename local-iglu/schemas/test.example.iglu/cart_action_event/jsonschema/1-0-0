@@ -1,19 +1,19 @@
 {
-	"$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
-	"description": "Schema for a cart action event",
-	"self": {
-		"vendor": "test.example",
-		"name": "cart_action",
-		"format": "jsonschema",
-		"version": "1-0-0"
-	},
-	"type": "object",
-	"properties": {
-		"type": {
-			"type": "string",
-			"enum": ["add","remove"]
-		}
-	},
-        "required": ["type"],
-	"additionalProperties": false
+    "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
+    "description": "Schema for a cart action event",
+    "self": {
+        "vendor": "test.example",
+        "name": "cart_action",
+        "format": "jsonschema",
+        "version": "1-0-0"
+    },
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["add", "remove"]
+        }
+    },
+    "required": ["type"],
+    "additionalProperties": false
 }

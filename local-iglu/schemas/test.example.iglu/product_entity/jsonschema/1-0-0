@@ -1,38 +1,38 @@
 {
-	"$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
-	"description": "Schema for a product entity",
-	"self": {
-		"vendor": "test.example",
-		"name": "product_entity",
-		"format": "jsonschema",
-		"version": "1-0-0"
-	},
-	"type": "object",
-        "properties": {
-                "sku": {
-                        "type": "string",
-                        "maxLength": 64
-                },
-                "category": {
-                        "type": ["string", "null"],
-                        "maxLength": 255
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 255
-                },
-                "price": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 100000,
-                    "multipleOf": 0.01
-                },
-                "quantity": {
-                                "type": "integer",
-                                "minimum": 1,
-                                "maximum": 10000
-                 }
-	},
-    "required": ["sku","name","price", "quantity"],
-	"additionalProperties": false
+    "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
+    "description": "Schema for a product entity",
+    "self": {
+        "vendor": "test.example",
+        "name": "product_entity",
+        "format": "jsonschema",
+        "version": "1-0-0"
+    },
+    "type": "object",
+    "properties": {
+        "sku": {
+            "type": "string",
+            "maxLength": 64
+        },
+        "category": {
+            "type": ["string", "null"],
+            "maxLength": 255
+        },
+        "name": {
+            "type": "string",
+            "maxLength": 255
+        },
+        "price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+        },
+        "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+        }
+    },
+    "required": ["sku", "name", "price", "quantity"],
+    "additionalProperties": false
 }
