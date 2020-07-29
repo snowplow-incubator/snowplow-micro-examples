@@ -32,13 +32,12 @@ module.exports = {
             "contexts": [{
                 "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
                 "data": {
-                   "sku": "hh123",
+                    "sku": "hh123",
                     "name": "One-size summer hat",
                     "price": 15.5,
                     "quantity": 1
                 }
-               }
-            ]
+            }]
         });
 
     },
@@ -121,78 +120,75 @@ module.exports = {
         });
 
         const events_list = [{
-                       "eventType": "ue",
-                       "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
-                       "values": {
-                           "type": "add"
-                       },
-                       "contexts": [{
-                           "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
-                           "data": {
-                              "sku": "hh123",
-                               "name": "One-size summer hat",
-                               "price": 15.5,
-                               "quantity": 1
-                           }
-                          }
-                       ]
-                   },
-            {
-            "eventType": "ue",
-            "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
-            "values": {
-                "total": 15.5
+                "eventType": "ue",
+                "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
+                "values": {
+                    "type": "add"
+                },
+                "contexts": [{
+                    "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                    "data": {
+                        "sku": "hh123",
+                        "name": "One-size summer hat",
+                        "price": 15.5,
+                        "quantity": 1
+                    }
+                }]
             },
-            "contexts": [{
-                "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
-                "data": {
-                   "sku": "hh123",
-                    "name": "One-size summer hat",
-                    "price": 15.5,
-                    "quantity": 1
-                }
-               }
-            ]
-        }
+            {
+                "eventType": "ue",
+                "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
+                "values": {
+                    "total": 15.5
+                },
+                "contexts": [{
+                    "schema": "iglu:test.example.iglu/product_entity/jsonschema/1-0-0",
+                    "data": {
+                        "sku": "hh123",
+                        "name": "One-size summer hat",
+                        "price": 15.5,
+                        "quantity": 1
+                    }
+                }]
+            }
         ];
         browser.assert.orderOfEvents(events_list);
     },
     'Checking form ': function(browser) {
 
-            browser
-                .url('http://127.0.0.1:8000');
+        browser
+            .url('http://127.0.0.1:8000');
 
-            // Input test email and password credentials
-            const emailInput = '[test-id=email-input]';
-            const pwdInput = '[test-id=password-input]';
-            const buttonClass = '[test-id=submit-button]'
+        // Input test email and password credentials
+        const emailInput = '[test-id=email-input]';
+        const pwdInput = '[test-id=password-input]';
+        const buttonClass = '[test-id=submit-button]';
 
-            browser.waitForElementVisible(emailInput).setValue(emailInput, 'fake@email.com');
-            browser.waitForElementVisible(pwdInput).setValue(pwdInput, '1234');
-            browser.waitForElementVisible(buttonClass)
-                        .click(buttonClass, function(result) {
-                                            this.assert.equal(true, result.status == 0, "Button clicked successfully");
-                                        });
+        browser.waitForElementVisible(emailInput).setValue(emailInput, 'fake@email.com');
+        browser.waitForElementVisible(pwdInput).setValue(pwdInput, '1234');
+        browser.waitForElementVisible(buttonClass)
+            .click(buttonClass, function(result) {
+                this.assert.equal(true, result.status == 0, "Button clicked successfully");
+            });
 
 
-            browser.assert.successfulEvent({
-                                           "schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
-                                           "values": {
-                                               "elements": [{
-                                                   "name": "user_email",
-                                                   "value": "fake@email.com",
-                                               }]
-                                           }
+        browser.assert.successfulEvent({
+            "schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
+            "values": {
+                "elements": [{
+                    "name": "user_email",
+                    "value": "fake@email.com"
+                }]
+            }
 
-                                                   });
-            browser.assert.successfulEvent({
-                 		"schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
-                        "values": {
-                        "elements": [{
-                            "name": "user_password"
-            }]
-                   }
-                  }, 0);
-        }
+        });
+        browser.assert.successfulEvent({
+            "schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0",
+            "values": {
+                "elements": [{
+                    "name": "user_password"
+                }]
+            }
+        }, 0);
+    }
 };
-

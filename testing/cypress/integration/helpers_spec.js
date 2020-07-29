@@ -1,4 +1,6 @@
-// to run this spec file move it to cypress/integration directory
+/*
+    jshint -W069
+*/
 
 import * as Micro from '../../jsm/helpers.js';
 

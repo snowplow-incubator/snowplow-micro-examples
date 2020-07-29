@@ -1,3 +1,7 @@
+/*
+    jshint -W069
+*/
+
 /**
  * Checks there are no bad events
  *
@@ -45,4 +49,3 @@ function NoBadEvents(msg) {
 }
 
 module.exports.assertion = NoBadEvents;
-

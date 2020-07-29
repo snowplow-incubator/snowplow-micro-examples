@@ -1,15 +1,20 @@
 /*
-Check that events are sent to micro in the correct order
+    jshint -W069
+*/
 
-...
-    this.demoTest = function (order) {
-        browser.assert.orderOfEvents(events_list);
-    };
-
-@method orderOfEvents
+/**
+ * Check that events are sent to micro in the correct order
+ *
+ * ...
+ *    this.demoTest = function (order) {
+ *      browser.assert.orderOfEvents(events_list);
+ *    };
+ *
+ * @method orderOfEvents
  * @param {Array} [events]  Events in the order we expect to see on micro
  * @param {string} [message] Optional log message to display in the output. If missing, one is displayed by default.
-*/
+ * @api assertions
+ */
 
 
 var eventMatcher = require('../../jsm/helpers.js');
@@ -39,19 +44,19 @@ function OrderOfEvents(events, msg) {
     };
 
 
-    function sortEventsByTimestamp(a,b){
+    function sortEventsByTimestamp(a, b) {
         const dta = new Date(a["event"]["parameters"]["dtm"]);
         const dtb = new Date(b["event"]["parameters"]["dtm"]);
-            return dtb - dta;
-    };
+        return dtb - dta;
+    }
 
     this.value = (eventsOnMicro) => {
         // collect matched events
         const matchedEvents = [];
-            for (let j = 0; j < events.length; j++) {
-                const currMatchedEvents = eventMatcher.matchEvents(eventsOnMicro, events[j]);
-                matchedEvents.push.apply(matchedEvents,currMatchedEvents);
-            }
+        for (let j = 0; j < events.length; j++) {
+            const currMatchedEvents = eventMatcher.matchEvents(eventsOnMicro, events[j]);
+            matchedEvents.push.apply(matchedEvents, currMatchedEvents);
+        }
 
         matchedEvents.sort(sortEventsByTimestamp);
 

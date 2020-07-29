@@ -1,3 +1,7 @@
+/*
+    jshint -W069
+*/
+
 /**
  * Checks that the number of expected total events are correct
  *
