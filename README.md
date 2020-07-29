@@ -464,9 +464,12 @@ Using all 3 of these assertions consecutively provides the best assurance that e
 ```
 *Arguments*: events_list
 
-Checks that event a occurs before event b, in other words when one event must occur before the other your applciation to work as expected,
-you can assert that event a reaches micro before event b. In our case we use this to check that a cart action occurs before purchasing an item.
-If our application didn't get this order of events correct then the application does not act as expected, this can also be considered a race condition test.
+Checks that event a happens before event b, for when one event must be before the other so that your application works as expected.
+This works by retrieving the timestamps for when each tracker arrives to micro, and asserting that event a occurs before event b.
+In other words, this function uses the event timestamps to assert what order the events were fired in.
+In our case we use this to test that a cart action occurs before purchasing an item.
+If our application didn't get this order of events correct, then the application does not act as expected.
+This can also be considered a race condition test.
 
 #### .successfulEvent
 

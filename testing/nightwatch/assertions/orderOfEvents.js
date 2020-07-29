@@ -38,15 +38,12 @@ function OrderOfEvents(events, msg) {
         return j == events.length;
     };
 
-    function sortEventsByTimestamp(a, b) {
-        if (new Date(a["event"]["context"]["timestamp"]) < new Date(b["event"]["context"]["timestamp"])) {
-            return -1;
-        }
-        if (new Date(a["event"]["context"]["timestamp"]) > new Date(b["event"]["context"]["timestamp"])) {
-            return 1;
-        }
-        return 0;
-    }
+
+    function sortEventsByTimestamp(a,b){
+        const dta = new Date(a["event"]["parameters"]["dtm"]);
+        const dtb = new Date(b["event"]["parameters"]["dtm"]);
+            return dtb - dta;
+    };
 
     this.value = (eventsOnMicro) => {
         // collect matched events
