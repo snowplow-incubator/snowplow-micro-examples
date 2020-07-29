@@ -219,30 +219,7 @@ Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
 
         .then(($arr) => {
 
-            let res = $arr;
-
-            if (eventOptions["schema"]) {
-
-                res = Micro.matchBySchema(res, eventOptions["schema"]);
-
-            }
-
-            if (eventOptions["values"]) {
-
-                res = Micro.matchByVals(res, eventOptions["values"]);
-
-            }
-
-            if (eventOptions["contexts"]) {
-
-                res = Micro.matchByContexts(res, eventOptions["contexts"]);
-
-            }
-
-            if (eventOptions["parameters"]) {
-
-                res = Micro.matchByParams(res, eventOptions["parameters"]);
-            }
+            const res = Micro.matchEvents($arr, eventOptions);
 
             expect(res.length).to.eq(n);
 

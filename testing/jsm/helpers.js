@@ -1,6 +1,6 @@
 // helper functions for testing with Snowplow Micro
 
- /*
+/*
     jshint -W069
 */
 
@@ -45,7 +45,7 @@ const needDecode = ['ue_px', 'cx'];
 function sane(n) {
 
     if (!(Number.isInteger(n) && n >= 0)) {
-        throw("number of events must be a non negative integer");
+        throw ("number of events must be a non negative integer");
     } else {
         return n;
     }
@@ -148,6 +148,45 @@ function matchByParams(eventsArray, paramsObj) {
 function matchByContexts(eventsArray, expectedContextsArray) {
 
     return eventsArray.filter(hasContexts(expectedContextsArray));
+
+}
+
+
+function matchEvents(microEvents, eventOptions) {
+    // allow user to pass a microEvent only
+    if (Object.prototype.toString.call(microEvents) !== "[object Array]") {
+
+        microEvents = [microEvents];
+
+    }
+
+    let res = microEvents;
+
+    if (eventOptions["schema"]) {
+
+        res = matchBySchema(res, eventOptions["schema"]);
+
+    }
+
+    if (eventOptions["values"]) {
+
+        res = matchByVals(res, eventOptions["values"]);
+
+    }
+
+    if (eventOptions["contexts"]) {
+
+        res = matchByContexts(res, eventOptions["contexts"]);
+
+    }
+
+    if (eventOptions["parameters"]) {
+
+        res = matchByParams(res, eventOptions["parameters"]);
+
+    }
+
+    return res;
 
 }
 
@@ -298,32 +337,6 @@ function hasContexts(expCoArr) {
 
 }
 
-function matchEvents(microEvents, eventOptions){
-    // allow user to pass a microEvent only
-    if (Object.prototype.toString.call(microEvents) !== "[object Array]"){
-        microEvents = [microEvents]
-    }
-    let res = microEvents;
-    if (eventOptions["schema"]) {
-
-        res = matchBySchema(res, eventOptions["schema"]);
-    }
-
-    if (eventOptions["values"]) {
-        res = matchByVals(res, eventOptions["values"]);
-    }
-
-    if (eventOptions["contexts"]) {
-        res = matchByContexts(res, eventOptions["contexts"]);
-    }
-
-    if (eventOptions["parameters"]) {
-
-        res = matchByParams(res, eventOptions["parameters"]);
-    }
-
-    return res;
-}
 
 function keyIncludedIn(obj) {
 
