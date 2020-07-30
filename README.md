@@ -712,6 +712,26 @@ The object that gets passed as the first argument, can have as keys:
 It will return the events that have all those properties.
 As shown in the examples above, you do not have to use all the properties, and the command works accordingly.
 
+#### .eventsWithOrder
+
+*Example call*:
+```
+    cy.eventsWithOrder([
+        {
+            "schema": "iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0",
+            "values": {"elementId": "user_email"}
+        },
+        {
+            "schema": "iglu:com.snowplowanalytics.snowplow/change_form/jsonschema/1-0-0",
+            "values": {"elementId": "user_email"}
+        },
+        {
+            "schema": "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0"
+        }
+    ]);
+```
+With this command you can assert that events happened in a specified (ascending) order. For example, in the call above, we can assert that the focus-form event happened before the corresponding change-form event, which in turn happened before the submit-form event. The argument to this command is an array of at least 2 event "descriptions", which are exactly the properties' objects of `eventsWithProperties`. Those event descriptions need to uniquely identify exactly one Snowplow event.
+Internally, this command compares events' [timestamps](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter).
 
 #### 4.2.4 Some further notes
 

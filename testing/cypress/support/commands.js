@@ -297,7 +297,7 @@ Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
 
 
 /**
- * Asserts an event fired before another, given their properties
+ * Asserts events fire in order (ascending), given their properties
  *
  * ```
  * cy.eventsWithOrder([
