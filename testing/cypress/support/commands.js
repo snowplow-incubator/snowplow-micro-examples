@@ -106,7 +106,7 @@ Cypress.Commands.add('noBadEvents', () => {
  */
 Cypress.Commands.add('numGoodEvents', (n) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -132,7 +132,7 @@ Cypress.Commands.add('numGoodEvents', (n) => {
  */
 Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -162,7 +162,7 @@ Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
  */
 Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -192,7 +192,7 @@ Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
  *         "schema": "iglu:com.acme/test_context/jsonschema/1-0-0",
  *         "data": {
  *             "testCoProp": 0,
- *         },
+ *         }
  *     }],
  *     "parameters": {
  *         "uid": "tester",
@@ -211,7 +211,7 @@ Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
  */
 Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -245,7 +245,7 @@ Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
  */
 Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -281,7 +281,7 @@ Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
  */
 Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
 
-    n = Micro.sane(n);
+    n = parseInt(n);
 
     cy.requestJson(GOOD)
 
@@ -292,5 +292,41 @@ Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
             const res = Micro.matchByContexts($arr, contextsArray);
 
             expect(res.length).to.eq(n);
+        });
+});
+
+
+/**
+ * Asserts an event fired before another, given their properties
+ *
+ * ```
+ * cy.eventsWithOrder([
+ *     {
+ *         "schema": "iglu:com.acme/a_test_context/jsonschema/1-0-0",
+ *         "values": {"testProp": true}
+ *     },{
+ *         "schema": "iglu:com.acme/b_test_context/jsonschema/1-0-0"
+ *     }]);
+ * ```
+ *
+ * @method eventsWithOrder
+ * @param {Array} eventsSpecs An array of event properties that uniquely specify events
+ * @param {string} [eventsSpecs.schema] The event schema to match (for unstructured events)
+ * @param {Object} [eventsSpecs.values] The data values to match (for unstructured events)
+ * @param {Array.<schema:string, data:Object>} [eventsSpecs.contexts] The contexts to match
+ * @param {Object} [eventsSpecs.parameters] The parameters to match
+ */
+Cypress.Commands.add('eventsWithOrder', (eventsSpecs) => {
+
+    cy.requestJson(GOOD)
+
+        .its('body')
+
+        .then(($arr) => {
+
+            const flag = Micro.inOrder($arr, eventsSpecs);
+
+            expect(flag).to.eq(true);
+
         });
 });

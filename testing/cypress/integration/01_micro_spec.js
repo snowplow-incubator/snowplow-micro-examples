@@ -37,7 +37,7 @@ context('testing events from 01_app_spec.js', () => {
             "schema": changeFormSchema,
             "values": {
                 "type": "email",
-                "value": "fake@email.com",
+                "value": "fake@email.com"
             }
 
         }, 1);
@@ -50,7 +50,7 @@ context('testing events from 01_app_spec.js', () => {
         cy.eventsWithProperties({
 
             "values": {
-                "elementId": "user_email",
+                "elementId": "user_email"
             }
 
         }, 2);
@@ -62,7 +62,7 @@ context('testing events from 01_app_spec.js', () => {
             "values": {
                 "elements": [{
                     "name": "user_email",
-                    "value": "fake@email.com",
+                    "value": "fake@email.com"
                 }]
             }
 
@@ -75,7 +75,7 @@ context('testing events from 01_app_spec.js', () => {
             "schema": submitFormSchema,
             "values": {
                 "elements": [{
-                    "name": "user_password",
+                    "name": "user_password"
                 }]
             }
 
@@ -85,7 +85,7 @@ context('testing events from 01_app_spec.js', () => {
         cy.eventsWithProperties({
 
             "values": {
-                "name": "user_password",
+                "name": "user_password"
             }
 
         }, 0);
@@ -101,6 +101,49 @@ context('testing events from 01_app_spec.js', () => {
         cy.eventsWithContexts([{
             "schema": webPageContextSchema
         }], 10);
+
+    });
+
+
+    // asserts order of events
+    it('compares timestamps to assert events happened in the order specified', () => {
+
+        const focusFormSchema = "iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0";
+        const changeFormSchema = "iglu:com.snowplowanalytics.snowplow/change_form/jsonschema/1-0-0";
+        const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
+
+        // with 2 events
+        cy.eventsWithOrder([
+            {
+                "schema": focusFormSchema,
+                "values": {
+                    "elementId": "user_email"
+                }
+            },
+            {
+                "schema": submitFormSchema
+            }
+        ]);
+
+        // with 3 events
+        cy.eventsWithOrder([
+            {
+                "schema": focusFormSchema,
+                "values": {
+                    "elementId": "user_email"
+                }
+            },
+            {
+                "schema": changeFormSchema,
+                "values": {
+                    "elementId": "user_email"
+                }
+            },
+            {
+                "schema": submitFormSchema
+            }
+        ]);
+
 
     });
 

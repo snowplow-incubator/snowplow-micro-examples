@@ -38,22 +38,6 @@ const needDecode = ['ue_px', 'cx'];
 
 
 /**
- * Ensures the argument is a non-negative integer
- * @param   {*} n
- * @returns {number}
- */
-function sane(n) {
-
-    if (!(Number.isInteger(n) && n >= 0)) {
-        throw ("number of events must be a non negative integer");
-    } else {
-        return n;
-    }
-
-}
-
-
-/**
  * Filters an array of Snowplow events based on eventType
  * ```
  * matchByEventType(goodEventsArray, "pv");
@@ -152,6 +136,37 @@ function matchByContexts(eventsArray, expectedContextsArray) {
 }
 
 
+/**
+ * Filters an array of Snowplow events based on an object of event properties
+ *
+ * ```
+ * matchEvents(goodEventsArray,
+ *             {
+ *                 "schema": "iglu:com.acme/test_event/jsonschema/1-0-0",
+ *                 "values": {
+ *                     "testProperty": true
+ *                 },
+ *                 "contexts": [{
+ *                     "schema": "iglu:com.acme/test_context/jsonschema/1-0-0",
+ *                     "data": {
+ *                         "testCoProp": 0,
+ *                     }
+ *                 }],
+ *                 "parameters": {
+ *                     "uid": "tester",
+ *                     "tna": "myTrackerName"
+ *                 }
+ *             });
+ * ```
+ *
+ * @param {Array.<Event>} microEvents An array of Snowplow events
+ * @param {Object} eventOptions The event properties to match against
+ * @param {string} [eventOptions.schema] The event schema to match (for unstructured events)
+ * @param {Object} [eventOptions.values] The data values to match (for unstructured events)
+ * @param {Array.<schema:string, data:Object>} [eventOptions.contexts] The contexts to match
+ * @param {Object} [eventOptions.parameters] The parameters to match
+ * @returns {Array.<Event>} An array with the matching events
+ */
 function matchEvents(microEvents, eventOptions) {
     // allow user to pass a microEvent only
     if (Object.prototype.toString.call(microEvents) !== "[object Array]") {
@@ -191,7 +206,85 @@ function matchEvents(microEvents, eventOptions) {
 }
 
 
+/**
+ * Checks whether Snowplow events happened in ascending order
+ *
+ * ```
+ * inOrder([
+ *     {
+ *         "schema": "iglu:com.acme/a_test_context/jsonschema/1-0-0",
+ *         "values": {"testProp": true}
+ *     },{
+ *         "schema": "iglu:com.acme/b_test_context/jsonschema/1-0-0"
+ *     }]);
+ * ```
+ *
+ * @param {Array.<Event>} eventsArray An array of Snowplow events
+ * @param {Array} eventsSpecs An array of event properties that uniquely specify events
+ * @param {string} [eventsSpecs.schema] The event schema to match (for unstructured events)
+ * @param {Object} [eventsSpecs.values] The data values to match (for unstructured events)
+ * @param {Array.<schema:string, data:Object>} [eventsSpecs.contexts] The contexts to match
+ * @param {Object} [eventsSpecs.parameters] The parameters to match
+ * @returns {Boolean}
+ */
+function inOrder(eventsArray, eventsSpecs) {
+
+    if (eventsSpecs.length <= 1) {
+        return false;
+    }
+
+    const matchedEvents = eventsSpecs.map((evSpec) => matchEvents(eventsArray, evSpec));
+
+    if (matchedEvents.some((elt) => elt.length !== 1)) {
+        return false;
+    }
+
+    const timesInfo = matchedEvents
+        .map((matchArr) => matchArr[0])
+        .map((ev) => getPreEnrichTstamp(ev));
+
+    const ordered = timesInfo
+        .slice(1)
+        .reduce(function(acc, curr) {
+
+            return (curr.whichTime === acc.whichTime) && (curr.time > acc.time) && curr;
+
+        }, timesInfo[0]);
+
+    return Boolean(ordered);
+
+}
+
+
 // ------
+
+
+function getPreEnrichTstamp(event) {
+
+    if (event["event"]["parameters"].hasOwnProperty("ttm")) {
+
+        return {
+            whichTime: "true_tstamp",
+            time: event["event"]["parameters"]["ttm"]
+        };
+
+    } else if (event["event"]["parameters"].hasOwnProperty("dtm")) {
+
+        return {
+            whichTime: "dvce_created_tstamp",
+            time: event["event"]["parameters"]["dtm"]
+        };
+
+    } else {
+
+        return {
+            whichTime: "collector_tstamp",
+            time: Date.parse(event["event"]["context"]["timestamp"])
+        };
+
+    }
+
+}
 
 
 function hasEventType(evType) {
@@ -526,15 +619,15 @@ function base64decode(encodedData) {
 
 
 export {
-    sane,
     matchByEventType,
     matchBySchema,
     matchByVals,
     matchByParams,
     matchByContexts,
+    matchEvents,
+    inOrder,
     compare,
-    base64decode,
-    matchEvents
+    base64decode
 };
 
 
