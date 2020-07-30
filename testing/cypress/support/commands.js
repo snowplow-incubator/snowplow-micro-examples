@@ -36,6 +36,24 @@ const GOOD = Cypress.env('SNOWPLOW_MICRO_URI') + Cypress.env('MICRO_GOOD');
 const BAD = Cypress.env('SNOWPLOW_MICRO_URI') + Cypress.env('MICRO_BAD');
 const RESET = Cypress.env('SNOWPLOW_MICRO_URI') + Cypress.env('MICRO_RESET');
 
+/**
+ * A Context object.
+ * @typedef Context
+ * @type {Object}
+ * @property {string} schema - The schema of the context.
+ * @property {Object} data - The data of the context.
+ */
+
+
+/**
+ * A Properties object.
+ * @typedef Properties
+ * @type {Object}
+ * @property {string} [schema] The event's schema (for unstructured events)
+ * @property {Object} [values] The event's data values (for unstructured events)
+ * @property {Array.<Context>} [contexts] The event's attached contexts
+ * @property {Object} [parameters] The event's parameters
+ */
 
 /**
  * Returns the response of cy.request() having parsed the response body as JSON
@@ -127,7 +145,7 @@ Cypress.Commands.add('numGoodEvents', (n) => {
  * ```
  *
  * @method eventsWithSchema
- * @param {string} schema The schema
+ * @param {string} schema The event's schema to match
  * @param {number} [n=1] The expected number of matching events
  */
 Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
@@ -150,14 +168,14 @@ Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
 
 
 /**
- * Asserts on the number of events having a given type of event
+ * Asserts on the number of events having a given type
  *
  * ```
  * cy.eventsWithEventType("se", 7);
  * ```
  *
  * @method eventsWithEventType
- * @param {string} eventType The type of the event
+ * @param {string} eventType The event's type to match
  * @param {number} [n=1] The expected number of matching events
  */
 Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
@@ -202,11 +220,7 @@ Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
  * ```
  *
  * @method eventsWithProperties
- * @param {Object} eventOptions The options to match against
- * @param {string} [eventOptions.schema] The event schema to match (for unstructured events)
- * @param {Object} [eventOptions.values] The data values to match (for unstructured events)
- * @param {Array.<schema:string, data:Object>} [eventOptions.contexts] The contexts to match
- * @param {Object} [eventOptions.parameters] The parameters to match
+ * @param {Properties} eventOptions The options to match against
  * @param {number} [n=1] The expected number of matching events
  */
 Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
@@ -229,7 +243,7 @@ Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
 
 
 /**
- * Asserts on the number of events having specific values of event parameters
+ * Asserts on the number of events having given parameters
  *
  * ```
  * cy.eventsWithParams({
@@ -240,7 +254,7 @@ Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
  * ```
  *
  * @method eventsWithParams
- * @param {Object} params The type of the event
+ * @param {Object} params The event's parameters to match against
  * @param {number} [n=1] The expected number of matching events
  */
 Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
@@ -276,7 +290,7 @@ Cypress.Commands.add('eventsWithParams', (params, n = 1) => {
  * ```
  *
  * @method eventsWithContexts
- * @param {Array.<{schema:string, data:Object}>} contextsArray The contexts to match against
+ * @param {Array.<Context>} contextsArray The event's contexts to match against
  * @param {number} [n=1] The expected number of matching events
  */
 Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
@@ -310,11 +324,7 @@ Cypress.Commands.add('eventsWithContexts', (contextsArray, n = 1) => {
  * ```
  *
  * @method eventsWithOrder
- * @param {Array} eventsSpecs An array of event properties that uniquely specify events
- * @param {string} [eventsSpecs.schema] The event schema to match (for unstructured events)
- * @param {Object} [eventsSpecs.values] The data values to match (for unstructured events)
- * @param {Array.<schema:string, data:Object>} [eventsSpecs.contexts] The contexts to match
- * @param {Object} [eventsSpecs.parameters] The parameters to match
+ * @param {Array.<Properties>} eventsSpecs An array of event properties that uniquely specify events
  */
 Cypress.Commands.add('eventsWithOrder', (eventsSpecs) => {
 

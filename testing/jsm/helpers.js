@@ -20,6 +20,17 @@
 
 
 /**
+ * A Properties object.
+ * @typedef Properties
+ * @type {Object}
+ * @property {string} [schema] The event's schema (for unstructured events)
+ * @property {Object} [values] The event's data values (for unstructured events)
+ * @property {Array.<Context>} [contexts] The event's attached contexts
+ * @property {Object} [parameters] The event's parameters
+ */
+
+
+/**
  * The event parameters whose values are JSON strings
  * @constant
  * @type {Array}
@@ -113,7 +124,7 @@ function matchByParams(eventsArray, paramsObj) {
 
 
 /**
- * Filters an array of Snowplow events based on an array of contexts
+ * Filters an array of Snowplow events based on an array of attached contexts
  *
  * ```
  * matchByContexts(goodEventsArray,
@@ -137,7 +148,7 @@ function matchByContexts(eventsArray, expectedContextsArray) {
 
 
 /**
- * Filters an array of Snowplow events based on an object of event properties
+ * Filters an array of Snowplow events based on event's Properties
  *
  * ```
  * matchEvents(goodEventsArray,
@@ -160,15 +171,11 @@ function matchByContexts(eventsArray, expectedContextsArray) {
  * ```
  *
  * @param {Array.<Event>} microEvents An array of Snowplow events
- * @param {Object} eventOptions The event properties to match against
- * @param {string} [eventOptions.schema] The event schema to match (for unstructured events)
- * @param {Object} [eventOptions.values] The data values to match (for unstructured events)
- * @param {Array.<schema:string, data:Object>} [eventOptions.contexts] The contexts to match
- * @param {Object} [eventOptions.parameters] The parameters to match
+ * @param {Properties} eventProps The event properties to match against
  * @returns {Array.<Event>} An array with the matching events
  */
-function matchEvents(microEvents, eventOptions) {
-    // allow user to pass a microEvent only
+function matchEvents(microEvents, eventProps) {
+
     if (Object.prototype.toString.call(microEvents) !== "[object Array]") {
 
         microEvents = [microEvents];
@@ -177,27 +184,27 @@ function matchEvents(microEvents, eventOptions) {
 
     let res = microEvents;
 
-    if (eventOptions["schema"]) {
+    if (eventProps["schema"]) {
 
-        res = matchBySchema(res, eventOptions["schema"]);
-
-    }
-
-    if (eventOptions["values"]) {
-
-        res = matchByVals(res, eventOptions["values"]);
+        res = matchBySchema(res, eventProps["schema"]);
 
     }
 
-    if (eventOptions["contexts"]) {
+    if (eventProps["values"]) {
 
-        res = matchByContexts(res, eventOptions["contexts"]);
+        res = matchByVals(res, eventProps["values"]);
 
     }
 
-    if (eventOptions["parameters"]) {
+    if (eventProps["contexts"]) {
 
-        res = matchByParams(res, eventOptions["parameters"]);
+        res = matchByContexts(res, eventProps["contexts"]);
+
+    }
+
+    if (eventProps["parameters"]) {
+
+        res = matchByParams(res, eventProps["parameters"]);
 
     }
 
@@ -207,7 +214,7 @@ function matchEvents(microEvents, eventOptions) {
 
 
 /**
- * Checks whether Snowplow events happened in ascending order
+ * Checks whether Snowplow events fired in ascending order
  *
  * ```
  * inOrder([
@@ -220,11 +227,7 @@ function matchEvents(microEvents, eventOptions) {
  * ```
  *
  * @param {Array.<Event>} eventsArray An array of Snowplow events
- * @param {Array} eventsSpecs An array of event properties that uniquely specify events
- * @param {string} [eventsSpecs.schema] The event schema to match (for unstructured events)
- * @param {Object} [eventsSpecs.values] The data values to match (for unstructured events)
- * @param {Array.<schema:string, data:Object>} [eventsSpecs.contexts] The contexts to match
- * @param {Object} [eventsSpecs.parameters] The parameters to match
+ * @param {Array.<Properties>} eventsSpecs An array of event properties that uniquely specify events
  * @returns {Boolean}
  */
 function inOrder(eventsArray, eventsSpecs) {
