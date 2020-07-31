@@ -113,8 +113,7 @@ context('testing events from 01_app_spec.js', () => {
         const submitFormSchema = "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0";
 
         // with 2 events
-        cy.eventsWithOrder([
-            {
+        cy.eventsWithOrder([{
                 "schema": focusFormSchema,
                 "values": {
                     "elementId": "user_email"
@@ -126,8 +125,7 @@ context('testing events from 01_app_spec.js', () => {
         ]);
 
         // with 3 events
-        cy.eventsWithOrder([
-            {
+        cy.eventsWithOrder([{
                 "schema": focusFormSchema,
                 "values": {
                     "elementId": "user_email"
@@ -143,7 +141,6 @@ context('testing events from 01_app_spec.js', () => {
                 "schema": submitFormSchema
             }
         ]);
-
 
     });
 

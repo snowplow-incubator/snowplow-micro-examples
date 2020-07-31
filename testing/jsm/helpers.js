@@ -232,7 +232,7 @@ function matchEvents(microEvents, eventProps) {
  */
 function inOrder(eventsArray, eventsSpecs) {
 
-    if (eventsSpecs.length <= 1) {
+    if (eventsSpecs.length < 2) {
         return false;
     }
 
@@ -242,17 +242,16 @@ function inOrder(eventsArray, eventsSpecs) {
         return false;
     }
 
-    const timesInfo = matchedEvents
-        .map((matchArr) => matchArr[0])
-        .map((ev) => getPreEnrichTstamp(ev));
-
-    const ordered = timesInfo
-        .slice(1)
+    const ordered = matchedEvents
+        .map((elt) => getPreEnrichTstamp(elt[0]))
         .reduce(function(acc, curr) {
 
-            return (curr.whichTime === acc.whichTime) && (curr.time > acc.time) && curr;
+            return acc !== false &&
+                acc.whichTime === curr.whichTime &&
+                acc.time < curr.time &&
+                curr;
 
-        }, timesInfo[0]);
+        });
 
     return Boolean(ordered);
 

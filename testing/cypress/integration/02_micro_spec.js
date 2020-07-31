@@ -122,4 +122,38 @@ context('testing events from 02_app_spec.js', () => {
 
     });
 
+    it('asserts on order of events', () => {
+
+        const cartActionSchema = "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0";
+        const productEntitySchema = "iglu:test.example.iglu/product_entity/jsonschema/1-0-0";
+
+        // add before remove
+        cy.eventsWithOrder([{
+                "schema": cartActionSchema,
+                "values": {
+                    "type": "add"
+                },
+                "contexts": [{
+                    "schema": productEntitySchema,
+                    "data": {
+                        "sku": "hh123"
+                    }
+                }]
+            },
+            {
+                "schema": cartActionSchema,
+                "values": {
+                    "type": "remove"
+                },
+                "contexts": [{
+                    "schema": productEntitySchema,
+                    "data": {
+                        "sku": "hh123"
+                    }
+                }]
+            }
+        ]);
+
+    });
+
 });
