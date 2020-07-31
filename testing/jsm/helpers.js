@@ -243,13 +243,10 @@ function inOrder(eventsArray, eventsSpecs) {
     }
 
     const ordered = matchedEvents
-        .map((elt) => getPreEnrichTstamp(elt[0]))
+        .map((elt) => getDtm(elt[0]))
         .reduce(function(acc, curr) {
 
-            return acc !== false &&
-                acc.whichTime === curr.whichTime &&
-                acc.time < curr.time &&
-                curr;
+            return acc !== false && acc < curr && curr;
 
         });
 
@@ -261,30 +258,9 @@ function inOrder(eventsArray, eventsSpecs) {
 // ------
 
 
-function getPreEnrichTstamp(event) {
+function getDtm(event) {
 
-    if (event["event"]["parameters"].hasOwnProperty("ttm")) {
-
-        return {
-            whichTime: "true_tstamp",
-            time: event["event"]["parameters"]["ttm"]
-        };
-
-    } else if (event["event"]["parameters"].hasOwnProperty("dtm")) {
-
-        return {
-            whichTime: "dvce_created_tstamp",
-            time: event["event"]["parameters"]["dtm"]
-        };
-
-    } else {
-
-        return {
-            whichTime: "collector_tstamp",
-            time: Date.parse(event["event"]["context"]["timestamp"])
-        };
-
-    }
+    return event["event"]["parameters"]["dtm"];
 
 }
 
