@@ -243,7 +243,7 @@ function inOrder(eventsArray, eventsSpecs) {
     }
 
     const ordered = matchedEvents
-        .map((elt) => getDtm(elt[0]))
+        .map((elt) => getEventTime(elt[0]))
         .reduce(function(acc, curr) {
 
             return acc !== false && acc < curr && curr;
@@ -258,8 +258,9 @@ function inOrder(eventsArray, eventsSpecs) {
 // ------
 
 
-function getDtm(event) {
+function getEventTime(event) {
 
+    // the dvce_created_tstamp
     return event["event"]["parameters"]["dtm"];
 
 }

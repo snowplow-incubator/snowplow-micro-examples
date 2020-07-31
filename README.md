@@ -111,27 +111,27 @@ $ npm run cypress:open
 ```
 
 ## 2. Github Actions
-Inside the `.github/workflows/` folder you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress. The steps are broken so that you can use any that you need.
-A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which currently is:
+Inside the `.github/workflows/` directory you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress.
+A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which for our example is:
 
 ```
 - name: Start Micro
     run: docker-compose up -d
     working-directory: snowplow-micro-examples
 ```
-In order to use it, as it is, you will need:
-1. The `docker-compose.yml` file
-2. A `micro/` forder with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
-3. A `local-iglu` folder to serve as local Iglu repository.
+In order to use it, just make sure that:
+1. Your `working-directory` contains what Micro will mount:
+    1. A `micro/` directory with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
+    2. (Optional) A `local-iglu` directory to serve as local Iglu repository.
+2. Your `docker-compose.yml` file is adjusted accordingly
 
-If you want to use `docker run` instead of `docker-compose`, you can make the step as:
+If you wanted to use `docker run` instead of `docker-compose`, the same step would be:
 ```
 - name: Start Micro
     run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
     working-directory: snowplow-micro-examples
 ```
-
-If you do not have a `local-iglu` setup, you'll just need to not use the second mount.
+In case you do not have a `local-iglu` setup, just remove the second mount.
 
 
 ## 3. Tracking design
@@ -575,7 +575,7 @@ testing/cypress/integration/
 3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro spec file after the matching app spec. The script can be seen in [package.json](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/package.json).
 
 Example usage:
-1. To run all spec files in your `cypress/integration` folder (in alphabetical order)
+1. To run all spec files in your `cypress/integration` directory (in alphabetical order)
 ```
 $ npm run cypress:run
 ```
@@ -730,8 +730,8 @@ As shown in the examples above, you do not have to use all the properties, and t
         }
     ]);
 ```
-With this command you can assert that events happened in a specified (ascending) order. For example, in the call above, we can assert that the focus-form event happened before the corresponding change-form event, which in turn happened before the submit-form event. The argument to this command is an array of at least 2 event "descriptions", which are exactly the properties' objects of `eventsWithProperties`. Those event descriptions need to uniquely identify exactly one Snowplow event.
-Internally, this command compares events' [timestamps](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter).
+With this command you can assert that events happened in a specified (ascending) order. For example, in the call above, we can assert that the focus\_form event happened before the corresponding change\_form event, which in turn happened before the submit\_form event. The argument to this command is an array of at least 2 event "descriptions", which are exactly like the properties' object argument of `eventsWithProperties`. Those event descriptions need to uniquely identify exactly one Snowplow event.
+Internally, this command compares events' [ `dvce\_created\_tstamp`](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter).
 
 #### 4.2.4 Some further notes
 
