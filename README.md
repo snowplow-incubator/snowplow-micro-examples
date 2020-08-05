@@ -212,7 +212,7 @@ The tracking implemented consists of:
     1. cart-events ([schema](./iglu/schemas/test.example.iglu/cart_action_event/jsonschema/1-0-0))
         - These events happen when a user interacts with the cart, adding or removing items, using the Add-to-cart or Remove buttons.
         - This is a self-describing event that captures the type of cart interaction: "add" versus "remove".
-        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
         - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // TRACK cart_action_event (add)
@@ -255,7 +255,7 @@ The tracking implemented consists of:
     2. purchase-event ([schema](./iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
         - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
         - This is a self-describing event that captures the total amount of the transaction.
-        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
         - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // create the contexts array
@@ -285,7 +285,7 @@ The tracking implemented consists of:
 5. Custom contexts
 
     - [Predefined Context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) [webPage]
-    - Product Entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
+    - Product Entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
 
 
 ## 4. Testing with Snowplow Micro
@@ -627,7 +627,7 @@ This command is useful when you want to ensure that a particular type of events 
             "se_la": "Surfing"
         }, 3 );
 ```
-This command accepts as first argument an object with parameter-value pairs. You can see all available parameters in the [Snowplow Tracker Protocol](). This command is particularly useful when checking on [structured events]().
+This command accepts as first argument an object with parameter-value pairs. You can see all available parameters in the [Snowplow Tracker Protocol](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol). This command is particularly useful when checking on [structured events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker-v2.13#custom-structured-events).
 
 #### .eventsWithSchema
 
@@ -725,7 +725,7 @@ As shown in the examples above, you do not have to use all the properties, and t
     ]);
 ```
 With this command you can assert that events happened in a specified (ascending) order. For example, in the call above, we can assert that the focus\_form event happened before the corresponding change\_form event, which in turn happened before the submit\_form event. The argument to this command is an array of at least 2 event "descriptions", which are exactly like the properties' object argument of `eventsWithProperties`. Those event descriptions need to uniquely identify exactly one Snowplow event.
-Internally, this command compares events' [ `dvce\_created\_tstamp`](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter).
+Internally, this command compares [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter)' `dvce_created_tstamp`.
 
 #### 4.2.4 Some further notes
 
