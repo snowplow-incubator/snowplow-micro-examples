@@ -5,7 +5,6 @@ services:
     image: snowplow/snowplow-micro:latest
     volumes:
       - ./micro:/config
-      - ./local-iglu:/local-iglu
     restart: always
     ports:
       - "9090:9090"

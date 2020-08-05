@@ -14,12 +14,12 @@
           }
         },
         {
-          "name": "local Iglu repository",
+          "name": "example Iglu repository",
           "priority": 5,
           "vendorPrefixes": [ "test.example.iglu" ],
           "connection": {
             "http": {
-              "uri": "file:///local-iglu"
+              "uri": "https://raw.githubusercontent.com/snowplow-incubator/snowplow-micro-examples/develop/local-iglu"
             }
           }
         }
