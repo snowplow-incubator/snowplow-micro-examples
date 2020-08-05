@@ -71,8 +71,8 @@ This will:
 1. Start serving the app on localhost:8000
 2. Launch Snowplow Micro, mounting the `micro` directory and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
    Inside the `micro` directory are:
-    1. The [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
-    2. The [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
+    1. The [configuration for Snowplow Micro](./micro/micro.conf) and
+    2. The [configuration for Iglu resolvers](./micro/iglu.json)
 
 
 ### 1.3 Install npm dependencies
@@ -209,11 +209,11 @@ The tracking implemented consists of:
 
 4. [Tracking custom self-describing(unstructured) events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#37-tracking-custom-self-describing-unstructured-events)
 
-    1. cart-events ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/local-iglu/schemas/test.example.iglu/cart_action_event/jsonschema/1-0-0))
+    1. cart-events ([schema](./iglu/schemas/test.example.iglu/cart_action_event/jsonschema/1-0-0))
         - These events happen when a user interacts with the cart, adding or removing items, using the Add-to-cart or Remove buttons.
         - This is a self-describing event that captures the type of cart interaction: "add" versus "remove".
-        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
-        - Implemented in the shop-page (see file [shoppage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/shoppage.js)):
+        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // TRACK cart_action_event (add)
         window.snowplow('trackSelfDescribingEvent', {
@@ -252,11 +252,11 @@ The tracking implemented consists of:
         );
         ```
 
-    2. purchase-event ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/local-iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
+    2. purchase-event ([schema](./iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
         - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
         - This is a self-describing event that captures the total amount of the transaction.
-        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
-        - Implemented in the shop-page (see file [shoppage.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/app/static/ecommerce/js/shoppage.js)):
+        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema), see more below)
+        - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // create the contexts array
         let productsContext = [];
@@ -285,7 +285,7 @@ The tracking implemented consists of:
 5. Custom contexts
 
     - [Predefined Context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) [webPage]
-    - Product Entity ([schema](https://github.com/snowplow-incubator/snowplow-micro-examples/tree/develop/local-iglu/schemas/test.example.iglu/product_entity/jsonschema)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
+    - Product Entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
 
 
 ## 4. Testing with Snowplow Micro
@@ -566,7 +566,7 @@ testing/cypress/integration/
 ```
 
 2. You need to consider how and when you reset Micro. We chose to use a Before [hook](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Hooks) in the start of every `xx_app_spec.js` file, since the naming strategy ensures that the tests will run in `app`-`micro` pairs.
-3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro spec file after the matching app spec. The script can be seen in [package.json](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/package.json).
+3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro spec file after the matching app spec. The script can be seen in [package.json](./package.json).
 
 Example usage:
 1. To run all spec files in your `cypress/integration` directory (in alphabetical order)
@@ -584,7 +584,7 @@ This kind of organization also has the benefit, that you can keep having the tes
 
 #### 4.2.3 Commands
 
-Since Cypress allows to define your own [custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html), in this repo you can find commands specifically for use with Snowplow Micro and assertions of events. You can see them all in [commands.js](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/support/commands.js).
+Since Cypress allows to define your own [custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html), in this repo you can find commands specifically for use with Snowplow Micro and assertions of events. You can see them all in [commands.js](./testing/cypress/support/commands.js).
 
 #### .noBadEvents
 
@@ -749,12 +749,12 @@ testing/cypress/
 ```
 
 1. Helpers
-    - In the `commands.js` file, the commands are defined based on the `Micro` [helper module](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/jsm/helpers.js)
-    - The `integration/helpers_spec.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/integration/helpers_spec.js) tests the helper functions that define the matching logic. For a different custom matching logic, you can tweak the helper functions, and then test them.
+    - In the `commands.js` file, the commands are defined based on the `Micro` [helper module](./testing/jsm/helpers.js)
+    - The `integration/helpers_spec.js` [file](./testing/cypress/integration/helpers_spec.js) tests the helper functions that define the matching logic. For a different custom matching logic, you can tweak the helper functions, and then test them.
     - As a note, you don't need to set `encodeBase64: false` in your tracker configuration [parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/general-parameters/initializing-a-tracker-2/), in order for the matching to work.
 
 2. Environment variables.
-    - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/testing/cypress/plugins/index.js).
+    - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](./testing/cypress/plugins/index.js).
 
 
 ## 5. Additional resources
