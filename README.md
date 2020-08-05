@@ -69,15 +69,11 @@ $ docker-compose up
 This will:
 
 1. Start serving the app on localhost:8000
-2. Launch Snowplow Micro, mounting the `micro` and `local-iglu` directories and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
-    1. Inside the `micro` directory are:
-        1. The [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
-        2. The [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
-    2. The `local-iglu` directory, serves as a local [Iglu](https://github.com/snowplow/iglu) repository, having the necessary structure:
+2. Launch Snowplow Micro, mounting the `micro` directory and setting the port 9090 for accessing the 4 endpoints: `/micro/all`, `/micro/good`, `/micro/bad` and `/micro/reset`.
+   Inside the `micro` directory are:
+    1. The [configuration for Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/micro.conf) and
+    2. The [configuration for Iglu resolvers](https://github.com/snowplow-incubator/snowplow-micro-examples/blob/develop/micro/iglu.json)
 
-    ```
-        schemas/{vendor}/{schema-name}/jsonschema/{schema-version}
-    ```
 
 ### 1.3 Install npm dependencies
 
@@ -120,18 +116,16 @@ A general workflow file would definitely use the [Snowplow Micro](https://github
     working-directory: snowplow-micro-examples
 ```
 In order to use it, just make sure that:
-1. Your `working-directory` contains what Micro will mount:
-    1. A `micro/` directory with a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively
-    2. (Optional) A `local-iglu` directory to serve as local Iglu repository.
+1. Your `working-directory` contains the `micro/` directory that Micro will mount, containing a `micro.conf` and a `iglu.json` configuration for Micro and Iglu respectively.
+
 2. Your `docker-compose.yml` file is adjusted accordingly
 
 If you wanted to use `docker run` instead of `docker-compose`, the same step would be:
 ```
 - name: Start Micro
-    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config --mount type=bind,source=$(pwd)/local-iglu,destination=/local-iglu -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
     working-directory: snowplow-micro-examples
 ```
-In case you do not have a `local-iglu` setup, just remove the second mount.
 
 
 ## 3. Tracking design
