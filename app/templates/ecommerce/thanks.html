@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link href={% static 'ecommerce/css/custom.css' %} rel="stylesheet">
+
+        <!-- Snowplow starts plowing -->
+        <script type="text/javascript">
+        ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+        p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+        };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+        n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
+
+        window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+            encodeBase64: false,
+            appId: 'sh0pspr33',
+            platform: "web",
+            discoverRootDomain: true,
+            eventMethod: "beacon",
+            contexts : {
+                webPage: true
+            }
+        });
+
+        window.snowplow('setUserId', 'tester');
+        window.snowplow('trackPageView');
+        </script>
+        <!-- Snowplow stops plowing -->
+
+    </head>
+
+    <body>
+
+        <header class="header it-header">
+        </header>
+
+        <div class="d-flex justify-content-center align-items-center vh-100">
+            <div class="col-8 mx-auto">
+                <div class="jumbotron it-jumb-1">
+                    <div class="jumbotron it-jumb-2">
+                        <h1 class="text-white">Success!</h1>
+                        <h3 class="text-white">Thanks for purchasing from the Snowplow demo store.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer it-footer">
+        </footer>
+
+    </body>
+
+</html>

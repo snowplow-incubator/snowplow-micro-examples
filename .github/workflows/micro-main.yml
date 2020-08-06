@@ -1,0 +1,38 @@
+name: testing with Snowplow Micro
+
+on:
+
+  push:
+    branches:
+      - '*'
+
+jobs:
+
+  testing:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: snowplow-micro-examples
+
+      - name: Start Containers and wait on ports 9090 and 8000
+        run: |
+          docker-compose up -d
+          while ! nc -z localhost 9090; do sleep 0.1; done
+          while ! nc -z localhost 8000; do sleep 0.1; done
+        working-directory: snowplow-micro-examples
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: snowplow-micro-examples
+
+      - name: Run all tests
+        run: npm test
+        working-directory: snowplow-micro-examples
