@@ -2,7 +2,7 @@ version: '3'
 services:
   micro:
     container_name: micro
-    image: snowplow/snowplow-micro:latest
+    image: snowplow/snowplow-micro:0.1.0
     volumes:
       - ./micro:/config
     restart: always

@@ -123,7 +123,7 @@ In order to use it, just make sure that:
 If you wanted to use `docker run` instead of `docker-compose`, the same step would be:
 ```
 - name: Start Micro
-    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json &
+    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:0.1.0 --collector-config /config/micro.conf --iglu /config/iglu.json &
     working-directory: snowplow-micro-examples
 ```
 
