@@ -1,3 +1,9 @@
+Version 0.1.1 (2020-10-16)
+--------------------------
+Add CHANGELOG (closes #8)
+Match chromedriver and chrome version (closes #6)
+Use version number to specify Snowplow Micro Docker image (closes #4)
+
 Version 0.1.0 (2020-08-06)
 --------------------------
 Initial release
