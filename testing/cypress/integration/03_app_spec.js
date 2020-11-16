@@ -22,11 +22,11 @@ describe('scenario involving changing quantities', () => {
 
     it('user logins, adds to cart, changes quantites, completes purchase', () => {
 
-        // EVENTS: +1: (1 * pv)
+        // EVENTS: +1: (1 * page_view)
         // - pageView of start.html
         cy.visit(""); // baseUrl
 
-        // EVENTS: +4: (3 * ue + 1 * pv)
+        // EVENTS: +4: (3 * unstruct + 1 * page_view)
         // - 1.focus_form for email
         // - 2.change_form for email
         // - 3.submit_form
@@ -40,7 +40,7 @@ describe('scenario involving changing quantities', () => {
         cy.get('[test-id=submit-button]')
             .click();
 
-        // EVENTS: +3: (3 * ue)
+        // EVENTS: +3: (3 * unstruct)
         // - 3 buttons * cart_action_event (add to cart)
         //   - selects quantity - adds to cart
         cy.get('[test-id=shop-select-quant-1]').select('3');
@@ -60,7 +60,7 @@ describe('scenario involving changing quantities', () => {
             .type('2');
 
 
-        // EVENTS: +2: (1 * ue + 1 * pv)
+        // EVENTS: +2: (1 * unstruct + 1 * page_view)
         // - 1.purchase_event
         // - 2.pageview of thanks.html
         cy.get('.btn-purchase').click();

@@ -38,7 +38,7 @@ module.exports = {
         browser.assert.noOfTotalEvents(2);
 
         browser.assert.successfulEvent({
-            "eventType": "ue",
+            "eventType": "unstruct",
             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
             "values": {
                 "type": "add"
@@ -82,7 +82,7 @@ module.exports = {
         browser.assert.noOfTotalEvents(3);
 
         browser.assert.successfulEvent({
-            "eventType": "ue",
+            "eventType": "unstruct",
             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
             "values": {
                 "type": "remove"
@@ -134,7 +134,7 @@ module.exports = {
         });
 
         const events_list = [{
-                "eventType": "ue",
+                "eventType": "unstruct",
                 "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
                 "values": {
                     "type": "add"
@@ -150,7 +150,7 @@ module.exports = {
                 }]
             },
             {
-                "eventType": "ue",
+                "eventType": "unstruct",
                 "schema": "iglu:test.example.iglu/purchase_event/jsonschema/1-0-0",
                 "values": {
                     "total": 15.5

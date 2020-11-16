@@ -25,8 +25,8 @@ context('testing events from 01_app_spec.js', () => {
     // matching by eventType
     it('asserts number of events by eventType', () => {
 
-        cy.eventsWithEventType("ue", 7);
-        cy.eventsWithEventType("pv", 3);
+        cy.eventsWithEventType("unstruct", 7);
+        cy.eventsWithEventType("page_view", 3);
 
     });
 

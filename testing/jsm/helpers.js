@@ -40,32 +40,17 @@
  * @property {string} [schema] The event's schema (for unstructured events)
  * @property {Object} [values] The event's data values (for unstructured events)
  * @property {Array.<Context>} [contexts] The event's attached contexts
- * @property {Object} [parameters] The event's parameters
+ * @property {Object} [parameters] The event's fields
  */
-
-
-/**
- * The event parameters whose values are JSON strings
- * @constant
- * @type {Array}
- * @default
- */
-const needParse = ['ue_pr', 'co'];
-
-
-/**
- * The event parameters whose values may be base64-encoded if the encodeBase64 tracker initialization parameter is set to true
- * @constant
- * @type {Array}
- * @default
- */
-const needDecode = ['ue_px', 'cx'];
 
 
 /**
  * Filters an array of Snowplow events based on eventType
+ * See also: https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/#2-3-event-specific-fields
+ *
  * ```
- * matchByEventType(goodEventsArray, "pv");
+ * matchByEventType(goodEventsArray, "page_view");
+ *
  * ```
  * @param {Array.<Event>} eventsArray An array of Snowplow events
  * @param {string} eventType The eventType to match
@@ -104,7 +89,7 @@ function matchBySchema(eventsArray, schema) {
  * ```
  *
  * @param {Array.<Event>} eventsArray An array of unstructured Snowplow events
- * @param {Object} valsObj The object having as keys the data values to match
+ * @param {Object} valsObj The object having as keys the data fields to match
  * @returns {Array.<Event>} An array with the matching events
  */
 function matchByVals(eventsArray, valsObj) {
@@ -120,14 +105,14 @@ function matchByVals(eventsArray, valsObj) {
  * ```
  * matchByParams(goodEventsArray,
  *               {
- *                   "e": "se",
- *                   "se_ca": "Mixes",
- *                   "se_ac": "Play",
+ *                   "event": "struct",
+ *                   "se_category": "Mixes",
+ *                   "se_action": "Play",
  *               });
  * ```
  *
  * @param {Array.<Event>} eventsArray An array of Snowplow events
- * @param {Object} paramsObj An object having as keys the parameters to match
+ * @param {Object} paramsObj An object having as keys the event parameters to match
  * @returns {Array.<Event>} An array with the matching events
  */
 function matchByParams(eventsArray, paramsObj) {
@@ -178,8 +163,8 @@ function matchByContexts(eventsArray, expectedContextsArray) {
  *                     }
  *                 }],
  *                 "parameters": {
- *                     "uid": "tester",
- *                     "tna": "myTrackerName"
+ *                     "user_id": "tester",
+ *                     "name_tracker": "myTrackerName"
  *                 }
  *             });
  * ```
@@ -197,6 +182,12 @@ function matchEvents(microEvents, eventProps) {
     }
 
     let res = microEvents;
+
+    if (eventProps["eventType"]) {
+
+        res = matchByEventType(res, eventProps["eventType"]);
+
+    }
 
     if (eventProps["schema"]) {
 
@@ -274,8 +265,8 @@ function inOrder(eventsArray, eventsSpecs) {
 
 function getEventTime(event) {
 
-    // the dvce_created_tstamp
-    return event["event"]["parameters"]["dtm"];
+    // the derived_tstamp
+    return event["event"]["derived_tstamp"];
 
 }
 
@@ -295,22 +286,11 @@ function hasSchema(schema) {
 
     return function(ev) {
 
-        if (ev["eventType"] === "ue") {
+        if (ev["eventType"] === "unstruct") {
 
-            let ue_pr;
-            if (ev["event"]["parameters"].hasOwnProperty("ue_pr")) {
+            let unstruct_ev = ev["event"]["unstruct_event"];
 
-                ue_pr = JSON.parse(ev["event"]["parameters"]["ue_pr"]);
-
-            } else { // must then have ue_px
-
-                let decod_ue_px = base64decode(ev["event"]["parameters"]["ue_px"]);
-
-                ue_pr = JSON.parse(decod_ue_px);
-
-            }
-
-            return ue_pr["data"]["schema"] === schema;
+            return unstruct_ev["data"]["schema"] === schema;
 
         } else {
 
@@ -327,23 +307,10 @@ function hasValues(values) {
 
     return function(ev) {
 
-        if (ev["eventType"] === "ue") {
+        if (ev["eventType"] === "unstruct") {
 
-            let ue_pr;
-
-            if (ev["event"]["parameters"].hasOwnProperty("ue_pr")) {
-
-                ue_pr = JSON.parse(ev["event"]["parameters"]["ue_pr"]);
-
-            } else { // must then have ue_px
-
-                let decod_ue_px = base64decode(ev["event"]["parameters"]["ue_px"]);
-
-                ue_pr = JSON.parse(decod_ue_px);
-
-            }
-
-            let data = ue_pr["data"]["data"];
+            let unstruct_ev = ev["event"]["unstruct_event"];
+            let data = unstruct_ev["data"]["data"];
 
             return Object.keys(values).every(keyIncludedIn(data)) &&
                 Object.keys(values).every(comparesIn(values, data));
@@ -363,28 +330,7 @@ function hasParams(expectParams) {
 
     return function(ev) {
 
-        let actualParams = ev["event"]["parameters"];
-
-        let isActualEncoded = needDecode.some(keyIncludedIn(actualParams));
-        let isExpectedEncoded = needDecode.some(keyIncludedIn(expectParams));
-
-        if (isActualEncoded && !isExpectedEncoded) {
-
-            actualParams["ue_pr"] = base64decode(actualParams["ue_px"]);
-            actualParams["co"] = base64decode(actualParams["cx"]);
-
-        }
-
-        if (!isActualEncoded && isExpectedEncoded) { // that should be rare case
-
-            expectParams["ue_pr"] = base64decode(expectParams["ue_px"]);
-            expectParams["co"] = base64decode(expectParams["cx"]);
-
-            // for .every to pass
-            delete expectParams["ue_px"];
-            delete expectParams["cx"];
-
-        }
+        let actualParams = ev["event"];
 
         return Object.keys(expectParams).every(keyIncludedIn(actualParams)) &&
             Object.keys(expectParams).every(comparesIn(expectParams, actualParams));
@@ -398,18 +344,11 @@ function hasContexts(expCoArr) {
 
     return function(ev) {
 
-        let p = ev["event"]["parameters"];
+        let evCo = ev["event"]["contexts"];
 
-        if (p.hasOwnProperty("co")) {
+        if (evCo.hasOwnProperty("data")) {
 
-            let actCoArr = JSON.parse(p["co"])["data"];
-
-            return compare(expCoArr, actCoArr);
-
-        } else if (p.hasOwnProperty("cx")) {
-
-            let co = base64decode(p["cx"]);
-            let actCoArr = JSON.parse(co)["data"];
+            let actCoArr = evCo["data"];
 
             return compare(expCoArr, actCoArr);
 
@@ -439,19 +378,8 @@ function comparesIn(expected, actual) {
 
     return function(key) {
 
-        let expValue, actValue;
-
-        if (needParse.includes(key)) {
-
-            expValue = JSON.parse(expected[key]);
-            actValue = JSON.parse(actual[key]);
-
-        } else {
-
-            expValue = expected[key];
-            actValue = actual[key];
-
-        }
+        let expValue = expected[key];
+        let actValue = actual[key];
 
         return compare(expValue, actValue);
 
@@ -519,93 +447,6 @@ function compare(expVal, actVal) {
 }
 
 
-/**
- * Decode a base64-encoded string
- * @param {string} encodedData The base64-encoded string
- * @returns {string} The decoded string
- */
-function base64decode(encodedData) {
-    //  discuss at: http://locutus.io/php/base64_decode/
-    // original by: Tyler Akins (http://rumkin.com)
-    // improved by: Thunder.m
-    // improved by: Kevin van Zonneveld (http://kvz.io)
-    // improved by: Kevin van Zonneveld (http://kvz.io)
-    //    input by: Aman Gupta
-    //    input by: Brett Zamir (http://brett-zamir.me)
-    // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
-    // bugfixed by: Pellentesque Malesuada
-    // bugfixed by: Kevin van Zonneveld (http://kvz.io)
-    // improved by: Indigo744
-    //   example 1: base64_decode('S2V2aW4gdmFuIFpvbm5ldmVsZA==')
-    //   returns 1: 'Kevin van Zonneveld'
-    //   example 2: base64_decode('YQ==')
-    //   returns 2: 'a'
-    //   example 3: base64_decode('4pyTIMOgIGxhIG1vZGU=')
-    //   returns 3: '✓ à la mode'
-
-    // decodeUTF8string()
-    // Internal function to decode properly UTF8 string
-    // Adapted from Solution #1 at https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
-
-    var decodeUTF8string = function(str) {
-        // Going backwards: from bytestream, to percent-encoding, to original string.
-        return decodeURIComponent(str.split('').map(function(c) {
-
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-
-        }).join(''));
-    };
-
-    var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
-        ac = 0,
-        dec = '',
-        tmpArr = [];
-
-    if (!encodedData) {
-
-        return encodedData;
-
-    }
-
-    encodedData += '';
-
-    do {
-        // unpack four hexets into three octets using index points in b64
-        h1 = b64.indexOf(encodedData.charAt(i++));
-        h2 = b64.indexOf(encodedData.charAt(i++));
-        h3 = b64.indexOf(encodedData.charAt(i++));
-        h4 = b64.indexOf(encodedData.charAt(i++));
-
-        bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
-
-        o1 = bits >> 16 & 0xff;
-        o2 = bits >> 8 & 0xff;
-        o3 = bits & 0xff;
-
-        if (h3 === 64) {
-
-            tmpArr[ac++] = String.fromCharCode(o1);
-
-        } else if (h4 === 64) {
-
-            tmpArr[ac++] = String.fromCharCode(o1, o2);
-
-        } else {
-
-            tmpArr[ac++] = String.fromCharCode(o1, o2, o3);
-
-        }
-
-    } while (i < encodedData.length);
-
-    dec = tmpArr.join('');
-
-    return decodeUTF8string(dec.replace(/\0+$/, ''));
-
-}
-
-
 //
 // EXPORTS
 //
@@ -620,7 +461,6 @@ export {
     matchEvents,
     inOrder,
     compare,
-    base64decode
 };
 
 

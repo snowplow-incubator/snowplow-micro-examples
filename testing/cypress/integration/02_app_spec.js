@@ -22,11 +22,11 @@ describe('scenario involving cart removals', () => {
 
     it('user logins, adds to cart, removes from cart, completes purchase', () => {
 
-        // EVENTS: +1: (1 * pv)
+        // EVENTS: +1: (1 * page_view)
         // - pageView of start.html
         cy.visit(""); // baseUrl
 
-        // EVENTS: +4: (3 * ue + 1 * pv)
+        // EVENTS: +4: (3 * unstruct + 1 * page_view)
         // - 1.focus_form for email
         // - 2.change_form for email
         // - 3.submit_form
@@ -40,7 +40,7 @@ describe('scenario involving cart removals', () => {
         cy.get('[test-id=submit-button]')
             .click();
 
-        // EVENTS: +5: (5 * ue)
+        // EVENTS: +5: (5 * unstruct)
         // - 3 buttons * cart_action_event (add to cart)
         // - 2 buttons * cart_action_event (remove from cart)
         cy.get('[test-id=add-btn-1]').click({});
@@ -51,7 +51,7 @@ describe('scenario involving cart removals', () => {
 
         cy.get('[test-id=add-btn-3]').click({});
 
-        // EVENTS: +2: (1 * ue + 1 * pv)
+        // EVENTS: +2: (1 * unstruct + 1 * page_view)
         // - 1.purchase_event
         // - 2.pageview of thanks.html
         cy.get('.btn-purchase').click();

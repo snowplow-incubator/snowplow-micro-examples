@@ -185,7 +185,7 @@ Cypress.Commands.add('eventsWithSchema', (schema, n = 1) => {
  * Asserts on the number of events having a given type
  *
  * ```
- * cy.eventsWithEventType("se", 7);
+ * cy.eventsWithEventType("struct", 7);
  * ```
  *
  * @method eventsWithEventType
@@ -227,8 +227,8 @@ Cypress.Commands.add('eventsWithEventType', (eventType, n = 1) => {
  *         }
  *     }],
  *     "parameters": {
- *         "uid": "tester",
- *         "tna": "myTrackerName"
+ *         "user_id": "tester",
+ *         "name_tracker": "myTrackerName"
  *     }
  * }, 3);
  * ```
@@ -261,9 +261,9 @@ Cypress.Commands.add('eventsWithProperties', (eventOptions, n = 1) => {
  *
  * ```
  * cy.eventsWithParams({
- *     "e": "se",
- *     "se_ca": "Mixes",
- *     "se_ac": "Play"
+ *     "event": "struct",
+ *     "se_category": "Mixes",
+ *     "se_action": "Play"
  * }, 3);
  * ```
  *

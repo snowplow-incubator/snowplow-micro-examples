@@ -20,7 +20,7 @@ var eventMatcher = require('../../jsm/helpers.js');
  * ```
  *    this.demoTest = function (client) {
  *       browser.assert.successfulEvent({
-                    "eventType": "ue",
+                    "eventType": "unstruct",
                     "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
                     "values": {
                         "type": "add"
@@ -52,11 +52,12 @@ function SuccessfulEvent(expected_event, noOfEvents = 1, msg) {
     };
 
     this.pass = (value) => {
-        return value.length === this.expected();
+        return value === this.expected();
     };
 
     this.value = (eventsOnMicro) => {
-        return eventMatcher.matchEvents(eventsOnMicro, expected_event);
+        let matchingEvs = eventMatcher.matchEvents(eventsOnMicro, expected_event);
+        return matchingEvs.length;
     };
 
 

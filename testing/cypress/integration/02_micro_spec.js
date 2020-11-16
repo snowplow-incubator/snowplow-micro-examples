@@ -26,7 +26,7 @@ context('testing events from 02_app_spec.js', () => {
     it('asserts number of events with a parameter', () => {
 
         cy.eventsWithParams({
-            "e": "ue"
+            "event": "unstruct"
         }, 9);
 
     });
