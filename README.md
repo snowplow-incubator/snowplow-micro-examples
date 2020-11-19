@@ -17,7 +17,10 @@ npm test
 Did all tests pass? Then confidently push your web app to production!
 
 
-Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies
+Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies.
+
+Current Snowplow Micro version: 1.0.0
+If you have been using a previous version of Snowplow Micro in your test suites, you can also read the [Upgrading Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#6-upgrading-micro) section.
 
 
 ## Table of Contents
@@ -39,6 +42,8 @@ Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/
  - [4.2 Snowplow Micro and Cypress](https://github.com/snowplow-incubator/snowplow-micro-examples#42-snowplow-micro-and-cypress)
 
 [5. Additional resources](https://github.com/snowplow-incubator/snowplow-micro-examples#5-additional-resources)
+
+[6. Upgrading Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#6-upgrading-micro)
 
 
 ## Snowplow Micro
@@ -123,7 +128,7 @@ In order to use it, just make sure that:
 If you wanted to use `docker run` instead of `docker-compose`, the same step would be:
 ```
 - name: Start Micro
-    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:0.1.0 --collector-config /config/micro.conf --iglu /config/iglu.json &
+    run: docker run --mount type=bind,source=$(pwd)/micro,destination=/config -p 9090:9090 snowplow/snowplow-micro:1.0.0 --collector-config /config/micro.conf --iglu /config/iglu.json &
     working-directory: snowplow-micro-examples
 ```
 
@@ -307,10 +312,10 @@ In this repo you can also find information on how to set up trackers, how to mak
 1) No bad events
 2) Number of good events = number of expected good events
 3) Ensuring that total number of events is right - expected number of good events + bad events (noBadEvents = True)
-4) Checking proper values of structured and unstructured events are sent to micro
+4) Checking proper values of structured and unstructured events are sent to Micro
 5) Event With Property test - context, event type and schema
 	- user puts in an event and we match by all 3 conditions (contexts, properties and schema - this determines whether or not the fake test event is equal to the one on micro - for both structured and unstructured)
-6) Race condition test - to ensure that event x is always sent to micro before event y (in our case we wanted to ensure cart action occurred before purchase)
+6) Race condition test - to ensure that event x is always sent to Micro before event y (in our case we wanted to ensure cart action occurred before purchase)
 7) Form tracking test to ensure blacklisted form fields are not tracked, and to ensure the right properties are sent for each field
 
 
@@ -330,7 +335,7 @@ It works as follows:
 
 #### 4.1.2 Getting Started
 
-If you want to isolate Nightwatch JS testing, follow these steps, otherwise skip to " 3.1.3 Simulating a User with Nightwatch"
+If you want to isolate Nightwatch JS testing, follow these steps, otherwise skip to [4.1.3 Simulating a User with Nightwatch](https://github.com/snowplow-incubator/snowplow-micro-examples#413-simulating-a-user-with-nightwatch).
 
 Install nightwatch and a chrome driver which enables nightwatch to interact with the Chrome browser:
 
@@ -358,12 +363,12 @@ that we can fire the exact events that a user would fire when using the app in t
 
 In Nightwatch a test involves 3 phases:
 1. Preparing a state:
-    1. Reset Micro command - deleting the cache in micro so that each test has independent events from other tests
+    1. Reset Micro command - deleting the cache in Micro so that each test has independent events from other tests
     2. Configure Nightwatch to interact with your app
 2. Taking an action:
     Nightwatch interacts with the app creating events
 3. Making an assertion on the resulting state:
-    Nighwatch requests the state of micro and based on a test performs the corresponding assertions
+    Nighwatch requests the state of Micro and based on a test performs the corresponding assertions
 
 #### 4.1.4 Organisation of tests
 
@@ -371,7 +376,7 @@ In Nightwatch a test involves 3 phases:
 
 #### resetMicro
 The resetMicro command can be added before each test as the beforeEach hook:
-[Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/master/guide/using-nightwatch/test-hooks.md)
+[Nightwatch Test Hooks](https://github.com/nightwatchjs/nightwatch-docs/blob/643e9a63a94deba6bd84bf2dd78cb27693620e20/guide/using-nightwatch/using-test-hooks.md)
 
 *Example call*:
 
@@ -388,10 +393,9 @@ module.exports = {
 ```
 *Arguments*: None
 
-This command utilises micros ability to reset itself through the url:
-                "http://localhost:9090/micro/reset"
+This command utilises the ability to reset Micro through the `/micro/reset` endpoint.
 
-This is the general structure of how to create a command which aims to request information from snowplow micro using Nightwatch:
+This is the general structure of how to create a command which aims to request information from Snowplow Micro using Nightwatch:
 
 ```
 this.command = (callback) => {
@@ -421,7 +425,7 @@ this.command = (callback) => {
 *Arguments*: None
 
 This is arguably the most important assertion, if you only implement one this is a great place to start.
-It ensures that all of your data is sent to micro and ends up in good events, so all of your data is in your warehouse and you can interpret it as expected.
+It ensures that all of your data is sent to Micro and ends up in good events, so all of your data is in your warehouse and you can interpret it as expected.
 
 #### .noOfGoodEvents
 
@@ -430,9 +434,9 @@ It ensures that all of your data is sent to micro and ends up in good events, so
 ```
     browser.assert.noOfGoodEvents(2);
 ```
-*Arguments*: Number of expected good events to be sent to micro
+*Arguments*: Number of expected good events to be sent to Micro
 
-An extension of noBadEvents, asserts that you sent the correct number of good events to micro for a given event.
+An extension of noBadEvents, asserts that you sent the correct number of good events to Micro for a given event.
 For example, you might expect the onClick() action to send 2 good events,
 then you can make sure 2 are sent to good events and call noBadEvents on the same assertion as total number of events = number of good events + number of bad events.
 
@@ -443,9 +447,9 @@ then you can make sure 2 are sent to good events and call noBadEvents on the sam
 ```
     browser.assert.noOfTotalEvents(2);
 ```
-*Arguments*: Number of expected total events sent to micro
+*Arguments*: Number of expected total events sent to Micro
 
-A further extension on noOfGoodEvents, this assertion ensures that both the correct number events are sent to micro, and that no bad events are sent.
+A further extension on noOfGoodEvents, this assertion ensures that both the correct number events are sent to Micro, and that no bad events are sent.
 Using all 3 of these assertions consecutively provides the best assurance that every event you send is sent to your warehouse properly.
 
 #### .orderOfEvents
@@ -458,9 +462,8 @@ Using all 3 of these assertions consecutively provides the best assurance that e
 ```
 *Arguments*: events_list
 
-Checks that event a happens before event b, for when one event must be before the other so that your application works as expected.
-This works by retrieving the timestamps for when each tracker arrives to micro, and asserting that event a occurs before event b.
-In other words, this function uses the event timestamps to assert what order the events were fired in.
+Checks for when one event must be before the other so that your application works as expected.
+This works by retrieving the derived timestamps for each event, and asserting that events fired in the specified order.
 In our case we use this to test that a cart action occurs before purchasing an item.
 If our application didn't get this order of events correct, then the application does not act as expected.
 This can also be considered a race condition test.
@@ -471,7 +474,7 @@ This can also be considered a race condition test.
 
 ```
 browser.assert.successfulEvent({
-            "eventType": "ue",
+            "eventType": "unstruct",
             "schema": "iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0",
             "values": {
                 "type": "remove"
@@ -488,11 +491,11 @@ browser.assert.successfulEvent({
 ```
 *Arguments*: test_event (with schema, eventType, values and context), number_of_occurences
 
-Ensures that when an event is sent to micro the correct parameters are sent as expected.
+Ensures that when an event is sent to Micro the correct parameters are sent as expected.
 In our case we check that the schema, properties and contexts are correct:
- - We match what the user expects to be sent to what is received on micro.
-- In the end, the number of matched events is retrieved and asserted to the expected number of occurrences.
-- By doing that, we can also specify which events we don't expect on micro by setting the argument number_of_occurences=0.
+ - We match what the user expects to be sent to what is received on Micro.
+ - In the end, the number of matched events is retrieved and asserted to the expected number of occurrences.
+ - By doing that, we can also specify which events we don't expect on Micro by setting the argument number_of_occurences=0.
 
 
 ### 4.2 Snowplow Micro and Cypress
@@ -509,7 +512,7 @@ Generally, a test involves 3 phases:
 
 While Cypress considers as state the application's state, it is still a fact that an app is rarely an isolated system without side effects.
 
-This is especially true when a tracking strategy is implemented, which means that any action can fire [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol) through the [trackers](https://github.com/snowplow/snowplow/wiki/trackers). There is an increasing number of reports (see Gartner) highlighting the importance of upstream data quality and Data Ops, which means that testing your Data Collection and trackers' implementation besides your product's features is of highest priority. Tracking is as important as your shipping, and that is why it is highly recommended that you include its testing in your E2E tests.
+This is especially true when a tracking strategy is implemented, which means that any action can fire [events](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/) through the [trackers](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/). There is an increasing number of reports (see Gartner) highlighting the importance of upstream data quality and Data Ops, which means that testing your Data Collection and trackers' implementation besides your product's features is of highest priority. Tracking is as important as your shipping, and that is why it is highly recommended that you include its testing in your E2E tests.
 
 Cypress, even though it considers as [best practice](https://docs.cypress.io/guides/references/best-practices.html#Visiting-external-sites) to avoid requiring or testing 3rd party services, it still offers the ability to "talk" to 3rd party API's via [cy.request()](https://docs.cypress.io/api/commands/request.html), that:
  - Entirely bypasses CORS
@@ -541,7 +544,7 @@ Another Cypress' recommendation for best [practices](https://docs.cypress.io/gui
 However, there were some issues in doing so. More specifically, those issues had only to do with cases where links (or submit buttons) were clicked, in other words in cases where a window [unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) was fired.
 
 To describe the issue, we first describe what normally happens upon an unload event:
-When a user clicks, for example, a link, on one hand the browser wants to navigate on the link, and on the other hand, the tracker (in our case the [Javascript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker)) tries to send the [link click](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#39-link-click-tracking) or the [submit form](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking) events, while also storing them in local storage, just in case the events don't get sent before the page unloads.
+When a user clicks, for example, a link, on one hand the browser wants to navigate to the link, and on the other hand, the tracker (in our case the [Javascript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker)) tries to send the [link click](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#39-link-click-tracking) or the [submit form](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking) events, while also storing them in local storage, just in case the events don't get sent before the page unloads.
 While it is normal for browsers to cancel all requests, a cancelled request does not necessarily mean that the request did not reach the server, but that the client sending it, does not wait for an answer anymore. So, there is no way to know from client side whether the request (be it POST or GET) succeeded.
 
 That problem was especially apparent when Micro was being queried in the same spec file with the app's actions. For example, POST requests appeared as cancelled in Cypress' test runner, but the events may have reached Micro.
@@ -550,7 +553,7 @@ Taking advantage of the fact that Cypress also clears browser cache when it chan
 The consequences of this decision are:
 1. You need to ensure a naming strategy, and the reason for this is the fact that Cypress decides the order of execution for test files based on alphabetical order. In this example, we use this naming strategy:
  - `xx_app_spec.js` for the spec files that visit the app and create events
- - `xx_micro_spec.js` for the spec files that query micro and make the assertions on those events
+ - `xx_micro_spec.js` for the spec files that query Micro and make the assertions on those events
 , where `xx` stands for numbering (but it could be anything as long as it matches uniquely).
 
 ```
@@ -566,7 +569,7 @@ testing/cypress/integration/
 ```
 
 2. You need to consider how and when you reset Micro. We chose to use a Before [hook](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Hooks) in the start of every `xx_app_spec.js` file, since the naming strategy ensures that the tests will run in `app`-`micro` pairs.
-3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro spec file after the matching app spec. The script can be seen in [package.json](./package.json).
+3. If you just want to run only a particular app test file (and not all of them), you will also need its corresponding Micro test file. Since this is a usual case, for example, when a particular spec file fails, we added another npm script `cy-micro:pair-run`, which will match a naming pattern and run the corresponding micro-spec file after the matching app spec. The script can be seen in [package.json](./package.json).
 
 Example usage:
 1. To run all spec files in your `cypress/integration` directory (in alphabetical order)
@@ -609,8 +612,8 @@ This command ensures that all the events you want to track, actually get tracked
 *Example call*:
 
 ```
-    cy.eventsWithEventType( "pv", 8 );
-    cy.eventsWithEventType( "se", 45 );
+    cy.eventsWithEventType( "page_view", 8 );
+    cy.eventsWithEventType( "struct", 45 );
 ```
 This command is useful when you want to ensure that a particular type of events got tracked as many times as it should.
 
@@ -621,13 +624,13 @@ This command is useful when you want to ensure that a particular type of events 
 ```
     cy.eventsWithParams(
         {
-            "e": "se",
-            "se_ca": "Media",
-            "se_ac": "Play video",
-            "se_la": "Surfing"
+            "event": "struct",
+            "se_category": "Media",
+            "se_action": "Play video",
+            "se_label": "Surfing"
         }, 3 );
 ```
-This command accepts as first argument an object with parameter-value pairs. You can see all available parameters in the [Snowplow Tracker Protocol](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol). This command is particularly useful when checking on [structured events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker-v2.13#custom-structured-events).
+This command accepts as first argument an object with the expected event's field-value pairs. You can read about all the fields in Snowplow docs [here](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/). This command is particularly useful when checking on [structured events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker-v2.13#custom-structured-events).
 
 #### .eventsWithSchema
 
@@ -636,7 +639,7 @@ This command accepts as first argument an object with parameter-value pairs. You
 ```
     cy.eventsWithSchema( "iglu:com.snowplowanalytics.snowplow/submit_form/jsonschema/1-0-0", 5 );
 ```
- With this command you can look specifically for [unstructured events](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/understanding-schemas-and-validation/), which include both custom unstructured [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#310-custom-unstructured-event-tracking) and all other default Snowplow events that are of "ue" eventType (link-click, submit-form ad-impression etc.)
+ With this command you can look specifically for [unstructured events](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/understanding-schemas-and-validation/), which include both custom unstructured events and all other default Snowplow events that are of "unstruct" eventType (link-click, submit-form, ad-impression etc.)
 
 #### .eventsWithContexts
 
@@ -666,7 +669,7 @@ This command accepts as first argument an object with parameter-value pairs. You
                 }
             ], 2 );
 ```
-With this command you can check whether the predefined(e.g. webpage, geolocation) or [custom](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#4-custom-contexts) contexts/entities got properly attached to events. You can not only check by the schema of the entities but also by their data. Note that the first argument to this command should be an array of objects, like the contexts' array that can be attached to any Snowplow event. The keys of these objects can be either "schema" or "data". For "schema" the value should be a string (the schema). For "data" the value should be an object of key-value pairs, depending on the context.
+With this command you can check whether the predefined(e.g. webpage, geolocation) or [custom](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/) contexts/entities got properly attached to events. You can not only check by the schema of the entities but also by their data. Note that the first argument to this command should be an array of objects, like the contexts' array that can be attached to any Snowplow event. The keys of these objects can be either "schema" or "data". For "schema" the value should be a string (the schema). For "data" the value should be an object of key-value pairs, depending on the context.
 
 #### .eventsWithProperties
 
@@ -675,8 +678,8 @@ With this command you can check whether the predefined(e.g. webpage, geolocation
     cy.eventsWithProperties({
 
             "parameters": {
-                "e": "ue",
-                "tv": "js-2.15.0"
+                "event": "unstruct",
+                "v_tracker": "js-2.16.3"
             }
             "schema": "iglu:com.example.eg/custom_cart_event/jsonschema/1-0-0",
             "values": {
@@ -702,7 +705,7 @@ The object that gets passed as the first argument, can have as keys:
  - "schema" : matches by schema
  - "values" : matches by the data of an unstructured event
  - "contexts" : matches by contexts
- - "parameters" matches by parameters
+ - "parameters" matches by the event's fields
 It will return the events that have all those properties.
 As shown in the examples above, you do not have to use all the properties, and the command works accordingly.
 
@@ -725,7 +728,7 @@ As shown in the examples above, you do not have to use all the properties, and t
     ]);
 ```
 With this command you can assert that events happened in a specified (ascending) order. For example, in the call above, we can assert that the focus\_form event happened before the corresponding change\_form event, which in turn happened before the submit\_form event. The argument to this command is an array of at least 2 event "descriptions", which are exactly like the properties' object argument of `eventsWithProperties`. Those event descriptions need to uniquely identify exactly one Snowplow event.
-Internally, this command compares [events](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol#12-date--time-parameter)' `dvce_created_tstamp`.
+Internally, this command compares events' `derived_tstamp`.
 
 #### 4.2.4 Some further notes
 
@@ -751,7 +754,6 @@ testing/cypress/
 1. Helpers
     - In the `commands.js` file, the commands are defined based on the `Micro` [helper module](./testing/jsm/helpers.js)
     - The `integration/helpers_spec.js` [file](./testing/cypress/integration/helpers_spec.js) tests the helper functions that define the matching logic. For a different custom matching logic, you can tweak the helper functions, and then test them.
-    - As a note, you don't need to set `encodeBase64: false` in your tracker configuration [parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/general-parameters/initializing-a-tracker-2/), in order for the matching to work.
 
 2. Environment variables.
     - Cypress allows for [many ways](https://docs.cypress.io/guides/guides/environment-variables.html) to set environment variables. In this example we set them in the `plugins/index.js` [file](./testing/cypress/plugins/index.js).
@@ -762,8 +764,110 @@ testing/cypress/
  - [Snowplow Docs](https://docs.snowplowanalytics.com/)
  - [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
  - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
- - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://github.com/snowplow/iglu/wiki/Iglu-client-configuration)
+ - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://docs.snowplowanalytics.com/docs/pipeline-components-and-applications/iglu/iglu-resolver/)
  - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
  - [A Cypress issue describing a similar situation with XHR Aborts](https://github.com/cypress-io/cypress/issues/2968)
  - [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
  - From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
+
+
+## 6. Upgrading Micro
+
+[Snowplow Micro v1.0.0 has been released](https://snowplowanalytics.com/blog/2020/09/11/snowplow-micro-1-0-0-released/):
+
+ - Snowplow Micro now uses the exact same validation with a production Snowplow pipeline, which is even stricter and so ensures that if Micro validates an event, then it cannot fail during the enrichment in production.
+
+ - Micro now outputs the post-enrichment, canonical event (just with enrichments deactivated).
+
+If you have been using the previous version (v0.1.0) in your test suites, you can easily upgrade to the new version (recommended). The steps include:
+
+1. Point to the new version `1.0.0` of Micro in your `docker run` command or in your `docker-compose.yml` file.
+
+2. Modify the configuration for Micro, an example of which can be found in the `micro.conf` file [here](https://github.com/snowplow-incubator/snowplow-micro/blob/master/example/micro.conf).
+
+3. The [response format](https://github.com/snowplow-incubator/snowplow-micro#response-format-1) for `GoodEvents` has changed, since Micro now outputs the post-enrichment event. This means that if in your tests you were filtering on `GoodEvents` through the `/micro/good` endpoint, you will need to change:
+
+    - the expected values for `eventType`. For example:
+
+    | v0.1.0 | v1.0.0      |
+    | ------ | ----------- |
+    | `pv`   | `page_view` |
+    | `pp`   | `page_ping` |
+    | `se`   | `struct`    |
+    | `ue`   | `unstruct`  |
+    |        |             |
+
+    Note: If you use the [helper module](./testing/jsm/helpers.js) of this repo and upgrade to its latest release, then the above should be the only change you will need in your tests' spec files.
+
+    - the event specific fields, that were transformed for enrichment. Some of them are in the table below, but you can see all of the transformations [here](https://github.com/snowplow/enrich/blob/master/modules/common/src/main/scala/com.snowplowanalytics.snowplow.enrich/common/enrichments/Transform.scala).
+
+    | v0.1.0  | v1.0.0                |
+    | ------  | --------------------- |
+    | `e`     | `event`               |
+    | `aid`   | `app_id`              |
+    | `p`     | `platform`            |
+    | `uid`   | `user_id`             |
+    | `dtm`   | `dvce_created_tstamp` |
+    | `tna`   | `name_tracker`        |
+    | `page`  | `page_title`          |
+    | `se_ca` | `se_category`         |
+    | `se_ac` | `se_action`           |
+    | `se_la` | `se_label`            |
+    | `se_pr` | `se_property`         |
+    | `se_va` | `se_value`            |
+    | `ue_pr` | `unstruct_event`      |
+    | `co`    | `contexts`            |
+    | `ue_px` | `unstruct_event`      |
+    | `cx`    | `contexts`            |
+
+    Note: The `unstruct_event` and `contexts` fields have already parsed the `ue_pr` and `co` and have already decoded and parsed the `ue_px` and `cx` raw event fields respectively.
+
+    - the structure you expect. The event that was the output of Micro's v0.1.0, now corresponds to the `rawEvent` field of the event output of v1.0.0.
+
+    A partial example of a `GoodEvent` follows, showing the structure and highlight the differences described above:
+
+      ```
+      {
+          "rawEvent": {
+              ...
+              "parameters": {
+                  "e": "ue",
+                  "eid": "966d4d79-11d9-4fa6-a1a5-6a0bc2d06de1",
+                  "aid": "DemoID",
+                  ...,
+                  "ue_pr": "{\"schema\":\"iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0\",\"data\":{\"schema\":\"iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0\",\"data\":{\"formId\":\"FORM\",\"elementId\":\"user_email\",\"nodeName\":\"INPUT\",\"elementClasses\":[\"form-control\"],\"value\":\"fake@foo.com\",\"elementType\":\"email\"}}}",
+                  ...
+              },
+              ...
+          },
+          "eventType": "unstruct",
+          "schema": "iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0",
+          "contexts": [
+              "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0",
+              ...
+          ],
+          "event": {
+              "event": "unstruct",
+              "event_id": "966d4d79-11d9-4fa6-a1a5-6a0bc2d06de1",
+              "app_id": "DemoID",
+              ...,
+              "unstruct_event": {
+                  "schema": "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0",
+                  "data": {
+                      "schema": "iglu:com.snowplowanalytics.snowplow/focus_form/jsonschema/1-0-0",
+                      "data": {
+                          "formId": "FORM",
+                          "elementId": "user_email",
+                          "nodeName": "INPUT",
+                          "elementClasses": [
+                              "form-control"
+                          ],
+                          "value": "fake@foo.com",
+                          "elementType": "email"
+                      }
+                  }
+              },
+              ...
+          }
+      }
+      ```
