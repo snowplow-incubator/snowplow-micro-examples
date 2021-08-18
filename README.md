@@ -152,7 +152,7 @@ Each page serves the purpose of demonstrating possible event-tracking, which wil
 
 ### 3.2 Event dictionary
 
-Using the [JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker):
+Using the [JavaScript Tracker][javascript-tracker]:
 ```
 <!-- Snowplow starts plowing -->
 <script type="text/javascript">
@@ -163,7 +163,7 @@ n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 
 ```
 The tracking implemented consists of:
 
-1. [Pageview tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#31-pageviews)
+1. [Pageview tracking][pageview-tracking]
 
     - This event happens when a user visits a page.
     - It is a predefined Snowplow event, that automatically captures the URL, referrer and page title.
@@ -173,24 +173,33 @@ The tracking implemented consists of:
     ```
     - Implemented in all 3 pages.
 
-2. [Activity Tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#32-track-engagement-with-a-web-page-over-time-page-pings)
+2. [Activity Tracking][activity-tracking]
 
     - This event happens when a user engages with a page (e.g. user scrolls).
     - It is a predefined Snowplow event, that automatically records the maximum scroll left-right, up-down in the last ping period.
-    - Method call (before the trackPageView method call):
+    - Method call (before the `trackPageView` method call):
     ```
-    window.snowplow('enableActivityTracking', minimumVisitLength, heartBeat );
+    window.snowplow('enableActivityTracking', {
+        minimumVisitLength: number,
+        heartbeatDelay: number
+    });
     ```
     - Implemented in login-page and shop-page, with different `minimumVisitLength` and `heartBeat`:
     ```
     // login-page
-    window.snowplow('enableActivityTracking', 20, 20);
+    window.snowplow('enableActivityTracking', {
+        minimumVisitLength: 20,
+        heartbeatDelay: 20
+    });
 
     // shop-page:
-    window.snowplow('enableActivityTracking', 10, 10);
+    window.snowplow('enableActivityTracking', {
+        minimumVisitLength: 10,
+        heartbeatDelay: 10
+    });
     ```
 
-3. [Form Tracking](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking)
+3. [Form Tracking][form-tracking]
     - This set of events happens when a user interacts with a web form (e.g. focus on an form element, change a value of input-textarea-select element form, submit a form)
     - These are predefined Snowplow events that are of unstructured eventType and can be customized. Data captured:
         - **focus_form**: id, classes of the form and name, type, value of the form element that received focus.
@@ -198,69 +207,75 @@ The tracking implemented consists of:
         - **submit_form**: id, classes of the form and name, type, value of all form elements
     - Implemented in the login-page:
     ```
-    var config = {
+    var opts = {
         forms: {
-            blacklist: []
+            denylist: []
         },
         fields: {
-            blacklist: ['user_password']
+            denylist: ['user_password']
         }
     };
 
-    window.snowplow('enableFormTracking', config);
+    window.snowplow('enableFormTracking', { options: opts });
     ```
     > **Note**:
     > By default, Form Tracking does not track password fields. We used the above `config` to demonstrate how you can ensure the Non-tracking of sensitive fields. With Snowplow Micro we can also later test that any blacklisting of forms is implemented correctly and that no sensitive fields are tracked.
 
-4. [Tracking custom self-describing(unstructured) events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#37-tracking-custom-self-describing-unstructured-events)
+4. [Tracking custom self-describing(unstructured) events][self-describing-tracking]
 
     1. cart-events ([schema](./iglu/schemas/test.example.iglu/cart_action_event/jsonschema/1-0-0))
         - These events happen when a user interacts with the cart, adding or removing items, using the Add-to-cart or Remove buttons.
         - This is a self-describing event that captures the type of cart interaction: "add" versus "remove".
-        - We also want to add as [custom context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the product involved in the cart-event, which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
+        - We also want to add as [custom context][custom-context] the product involved in the cart-event, which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
         - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // TRACK cart_action_event (add)
         window.snowplow('trackSelfDescribingEvent', {
+            event: {
                 schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                 data: {
-                    type: "add",
-                }
+                    type: 'add',
+                },
             },
-            [{
-                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                data: {
-                    sku: sku,
-                    name: title,
-                    price: parseFloat(price),
-                    quantity: parseInt(quantity)
+            context: [
+                {
+                    schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                    data: {
+                        sku: sku,
+                        name: title,
+                        price: parseFloat(price),
+                        quantity: parseInt(quantity)
+                    }
                 }
-            }]
-        );
+            ]
+        });
 
         // TRACK cart_action_event (remove)
         window.snowplow('trackSelfDescribingEvent', {
+            event: {
                 schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
                 data: {
-                    type: "remove"
-                }
+                    type: 'remove',
+                },
             },
-            [{
-                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-                data: {
-                    sku: sku,
-                    name: title,
-                    price: parseFloat(price),
-                    quantity: parseInt(quantity)
+            context: [
+                {
+                    schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                    data: {
+                        sku: sku,
+                        name: title,
+                        price: parseFloat(price),
+                        quantity: parseInt(quantity)
+                    }
                 }
-            }]
-        );
+            ]
+        });
         ```
 
     2. purchase-event ([schema](./iglu/schemas/test.example.iglu/purchase_event/jsonschema/1-0-0))
         - These events happen when a user completes the purchase of the products in their cart by clicking the Purchase button.
         - This is a self-describing event that captures the total amount of the transaction.
-        - We also want to add as [custom contexts](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) the products involved, each of which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
+        - We also want to add as [custom contexts][custom-contexts] the products involved, each of which is described by the product entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0), see more below)
         - Implemented in the shop-page (see file [shoppage.js](./app/static/ecommerce/js/shoppage.js)):
         ```
         // create the contexts array
@@ -279,17 +294,19 @@ The tracking implemented consists of:
 
         // TRACK purchase_event
         window.snowplow('trackSelfDescribingEvent', {
+            event: {
                 schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
                 data: {
-                    total: parseFloat(total)
-                }
+                    total: parseFloat(total),
+                },
             },
-            productsContext);
+            context: productsContext
+        });
         ```
 
 5. Custom contexts
 
-    - [Predefined Context](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2217-adding-predefined-contexts) [webPage]
+    - Predefined [webPage context][webpage-context] (enabled by default in JavaScript Tracker v3)
     - Product Entity ([schema](./iglu/schemas/test.example.iglu/product_entity/jsonschema/1-0-0)). This entity captures the data on a product involved in a cart or purchase event: sku, name, price, quantity.
 
 
@@ -544,7 +561,7 @@ Another Cypress' recommendation for best [practices](https://docs.cypress.io/gui
 However, there were some issues in doing so. More specifically, those issues had only to do with cases where links (or submit buttons) were clicked, in other words in cases where a window [unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) was fired.
 
 To describe the issue, we first describe what normally happens upon an unload event:
-When a user clicks, for example, a link, on one hand the browser wants to navigate to the link, and on the other hand, the tracker (in our case the [Javascript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker)) tries to send the [link click](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#39-link-click-tracking) or the [submit form](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#310-form-tracking) events, while also storing them in local storage, just in case the events don't get sent before the page unloads.
+When a user clicks, for example, a link, on one hand the browser wants to navigate to the link, and on the other hand, the tracker (in our case the [Javascript Tracker][javascript-tracker]) tries to send the [link click][link-click-tracking] or the [submit form][form-tracking] events, while also storing them in local storage, just in case the events don't get sent before the page unloads.
 While it is normal for browsers to cancel all requests, a cancelled request does not necessarily mean that the request did not reach the server, but that the client sending it, does not wait for an answer anymore. So, there is no way to know from client side whether the request (be it POST or GET) succeeded.
 
 That problem was especially apparent when Micro was being queried in the same spec file with the app's actions. For example, POST requests appeared as cancelled in Cypress' test runner, but the events may have reached Micro.
@@ -630,7 +647,7 @@ This command is useful when you want to ensure that a particular type of events 
             "se_label": "Surfing"
         }, 3 );
 ```
-This command accepts as first argument an object with the expected event's field-value pairs. You can read about all the fields in Snowplow docs [here](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/). This command is particularly useful when checking on [structured events](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker-v2.13#custom-structured-events).
+This command accepts as first argument an object with the expected event's field-value pairs. You can read about all the fields in Snowplow docs [here](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/). This command is particularly useful when asserting on [structured events][structured-event-tracking].
 
 #### .eventsWithSchema
 
@@ -679,7 +696,7 @@ With this command you can check whether the predefined(e.g. webpage, geolocation
 
             "parameters": {
                 "event": "unstruct",
-                "v_tracker": "js-2.16.3"
+                "v_tracker": "js-3.1.3"
             }
             "schema": "iglu:com.example.eg/custom_cart_event/jsonschema/1-0-0",
             "values": {
@@ -768,7 +785,7 @@ testing/cypress/
  - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
  - [A Cypress issue describing a similar situation with XHR Aborts](https://github.com/cypress-io/cypress/issues/2968)
  - [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
- - From Snowplow's JavaScript tracker's documentation [1](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2212-setting-the-page-unload-pause), [2](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#22181-beacon-api-support), [3](https://github.com/snowplow/snowplow/wiki/1-General-parameters-for-the-Javascript-tracker#2218-post-support)
+ - From Snowplow's JavaScript tracker's documentation: [Setting the page unload pause][page-unload-pause], [POST support][post-support], [beacon API support][beacon-support].
 
 
 ## 6. Upgrading Micro
@@ -871,3 +888,17 @@ If you have been using the previous version (v0.1.0) in your test suites, you ca
           }
       }
       ```
+
+
+[javascript-tracker]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/
+[pageview-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Page_Views
+[activity-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Activity_Tracking_page_pings
+[form-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Form_tracking
+[link-click-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Link_click_tracking
+[self-describing-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Tracking_custom_self-describing_events
+[structured-event-tracking]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Tracking_custom_structured_events
+[custom-context]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracking-events/#Custom_context
+[webpage-context]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#webPage_context
+[post-support]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#POST_support
+[beacon-support]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#Beacon_API_support
+[page-unload-pause]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#Setting_the_page_unload_pause

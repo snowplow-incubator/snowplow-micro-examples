@@ -55,21 +55,24 @@ function removeCartItem(event) {
 
     // TRACK cart_action_event (remove)
     window.snowplow('trackSelfDescribingEvent', {
+        event: {
             schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
             data: {
-                type: "remove"
-            }
+                type: 'remove',
+            },
         },
-        [{
-            schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-            data: {
-                sku: sku,
-                name: title,
-                price: parseFloat(price),
-                quantity: parseInt(quantity)
+        context: [
+            {
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: sku,
+                    name: title,
+                    price: parseFloat(price),
+                    quantity: parseInt(quantity)
+                }
             }
-        }]
-    );
+        ]
+    });
 
     // remove the item also from userCart (assuming there is a single item to be removed)
     remItFromCart(sku, userCart);
@@ -141,22 +144,24 @@ function addItemToCart(title, price, imageSrc, quantity, sku, id) {
 
     // TRACK cart_action_event (add)
     window.snowplow('trackSelfDescribingEvent', {
+        event: {
             schema: 'iglu:test.example.iglu/cart_action_event/jsonschema/1-0-0',
             data: {
-                type: "add",
-            }
+                type: 'add',
+            },
         },
-        [{
-            schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
-            data: {
-                sku: sku,
-                name: title,
-                price: parseFloat(price),
-                quantity: parseInt(quantity)
+        context: [
+            {
+                schema: 'iglu:test.example.iglu/product_entity/jsonschema/1-0-0',
+                data: {
+                    sku: sku,
+                    name: title,
+                    price: parseFloat(price),
+                    quantity: parseInt(quantity)
+                }
             }
-        }]
-    );
-
+        ]
+    });
 }
 
 
@@ -203,12 +208,14 @@ function toThanks() {
 
         // TRACK purchase_event
         window.snowplow('trackSelfDescribingEvent', {
+            event: {
                 schema: 'iglu:test.example.iglu/purchase_event/jsonschema/1-0-0',
                 data: {
-                    total: parseFloat(total)
-                }
+                    total: parseFloat(total),
+                },
             },
-            productsContext);
+            context: productsContext
+        });
 
         window.location.href = 'http://' + window.location.host + '/thanks/';
     }

@@ -22,24 +22,28 @@
             platform: "web",
             discoverRootDomain: true,
             eventMethod: "beacon",
-            contexts : {
-                webPage: true
-            }
         });
 
         window.snowplow('setUserId', 'tester');
-        window.snowplow('enableActivityTracking', 20, 20);
 
-        var config = {
+        // activity tracking
+        window.snowplow('enableActivityTracking', {
+            minimumVisitLength: 20,
+            heartbeatDelay: 20
+        });
+
+        // form tracking
+        var options = {
             forms: {
-                blacklist: []
+                denylist: []
             },
             fields: {
-                blacklist: ['user_password']
+                denylist: ['user_password']
             }
         };
 
-        window.snowplow('enableFormTracking', config);
+        window.snowplow('enableFormTracking', { options: options });
+
         window.snowplow('trackPageView');
         </script>
         <!-- Snowplow stops plowing -->

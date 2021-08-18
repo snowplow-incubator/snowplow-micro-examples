@@ -34,15 +34,26 @@
             platform: "web",
             discoverRootDomain: true,
             eventMethod: "beacon",
-            contexts : {
-                webPage: true
-            }
         });
 
         window.snowplow('setUserId', 'tester');
-        window.snowplow('enableActivityTracking', 10, 10); // Ping every 10 seconds after 10 seconds
-        window.snowplow('enableLinkClickTracking', null, true, true);
+
+        // activity tracking
+        window.snowplow('enableActivityTracking', {
+            minimumVisitLength: 20,
+            heartbeatDelay: 20
+        });
+
+        // link click tracking
+        window.snowplow('enableLinkClickTracking', {
+            options: {},
+            pseudoClicks: true,
+            trackContent: true,
+        });
+
+        // form tracking
         window.snowplow('enableFormTracking');
+
         window.snowplow('trackPageView');
         </script>
         <!-- Snowplow stops plowing -->
