@@ -1,6 +1,6 @@
 {
         "name": "snowplow-micro-examples",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "description": "Examples of how to apply Snowplow Micro to popular test strategies",
         "private": true,
         "scripts": {

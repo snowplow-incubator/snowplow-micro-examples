@@ -1,13 +1,21 @@
+Version 1.0.1 (2021-08-27)
+--------------------------
+Update Snowplow Micro to 1.2.1 (#24)
+Bump django to 3.2.6 (#23)
+Upgrade JavaScript Tracker to v3 (#22)
+Bump nightwatch to 1.7.8 (#21)
+Bump cypress to 8.3.0 (#20)
+
 Version 1.0.0 (2020-11-18)
 --------------------------
-Update Snowplow Javascript Tracker to v2.16 (closes #11)
-Update Snowplow Micro to v1 (closes #10)
+Update Snowplow Javascript Tracker to v2.16 (#11)
+Update Snowplow Micro to v1 (#10)
 
 Version 0.1.1 (2020-10-16)
 --------------------------
-Add CHANGELOG (closes #8)
-Match chromedriver and chrome version (closes #6)
-Use version number to specify Snowplow Micro Docker image (closes #4)
+Add CHANGELOG (#8)
+Match chromedriver and chrome version (#6)
+Use version number to specify Snowplow Micro Docker image (#4)
 
 Version 0.1.0 (2020-08-06)
 --------------------------
