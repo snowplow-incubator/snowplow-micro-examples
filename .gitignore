@@ -17,3 +17,4 @@ nightwatch/tests_output/
 testing/cypress/videos/
 testing/cypress/screenshots/
 testing/cypress/integration/examples/
+testing/cypress/fixtures
