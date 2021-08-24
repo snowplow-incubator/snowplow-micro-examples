@@ -23,11 +23,11 @@
         "homepage": "https://github.com/snowplow-incubator/snowplow-micro-examples#readme",
         "devDependencies": {
                 "babel-core": "^6.26.3",
-                "babel-plugin-add-module-exports": "^1.0.2",
+                "babel-plugin-add-module-exports": "^1.0.4",
                 "babel-preset-es2015": "^6.24.1",
                 "chromedriver": "*",
                 "cypress": "^8.3.0",
-                "nightwatch": "^1.3.6"
+                "nightwatch": "^1.7.8"
         },
         "dependencies": {},
         "jshintConfig": {
