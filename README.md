@@ -17,11 +17,10 @@ npm test
 Did all tests pass? Then confidently push your web app to production!
 
 
-Examples of how to apply [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to popular build/test strategies.
+Examples of how to apply [Snowplow Micro][snowplow-micro] to popular build/test strategies.
 
-Current Snowplow Micro version: 1.0.0
-If you have been using a previous version of Snowplow Micro in your test suites, you can also read the [Upgrading Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#6-upgrading-micro) section.
-
+Current Snowplow Micro version: 1.2.1
+If you have been using a previous version (v0.x) of Snowplow Micro in your test suites, you can also read the [Upgrading Micro](https://github.com/snowplow-incubator/snowplow-micro-examples#6-upgrading-micro) section.
 
 ## Table of Contents
 
@@ -48,7 +47,7 @@ If you have been using a previous version of Snowplow Micro in your test suites,
 
 ## Snowplow Micro
 
-[Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) is a very small version of a full [Snowplow](https://snowplowanalytics.com/) data collection pipeline that can be embedded in automated test suites and so enable Snowplow users to test their data collection setup and then release new versions of their apps, websites and servers with confidence that new changes won’t break the tracking set up. Snowplow Micro comes to fill a missing piece in automated test suites: the tests that validate that data collection has been setup properly.
+[Snowplow Micro][snowplow-micro-docs] is a very small version of a full [Snowplow](https://snowplowanalytics.com/) data collection pipeline that can be embedded in automated test suites and so enable Snowplow users to test their data collection setup and then release new versions of their apps, websites and servers with confidence that new changes won’t break the tracking set up. Snowplow Micro comes to fill a missing piece in automated test suites: the tests that validate that data collection has been setup properly.
 
 To check data collection, it is necessary to fire a set of events, process them and see if the output of that processing is as expected. Snowplow Micro is easy to integrate with your test tool and then run as part of your automated testing workflow. This repository aims to show in detail all the steps to do this using Nightwatch and Cypress as examples of test tools, to build end-to-end GitHub Actions testing workflows.
 
@@ -113,7 +112,7 @@ $ npm run cypress:open
 
 ## 2. Github Actions
 Inside the `.github/workflows/` directory you can find the `.yml` files we use to test this exaple app with Micro and Nightwatch/Cypress.
-A general workflow file would definitely use the [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) step, which for our example is:
+A general workflow file would definitely use the [Snowplow Micro][snowplow-micro-docs] step, which for our example is:
 
 ```
 - name: Start Micro
@@ -780,46 +779,48 @@ testing/cypress/
 
  - [Snowplow Docs](https://docs.snowplowanalytics.com/)
  - [Designing your Tracking](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/)
- - Snowplow Micro's [REST API](https://github.com/snowplow-incubator/snowplow-micro#3-rest-api)
- - [Iglu](https://github.com/snowplow/iglu) and [Iglu client configuration](https://docs.snowplowanalytics.com/docs/pipeline-components-and-applications/iglu/iglu-resolver/)
+ - Snowplow Micro's [REST API][snowplow-micro-rest]
+ - [Iglu][iglu] and [Iglu client configuration][iglu-resolver]
  - [Self-describing JSON Schemas](https://snowplowanalytics.com/blog/2014/05/15/introducing-self-describing-jsons/) and [SchemaVer](https://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/)
  - [A Cypress issue describing a similar situation with XHR Aborts](https://github.com/cypress-io/cypress/issues/2968)
  - [Beacon](https://w3c.github.io/beacon/#sendbeacon-method)
  - From Snowplow's JavaScript tracker's documentation: [Setting the page unload pause][page-unload-pause], [POST support][post-support], [beacon API support][beacon-support].
 
 
-## 6. Upgrading Micro
+## 6. Upgrading Micro from v0.x to v1
 
-[Snowplow Micro v1.0.0 has been released](https://snowplowanalytics.com/blog/2020/09/11/snowplow-micro-1-0-0-released/):
+Snowplow Micro v1 has been released.
 
  - Snowplow Micro now uses the exact same validation with a production Snowplow pipeline, which is even stricter and so ensures that if Micro validates an event, then it cannot fail during the enrichment in production.
 
  - Micro now outputs the post-enrichment, canonical event (just with enrichments deactivated).
 
+- Also, since version 1.2 Embedded Iglu capabilities are available, which we also use to resolve the custom schemas in this examples' repository. You can find out more in the "Advanced usage" section of Snowplow Micro [documentation page][snowplow-micro-docs].
+
 If you have been using the previous version (v0.1.0) in your test suites, you can easily upgrade to the new version (recommended). The steps include:
 
-1. Point to the new version `1.0.0` of Micro in your `docker run` command or in your `docker-compose.yml` file.
+1. Point to the new version `1.2.1` of Micro in your `docker run` command or in your `docker-compose.yml` file.
 
-2. Modify the configuration for Micro, an example of which can be found in the `micro.conf` file [here](https://github.com/snowplow-incubator/snowplow-micro/blob/master/example/micro.conf).
+2. Modify the configuration for Micro, an example of which can be found in the `micro.conf` file [here][snowplow-micro-collector-config].
 
-3. The [response format](https://github.com/snowplow-incubator/snowplow-micro#response-format-1) for `GoodEvents` has changed, since Micro now outputs the post-enrichment event. This means that if in your tests you were filtering on `GoodEvents` through the `/micro/good` endpoint, you will need to change:
+3. The [response format][snowplow-micro-good] for `GoodEvents` has changed, since Micro now outputs the post-enrichment event. This means that if in your tests you were filtering on `GoodEvents` through the `/micro/good` endpoint, you will need to change:
 
     - the expected values for `eventType`. For example:
 
-    | v0.1.0 | v1.0.0      |
-    | ------ | ----------- |
-    | `pv`   | `page_view` |
-    | `pp`   | `page_ping` |
-    | `se`   | `struct`    |
-    | `ue`   | `unstruct`  |
-    |        |             |
+    | v0   | v1          |
+    |------|-------------|
+    | `pv` | `page_view` |
+    | `pp` | `page_ping` |
+    | `se` | `struct`    |
+    | `ue` | `unstruct`  |
+    |      |             |
 
     Note: If you use the [helper module](./testing/jsm/helpers.js) of this repo and upgrade to its latest release, then the above should be the only change you will need in your tests' spec files.
 
-    - the event specific fields, that were transformed for enrichment. Some of them are in the table below, but you can see all of the transformations [here](https://github.com/snowplow/enrich/blob/master/modules/common/src/main/scala/com.snowplowanalytics.snowplow.enrich/common/enrichments/Transform.scala).
+    - the event specific fields, that were transformed for enrichment. Some of them are in the table below, but you can see all of the transformations [here][enrich-transform].
 
-    | v0.1.0  | v1.0.0                |
-    | ------  | --------------------- |
+    | v0      | v1                    |
+    |---------|-----------------------|
     | `e`     | `event`               |
     | `aid`   | `app_id`              |
     | `p`     | `platform`            |
@@ -902,3 +903,14 @@ If you have been using the previous version (v0.1.0) in your test suites, you ca
 [post-support]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#POST_support
 [beacon-support]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#Beacon_API_support
 [page-unload-pause]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/#Setting_the_page_unload_pause
+
+[snowplow-micro]: https://github.com/snowplow-incubator/snowplow-micro
+[snowplow-micro-docs]: https://docs.snowplowanalytics.com/docs/managing-data-quality/testing-and-qa-workflows/set-up-automated-testing-with-snowplow-micro/#Snowplow_Micro
+[snowplow-micro-rest]: https://docs.snowplowanalytics.com/docs/managing-data-quality/testing-and-qa-workflows/set-up-automated-testing-with-snowplow-micro/#REST_API
+[snowplow-micro-collector-config]: https://github.com/snowplow-incubator/snowplow-micro/blob/master/example/micro.conf
+[snowplow-micro-good]: https://docs.snowplowanalytics.com/docs/managing-data-quality/testing-and-qa-workflows/set-up-automated-testing-with-snowplow-micro/#32_microgood_good_events
+[snowplow-micro-release-post]: https://snowplowanalytics.com/blog/2020/09/11/snowplow-micro-1-0-0-released/
+[enrich-transform]: https://github.com/snowplow/enrich/blob/master/modules/common/src/main/scala/com.snowplowanalytics.snowplow.enrich/common/enrichments/Transform.scala
+
+[iglu]: https://github.com/snowplow/iglu
+[iglu-resolver]: https://docs.snowplowanalytics.com/docs/pipeline-components-and-applications/iglu/iglu-resolver

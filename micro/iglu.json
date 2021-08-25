@@ -12,16 +12,6 @@
               "uri": "http://iglucentral.com"
             }
           }
-        },
-        {
-          "name": "example Iglu repository",
-          "priority": 5,
-          "vendorPrefixes": [ "test.example.iglu" ],
-          "connection": {
-            "http": {
-              "uri": "https://raw.githubusercontent.com/snowplow-incubator/snowplow-micro-examples/main/iglu"
-            }
-          }
         }
       ]
     }
