@@ -16,12 +16,12 @@
         };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
         n.src=w;g.parentNode.insertBefore(n,g)}}(window, document, "script", "{% static 'ecommerce/js/sp.js' %}", "snowplow"));
 
-        window.snowplow('newTracker', 'spmicro', '0.0.0.0:9090', { // Initialise a tracker
+        window.snowplow('newTracker', 'spmicro', '127.0.0.1:9090', { // Initialise a tracker
             encodeBase64: false,
             appId: 'sh0pspr33',
-            platform: "web",
+            platform: 'web',
             discoverRootDomain: true,
-            eventMethod: "beacon",
+            eventMethod: 'beacon'
         });
 
         window.snowplow('setUserId', 'tester');

@@ -4,8 +4,8 @@
         "description": "Examples of how to apply Snowplow Micro to popular test strategies",
         "private": true,
         "scripts": {
-                "test": "cd testing; nightwatch && cypress run --config-file false",
-                "test:nightwatch": "cd testing; nightwatch",
+                "test": "cd testing && (nightwatch && cypress run --config-file false)",
+                "test:nightwatch": "cd testing && nightwatch",
                 "cypress:open": "cd testing && cypress open --config-file false",
                 "cypress:run": "cd testing && cypress run --config-file false",
                 "cy-micro:pair-run": "cd testing && npm run cypress:run -- --spec \"**/integration/*$PAIR_PATTERN*app_spec.js\"",

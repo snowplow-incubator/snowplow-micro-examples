@@ -18,7 +18,7 @@ module.exports = {
 
     "webdriver": {
         "start_process": true,
-        "server_path": "../node_modules/.bin/chromedriver",
+        "server_path": require('chromedriver').path,
         "port": 9515
     },
 
@@ -35,7 +35,7 @@ module.exports = {
             "desiredCapabilities": {
                 "browserName": "chrome",
                 'chromeOptions': {
-                    'args': ['--headless']
+                    'args': ['headless', "window-size=1280,1024","force-device-scale-factor=1"]
                 }
             }
         }
