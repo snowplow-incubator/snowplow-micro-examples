@@ -27,7 +27,7 @@
                 "babel-preset-es2015": "^6.24.1",
                 "chromedriver": "*",
                 "cypress": "^8.3.0",
-                "nightwatch": "^1.7.8"
+                "nightwatch": "^2.6.3"
         },
         "dependencies": {},
         "jshintConfig": {
